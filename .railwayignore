@@ -10,3 +10,21 @@
 
 # Temporary migration files
 migrations-temp/
+
+# Node modules
+node_modules/
+*/node_modules/
+
+# Next.js build files
+.next/
+*/.next/
+
+# Environment variables
+.env*
+*.log
+
+# System files
+.DS_Store
+.venv/
+*.backup
+*.tmp

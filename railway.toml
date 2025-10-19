@@ -1,11 +1,1 @@
-[build]
-builder = "nixpacks"
-buildCommand = "cd frontend && npm ci --cache /tmp/.npm && npm run build"
-
-[deploy]
-startCommand = "cd frontend && npm start"
-restartPolicyType = "on_failure"
-restartPolicyMaxRetries = 10
-
-[environment]
-NODE_ENV = "production"
+[build]builder = "nixpacks"[deploy]startCommand = "cd frontend && npm start"[environment]NODE_ENV = "production"
