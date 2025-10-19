@@ -17,8 +17,9 @@ RUN cd frontend && npm run build
 # Remove dev dependencies after build
 RUN cd frontend && npm prune --production
 
-# Expose port (Railway will set the PORT env var)
-EXPOSE $PORT
+# Expose the port that Railway will assign
+EXPOSE 3000
 
-# Start the application with Railway's PORT
-CMD ["sh", "-c", "cd frontend && npm start -- -p $PORT"]
+# Use a simpler start command that works with Railway
+WORKDIR /app/frontend
+CMD ["npm", "start"]
