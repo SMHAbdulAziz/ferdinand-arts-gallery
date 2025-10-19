@@ -1,0 +1,12 @@
+# Railway-specific files
+.railway/
+
+# Environment files
+.env.local
+.env.production
+
+# Railway build cache
+.railway-build/
+
+# Temporary migration files
+migrations-temp/
