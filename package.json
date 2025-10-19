@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "The FUND Gallery - Supporting young artists through community raffles",
   "scripts": {
-    "build": "cd frontend && npm ci && npm run build",
+    "build": "cd frontend && npm ci --cache /tmp/.npm && npm run build",
     "start": "cd frontend && npm start",
     "dev": "cd frontend && npm run dev",
     "migrate": "cd frontend && npm run migrate"
