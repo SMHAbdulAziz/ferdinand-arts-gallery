@@ -5,10 +5,20 @@ const path = require('path');
 
 async function runMigrations() {
   // Use Railway's injected DATABASE_URL or fallback
-  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  const connectionString = process.env.DATABASE_URL || 
+                          process.env.POSTGRES_URL || 
+                          process.env.DATABASE_PRIVATE_URL ||
+                          process.env.DATABASE_PUBLIC_URL;
+  
+  console.log('🔍 Available environment variables:');
+  console.log('DATABASE_URL:', process.env.DATABASE_URL ? 'SET' : 'NOT SET');
+  console.log('POSTGRES_URL:', process.env.POSTGRES_URL ? 'SET' : 'NOT SET');
+  console.log('DATABASE_PRIVATE_URL:', process.env.DATABASE_PRIVATE_URL ? 'SET' : 'NOT SET');
+  console.log('DATABASE_PUBLIC_URL:', process.env.DATABASE_PUBLIC_URL ? 'SET' : 'NOT SET');
   
   if (!connectionString) {
     console.error('❌ No database connection string found');
+    console.error('Available environment variables:', Object.keys(process.env).filter(key => key.includes('DATABASE') || key.includes('POSTGRES')));
     process.exit(1);
   }
 

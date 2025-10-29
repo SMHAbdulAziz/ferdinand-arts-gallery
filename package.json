@@ -6,7 +6,8 @@
     "build": "cd frontend && npm install --legacy-peer-deps && npm run build",
     "start": "cd frontend && npm start",
     "dev": "cd frontend && npm run dev",
-    "migrate": "cd frontend && npm run migrate"
+    "migrate": "cd frontend && npm run migrate",
+    "seed": "cd frontend && npm run seed"
   },
   "engines": {
     "node": ">=18.0.0"
