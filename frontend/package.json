@@ -8,7 +8,8 @@
     "start": "next start -p $PORT",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
-    "migrate": "node scripts/migrate.js"
+    "migrate": "node scripts/migrate.js",
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
     "@paypal/react-paypal-js": "^8.1.3",

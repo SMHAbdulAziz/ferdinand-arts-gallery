@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import PayPalRaffleCheckout from '../components/PayPalRaffleCheckout';
@@ -6,15 +6,74 @@ import PayPalRaffleCheckout from '../components/PayPalRaffleCheckout';
 export default function RafflePage() {
   const router = useRouter();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [raffleData, setRaffleData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handlePaymentSuccess = (order) => {
+  // Fetch current raffle status
+  const fetchRaffleStatus = async () => {
+    try {
+      const response = await fetch('/api/raffle/status');
+      const data = await response.json();
+      
+      if (data.success) {
+        setRaffleData(data.raffle);
+      } else {
+        setError(data.error || 'Failed to load raffle data');
+      }
+    } catch (err) {
+      setError('Network error loading raffle data');
+      console.error('Fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRaffleStatus();
+  }, []);
+
+  const handlePaymentSuccess = async (order) => {
     console.log('Payment successful:', order);
     setPaymentSuccess(true);
+    
+    // Refresh raffle data to show updated ticket counts
+    await fetchRaffleStatus();
+    
     // Redirect to success page after 2 seconds
     setTimeout(() => {
       router.push('/success?payment=paypal&order=' + order.id);
     }, 2000);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading raffle details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-4">⚠️</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Raffle</h1>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button 
+            onClick={fetchRaffleStatus}
+            className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   if (paymentSuccess) {
     return (
@@ -28,25 +87,55 @@ export default function RafflePage() {
     );
   }
 
+  const raffle = raffleData;
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Head>
         <title>Enter Raffle - The FUND Gallery</title>
-        <meta name="description" content="Enter the raffle for Ferdinand's 'Playful Giraffe' artwork" />
+        <meta name="description" content={`Enter the raffle for ${raffle?.artwork_title || "Ferdinand's artwork"}`} />
       </Head>
 
       <div className="py-12">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Enter Raffle: "Playful Giraffe"
+              Enter Raffle: "{raffle?.artwork_title || 'Playful Giraffe'}"
             </h1>
             <p className="text-xl text-gray-600 mb-2">
-              By Ferdinand Ssekyanja
+              By {raffle?.artist_name || 'Ferdinand Ssekyanja'}
             </p>
             <p className="text-lg text-gray-500">
               Support young artists • Advance the Kingdom • Win beautiful art
             </p>
+          </div>
+          
+          {/* Raffle Progress Bar */}
+          <div className="mb-8 bg-white rounded-lg shadow-lg p-6">
+            <div className="flex justify-between items-center mb-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-indigo-600">{raffle?.tickets_sold || 0}</div>
+                <div className="text-sm text-gray-500">Tickets Sold</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-orange-600">{raffle?.tickets_remaining || 77}</div>
+                <div className="text-sm text-gray-500">Remaining</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">{raffle?.days_remaining || 15}</div>
+                <div className="text-sm text-gray-500">Days Left</div>
+              </div>
+            </div>
+            {raffle?.max_tickets && (
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div 
+                  className="bg-indigo-600 h-2 rounded-full transition-all duration-500"
+                  style={{ 
+                    width: `${Math.min((raffle.tickets_sold / raffle.max_tickets) * 100, 100)}%` 
+                  }}
+                ></div>
+              </div>
+            )}
           </div>
           
           <div className="grid md:grid-cols-2 gap-8 items-start">
@@ -89,7 +178,7 @@ export default function RafflePage() {
             {/* PayPal Checkout */}
             <div>
               <PayPalRaffleCheckout 
-                ticketPrice={25}
+                ticketPrice={raffle?.ticket_price || 25}
                 onSuccess={handlePaymentSuccess}
               />
               
