@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Layout from '../components/layout/Layout';
 import PayPalRaffleCheckout from '../components/PayPalRaffleCheckout';
 
 export default function RafflePage() {
@@ -48,55 +49,62 @@ export default function RafflePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading raffle details...</p>
+      <Layout>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading raffle details...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Raffle</h1>
-          <p className="text-gray-600 mb-4">{error}</p>
-          <button 
-            onClick={fetchRaffleStatus}
-            className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
-          >
-            Try Again
-          </button>
+      <Layout>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-6xl mb-4">⚠️</div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Raffle</h1>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <button 
+              onClick={fetchRaffleStatus}
+              className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   if (paymentSuccess) {
     return (
-      <div className="min-h-screen bg-green-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🎉</div>
-          <h1 className="text-3xl font-bold text-green-800 mb-2">Payment Successful!</h1>
-          <p className="text-green-600">You're entered in the raffle. Redirecting...</p>
+      <Layout>
+        <div className="min-h-screen bg-green-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-6xl mb-4">🎉</div>
+            <h1 className="text-3xl font-bold text-green-800 mb-2">Payment Successful!</h1>
+            <p className="text-green-600">You're entered in the raffle. Redirecting...</p>
+          </div>
         </div>
-      </div>
+      </Layout>
     );
   }
 
   const raffle = raffleData;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Layout>
       <Head>
         <title>Enter Raffle - The FUND Gallery</title>
         <meta name="description" content={`Enter the raffle for ${raffle?.artwork_title || "Ferdinand's artwork"}`} />
       </Head>
 
-      <div className="py-12">
+      <div className="min-h-screen bg-gray-50">
+        <div className="py-12">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -226,6 +234,6 @@ export default function RafflePage() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

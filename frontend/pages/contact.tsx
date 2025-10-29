@@ -270,7 +270,7 @@ export default function Contact() {
                   </div>
                 </div>
                 <a 
-                  href="/raffle" 
+                  href="/raffles" 
                   className="block w-full text-center bg-purple-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-purple-700 transition-colors"
                 >
                   Enter Current Raffle

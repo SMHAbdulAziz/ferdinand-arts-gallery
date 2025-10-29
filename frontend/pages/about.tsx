@@ -232,7 +232,7 @@ export default function About() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/raffle" className="bg-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors">
+              <Link href="/raffles" className="bg-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors">
                 Enter Current Raffle
               </Link>
               <Link href="/exhibitions" className="bg-white text-purple-600 border border-purple-600 px-8 py-3 rounded-lg font-medium hover:bg-purple-50 transition-colors">

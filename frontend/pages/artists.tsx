@@ -293,7 +293,7 @@ export default function Artists() {
               </div>
 
               <div className="mt-8">
-                <Link href="/raffle" className="bg-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors mr-4">
+                <Link href="/raffles" className="bg-purple-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-purple-700 transition-colors mr-4">
                   Enter Raffle
                 </Link>
                 <Link href="/exhibitions" className="bg-white text-purple-600 border border-purple-600 px-8 py-3 rounded-lg font-medium hover:bg-purple-50 transition-colors">
