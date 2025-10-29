@@ -69,17 +69,17 @@ const artists: Artist[] = [
     featuredWorks: [
       {
         title: 'Playful Giraffe',
-        image: '/images/artworks/playful-giraffe.png',
+        image: '/images/artworks/playful-giraffe.jpg',
         year: '2024'
       },
       {
         title: 'Majestic Lion Golden Profile',
-        image: '/images/artworks/majestic-lion-golden-profile.png',
+        image: '/images/artworks/majestic-lion-golden-profile.jpg',
         year: '2024'
       },
       {
         title: 'African Woman with Gold Earrings',
-        image: '/images/artworks/african-woman-profile-gold-earrings-portrait.png',
+        image: '/images/artworks/african-woman-profile-gold-earrings-portrait.jpg',
         year: '2024'
       }
     ],

@@ -51,7 +51,7 @@ export default function About() {
                 alt="Gallery Mission"
                 className="rounded-lg shadow-xl"
                 onError={(e) => {
-                  e.currentTarget.src = '/images/artworks/playful-giraffe.png';
+                  e.currentTarget.src = '/images/artworks/playful-giraffe.jpg';
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent rounded-lg"></div>

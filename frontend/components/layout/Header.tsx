@@ -58,7 +58,7 @@ const Header: React.FC = () => {
 
           {/* CTA Button */}
           <div className="hidden lg:flex lg:items-center lg:space-x-4">
-            <Link href="/raffles" className="btn-primary">
+            <Link href="/raffle" className="btn-primary">
               Support Artists
             </Link>
           </div>
@@ -95,7 +95,7 @@ const Header: React.FC = () => {
             </Link>
           ))}
           <div className="px-3 py-2">
-            <Link href="/raffles" className="btn-primary w-full text-center">
+            <Link href="/raffle" className="btn-primary w-full text-center">
               Support Artists
             </Link>
           </div>

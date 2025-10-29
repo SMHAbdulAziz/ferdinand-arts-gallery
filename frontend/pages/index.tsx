@@ -61,7 +61,7 @@ const HeroSection = () => (
               </svg>
             </Link>
             
-            <Link href="/raffles" className="inline-flex items-center text-lg px-8 py-4 bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary-900 font-medium rounded-lg transition-all duration-200 transform hover:scale-105">
+            <Link href="/raffle" className="inline-flex items-center text-lg px-8 py-4 bg-transparent border-2 border-white text-white hover:bg-white hover:text-primary-900 font-medium rounded-lg transition-all duration-200 transform hover:scale-105">
               Support an Artist
               <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -129,7 +129,7 @@ const CurrentExhibitions: React.FC<{ images: ArtworkImage[] }> = ({ images }) =>
               </p>
               <div className="mt-4 flex items-center justify-between">
                 <span className="text-accent-600 font-semibold">Active Raffle</span>
-                <Link href="/raffles/playful-giraffe" className="text-primary-900 hover:text-accent-600 font-medium">
+                <Link href="/raffle" className="text-primary-900 hover:text-accent-600 font-medium">
                   View Details →
                 </Link>
               </div>
@@ -220,7 +220,7 @@ const FerdinandStory = () => (
             <Link href="/artists/ferdinand" className="btn-primary">
               Learn More About Ferdinand
             </Link>
-            <Link href="/raffles" className="btn-secondary">
+            <Link href="/raffle" className="btn-secondary">
               Support His Journey
             </Link>
           </div>
@@ -298,7 +298,7 @@ const CallToAction = () => (
         </div>
         
         <div className="pt-8">
-          <Link href="/raffles" className="btn-accent text-lg px-8 py-4">
+          <Link href="/raffle" className="btn-accent text-lg px-8 py-4">
             Start Supporting Today
           </Link>
         </div>

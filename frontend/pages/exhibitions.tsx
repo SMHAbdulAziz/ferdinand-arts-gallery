@@ -24,7 +24,7 @@ const artworks: Artwork[] = [
     dimensions: '100cm × 100cm',
     year: '2024',
     price: '$700',
-    image: '/images/artworks/playful-giraffe.png',
+    image: '/images/artworks/playful-giraffe.jpg',
     description: 'A vibrant acrylic painting that captures the playful spirit of the giraffe rendered in bold strokes and an expressive color palette.',
     category: 'Featured'
   },
@@ -36,7 +36,7 @@ const artworks: Artwork[] = [
     dimensions: '80cm × 60cm',
     year: '2024',
     price: '$550',
-    image: '/images/artworks/african-woman-profile-gold-earrings-portrait.png',
+    image: '/images/artworks/african-woman-profile-gold-earrings-portrait.jpg',
     description: 'A stunning portrait celebrating African beauty and elegance, featuring intricate detail in the golden earrings.',
     category: 'Portraits'
   },
@@ -48,7 +48,7 @@ const artworks: Artwork[] = [
     dimensions: '90cm × 70cm',
     year: '2024',
     price: '$650',
-    image: '/images/artworks/majestic-lion-golden-profile.png',
+    image: '/images/artworks/majestic-lion-golden-profile.jpg',
     description: 'A powerful portrayal of the king of beasts, rendered in golden tones that emphasize strength and nobility.',
     category: 'Wildlife'
   },
@@ -60,7 +60,7 @@ const artworks: Artwork[] = [
     dimensions: '100cm × 80cm',
     year: '2024',
     price: '$750',
-    image: '/images/artworks/cheetah-street-art-neon-explosion.png',
+    image: '/images/artworks/cheetah-street-art-neon-explosion.jpg',
     description: 'Contemporary street art style meets wildlife in this explosive neon interpretation of the fastest land animal.',
     category: 'Contemporary'
   },
@@ -72,7 +72,7 @@ const artworks: Artwork[] = [
     dimensions: '85cm × 65cm',
     year: '2024',
     price: '$600',
-    image: '/images/artworks/zebra-explosive-blue-orange-abstract.png',
+    image: '/images/artworks/zebra-explosive-blue-orange-abstract.jpg',
     description: 'An abstract interpretation of the zebra using bold blue and orange contrasts to create dynamic movement.',
     category: 'Abstract'
   },
@@ -84,7 +84,7 @@ const artworks: Artwork[] = [
     dimensions: '75cm × 75cm',
     year: '2024',
     price: '$580',
-    image: '/images/artworks/gorilla-impressionistic-colorful.png',
+    image: '/images/artworks/gorilla-impressionistic-colorful.jpg',
     description: 'A colorful impressionistic take on the gentle giant of the forest, emphasizing emotion and movement.',
     category: 'Wildlife'
   },
@@ -96,7 +96,7 @@ const artworks: Artwork[] = [
     dimensions: '90cm × 90cm',
     year: '2024',
     price: '$700',
-    image: '/images/artworks/lion-geometric-cubist-multicolor-facets.png',
+    image: '/images/artworks/lion-geometric-cubist-multicolor-facets.jpg',
     description: 'A cubist interpretation breaking down the lion into geometric facets of brilliant color.',
     category: 'Cubist'
   },
@@ -108,7 +108,7 @@ const artworks: Artwork[] = [
     dimensions: '95cm × 75cm',
     year: '2024',
     price: '$650',
-    image: '/images/artworks/bull-dynamic-blue-orange-contemporary.png',
+    image: '/images/artworks/bull-dynamic-blue-orange-contemporary.jpg',
     description: 'A contemporary piece capturing the raw power and energy of the bull in dynamic blue and orange tones.',
     category: 'Contemporary'
   }
