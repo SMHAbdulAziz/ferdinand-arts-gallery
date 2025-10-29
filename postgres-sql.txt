@@ -1,0 +1,3 @@
+postgresql://postgres:AldKLVtzfHqsHOaRRwUIaAiXDVfoSigv@centerbeam.proxy.rlwy.net:26273/railway
+PGPASSWORD=AldKLVtzfHqsHOaRRwUIaAiXDVfoSigv psql -h centerbeam.proxy.rlwy.net -U postgres -p 26273 -d railway
+railway connect Postgres
