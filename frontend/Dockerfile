@@ -25,6 +25,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 # Build the application
 RUN npm run build
 
+# Install sharp with platform-specific dependencies
+RUN npm install --include=optional sharp && npm cache clean --force
+
 # Stage 3: Runner (Production)
 FROM node:18-alpine AS runner
 WORKDIR /app

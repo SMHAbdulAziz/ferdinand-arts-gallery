@@ -3,21 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   output: 'standalone', // This is correct for Railway
   images: {
-    remotePatterns: [
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-      },
-      {
-        protocol: 'https',
-        hostname: 'thefundgallery.org',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.railway.app',
-      },
-    ],
-    formats: ['image/webp', 'image/avif'],
+    unoptimized: true,
   },
   env: {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
