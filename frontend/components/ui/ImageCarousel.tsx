@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import fs from 'fs';
+import path from 'path';
 
 interface CarouselImage {
   src: string;
@@ -9,7 +11,6 @@ interface CarouselImage {
 }
 
 interface ImageCarouselProps {
-  images: CarouselImage[];
   autoPlay?: boolean;
   interval?: number;
   showDots?: boolean;
@@ -17,8 +18,18 @@ interface ImageCarouselProps {
   className?: string;
 }
 
+// Dynamically load images from the artworks folder
+const artworksDir = path.join(process.cwd(), 'public/images/artworks');
+const images = fs.readdirSync(artworksDir)
+  .filter((file) => file.endsWith('.jpeg'))
+  .map((file) => ({
+    src: `/images/artworks/${file}`,
+    alt: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
+    title: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
+    description: 'A beautiful artwork by Ferdinand Ssekyanja.', // Add a default description
+  }));
+
 const ImageCarousel: React.FC<ImageCarouselProps> = ({
-  images,
   autoPlay = true,
   interval = 5000,
   showDots = true,

@@ -15,7 +15,7 @@ interface Artwork {
   category: string;
 }
 
-const artworks: Artwork[] = [
+const updatedArtworks: Artwork[] = [
   {
     id: '1',
     title: 'Playful Giraffe',
@@ -23,44 +23,44 @@ const artworks: Artwork[] = [
     medium: 'Acrylic on Canvas',
     dimensions: '100cm × 100cm',
     year: '2024',
-    price: '$700',
-    image: '/images/artworks/playful-giraffe.jpg',
+    price: '$1050', // Updated price
+    image: '/images/artworks/playful-giraffe.jpeg',
     description: 'A vibrant acrylic painting that captures the playful spirit of the giraffe rendered in bold strokes and an expressive color palette.',
     category: 'Featured'
   },
   {
     id: '2',
-    title: 'African Woman with Gold Earrings',
+    title: 'African Heritage Portrait Vibrant Colors',
     artist: 'Ferdinand Ssekyanja',
     medium: 'Acrylic on Canvas',
     dimensions: '80cm × 60cm',
     year: '2024',
-    price: '$550',
-    image: '/images/artworks/african-woman-profile-gold-earrings-portrait.jpg',
+    price: '$825', // Updated price
+    image: '/images/artworks/african-heritage-portrait-vibrant-colors.jpeg',
     description: 'A stunning portrait celebrating African beauty and elegance, featuring intricate detail in the golden earrings.',
     category: 'Portraits'
   },
   {
     id: '3',
-    title: 'Majestic Lion Golden Profile',
+    title: 'Child Figure Blue Outfit Textured Expression',
     artist: 'Ferdinand Ssekyanja',
     medium: 'Acrylic on Canvas',
     dimensions: '90cm × 70cm',
     year: '2024',
-    price: '$650',
-    image: '/images/artworks/majestic-lion-golden-profile.jpg',
+    price: '$975', // Updated price
+    image: '/images/artworks/child-figure-blue-outfit-textured-expression.jpeg',
     description: 'A powerful portrayal of the king of beasts, rendered in golden tones that emphasize strength and nobility.',
     category: 'Wildlife'
   },
   {
     id: '4',
-    title: 'Cheetah Street Art Neon Explosion',
+    title: 'Elephant Family Waterfront Serene Bond',
     artist: 'Ferdinand Ssekyanja',
     medium: 'Mixed Media on Canvas',
     dimensions: '100cm × 80cm',
     year: '2024',
-    price: '$750',
-    image: '/images/artworks/cheetah-street-art-neon-explosion.jpg',
+    price: '$1125', // Updated price
+    image: '/images/artworks/elephant-family-waterfront-serene-bond.jpeg',
     description: 'Contemporary street art style meets wildlife in this explosive neon interpretation of the fastest land animal.',
     category: 'Contemporary'
   },
@@ -71,8 +71,8 @@ const artworks: Artwork[] = [
     medium: 'Acrylic on Canvas',
     dimensions: '85cm × 65cm',
     year: '2024',
-    price: '$600',
-    image: '/images/artworks/zebra-explosive-blue-orange-abstract.jpg',
+    price: '$900', // Updated price
+    image: '/images/artworks/zebra-explosive-blue-orange-abstract.jpeg',
     description: 'An abstract interpretation of the zebra using bold blue and orange contrasts to create dynamic movement.',
     category: 'Abstract'
   },
@@ -83,8 +83,8 @@ const artworks: Artwork[] = [
     medium: 'Oil on Canvas',
     dimensions: '75cm × 75cm',
     year: '2024',
-    price: '$580',
-    image: '/images/artworks/gorilla-impressionistic-colorful.jpg',
+    price: '$870', // Updated price
+    image: '/images/artworks/gorilla-impressionistic-colorful.jpeg',
     description: 'A colorful impressionistic take on the gentle giant of the forest, emphasizing emotion and movement.',
     category: 'Wildlife'
   },
@@ -95,8 +95,8 @@ const artworks: Artwork[] = [
     medium: 'Acrylic on Canvas',
     dimensions: '90cm × 90cm',
     year: '2024',
-    price: '$700',
-    image: '/images/artworks/lion-geometric-cubist-multicolor-facets.jpg',
+    price: '$1050', // Updated price
+    image: '/images/artworks/lion-geometric-cubist-multicolor-facets.jpeg',
     description: 'A cubist interpretation breaking down the lion into geometric facets of brilliant color.',
     category: 'Cubist'
   },
@@ -107,8 +107,8 @@ const artworks: Artwork[] = [
     medium: 'Acrylic on Canvas',
     dimensions: '95cm × 75cm',
     year: '2024',
-    price: '$650',
-    image: '/images/artworks/bull-dynamic-blue-orange-contemporary.jpg',
+    price: '$975', // Updated price
+    image: '/images/artworks/bull-dynamic-blue-orange-contemporary.jpeg',
     description: 'A contemporary piece capturing the raw power and energy of the bull in dynamic blue and orange tones.',
     category: 'Contemporary'
   }
@@ -118,13 +118,13 @@ const categories = ['All', 'Featured', 'Wildlife', 'Portraits', 'Abstract', 'Con
 
 export default function Exhibitions() {
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [filteredArtworks, setFilteredArtworks] = useState(artworks);
+  const [filteredArtworks, setFilteredArtworks] = useState(updatedArtworks);
 
   useEffect(() => {
     if (selectedCategory === 'All') {
-      setFilteredArtworks(artworks);
+      setFilteredArtworks(updatedArtworks);
     } else {
-      setFilteredArtworks(artworks.filter(artwork => artwork.category === selectedCategory));
+      setFilteredArtworks(updatedArtworks.filter(artwork => artwork.category === selectedCategory));
     }
   }, [selectedCategory]);
 
@@ -230,7 +230,7 @@ export default function Exhibitions() {
                   <p><strong>Duration:</strong> Ongoing Exhibition</p>
                   <p><strong>Artist:</strong> Ferdinand Ssekyanja</p>
                   <p><strong>Location:</strong> Ferdinand Arts Gallery (Online)</p>
-                  <p><strong>Pieces:</strong> {artworks.length} Original Works</p>
+                  <p><strong>Pieces:</strong> {updatedArtworks.length} Original Works</p>
                   <p><strong>Medium:</strong> Acrylic, Oil, Mixed Media</p>
                 </div>
               </div>
