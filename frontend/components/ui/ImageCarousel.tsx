@@ -11,6 +11,12 @@ interface CarouselImage {
 }
 
 interface ImageCarouselProps {
+  images: {
+    src: string;
+    alt: string;
+    title: string;
+    description?: string;
+  }[];
   autoPlay?: boolean;
   interval?: number;
   showDots?: boolean;
@@ -30,6 +36,7 @@ const images = fs.readdirSync(artworksDir)
   }));
 
 const ImageCarousel: React.FC<ImageCarouselProps> = ({
+  images: customImages = images, // Use custom images if provided, otherwise fallback to dynamic images
   autoPlay = true,
   interval = 5000,
   showDots = true,
@@ -41,34 +48,34 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
   // Auto-play functionality
   useEffect(() => {
-    if (!isPlaying || images.length <= 1) return;
+    if (!isPlaying || customImages.length <= 1) return;
 
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => 
-        prevIndex === images.length - 1 ? 0 : prevIndex + 1
+        prevIndex === customImages.length - 1 ? 0 : prevIndex + 1
       );
     }, interval);
 
     return () => clearInterval(timer);
-  }, [isPlaying, interval, images.length]);
+  }, [isPlaying, interval, customImages.length]);
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
 
   const goToPrevious = () => {
-    setCurrentIndex(currentIndex === 0 ? images.length - 1 : currentIndex - 1);
+    setCurrentIndex(currentIndex === 0 ? customImages.length - 1 : currentIndex - 1);
   };
 
   const goToNext = () => {
-    setCurrentIndex(currentIndex === images.length - 1 ? 0 : currentIndex + 1);
+    setCurrentIndex(currentIndex === customImages.length - 1 ? 0 : currentIndex + 1);
   };
 
   const togglePlayPause = () => {
     setIsPlaying(!isPlaying);
   };
 
-  if (images.length === 0) {
+  if (customImages.length === 0) {
     return <div className="text-center text-gray-500">No images to display</div>;
   }
 
@@ -77,8 +84,8 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       {/* Main Image Container */}
       <div className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100">
         <Image
-          src={images[currentIndex].src}
-          alt={images[currentIndex].alt}
+          src={customImages[currentIndex].src}
+          alt={customImages[currentIndex].alt}
           fill
           className="object-cover transition-transform duration-500 hover:scale-105"
           priority
@@ -87,17 +94,17 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         {/* Image Info Overlay */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
           <h3 className="text-xl font-bold text-white mb-2">
-            {images[currentIndex].title}
+            {customImages[currentIndex].title}
           </h3>
-          {images[currentIndex].description && (
+          {customImages[currentIndex].description && (
             <p className="text-gray-200 text-sm">
-              {images[currentIndex].description}
+              {customImages[currentIndex].description}
             </p>
           )}
         </div>
 
         {/* Navigation Arrows */}
-        {showArrows && images.length > 1 && (
+        {showArrows && customImages.length > 1 && (
           <>
             <button
               onClick={goToPrevious}
@@ -121,7 +128,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         )}
 
         {/* Play/Pause Button */}
-        {autoPlay && images.length > 1 && (
+        {autoPlay && customImages.length > 1 && (
           <button
             onClick={togglePlayPause}
             className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-all duration-200"
@@ -141,9 +148,9 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       </div>
 
       {/* Dots Navigation */}
-      {showDots && images.length > 1 && (
+      {showDots && customImages.length > 1 && (
         <div className="flex justify-center space-x-2 mt-4">
-          {images.map((_, index) => (
+          {customImages.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
@@ -160,7 +167,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
 
       {/* Thumbnail Strip (Optional) */}
       <div className="flex space-x-2 mt-4 overflow-x-auto pb-2">
-        {images.map((image, index) => (
+        {customImages.map((image, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
@@ -181,12 +188,12 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
       </div>
 
       {/* Progress Bar */}
-      {autoPlay && isPlaying && images.length > 1 && (
+      {autoPlay && isPlaying && customImages.length > 1 && (
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
           <div
             className="h-full bg-yellow-600 transition-all duration-100 ease-linear"
             style={{
-              width: `${((currentIndex + 1) / images.length) * 100}%`,
+              width: `${((currentIndex + 1) / customImages.length) * 100}%`,
             }}
           />
         </div>
