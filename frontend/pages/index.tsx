@@ -323,41 +323,20 @@ const HomePage: React.FC<HomePageProps> = ({ images }) => {
 
 export default HomePage;
 
-export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
-  try {
-    const publicDir = path.join(process.cwd(), 'public');
-    const artworksDir = path.join(publicDir, 'images', 'artworks');
+export const getStaticProps: GetStaticProps = async () => {
+  const artworksDir = path.join(process.cwd(), 'public/images/artworks');
+  const images = fs.readdirSync(artworksDir)
+    .filter((file) => file.endsWith('.jpeg'))
+    .map((file) => ({
+      src: `/images/artworks/${file}`,
+      alt: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
+      title: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
+      description: 'A beautiful artwork by Ferdinand Ssekyanja.',
+    }));
 
-    let files: string[] = [];
-    try {
-      files = fs.readdirSync(artworksDir);
-    } catch (err) {
-      // directory might not exist yet
-      files = [];
-    }
-
-    const jpgFiles = files.filter((f) => f.toLowerCase().endsWith('.jpg') || f.toLowerCase().endsWith('.jpeg'));
-
-    const images: ArtworkImage[] = jpgFiles.map((filename) => {
-      const name = path.parse(filename).name.replace(/[-_]+/g, ' ');
-      const title = name.split(' ').map((w) => w[0]?.toUpperCase() + w.slice(1)).join(' ');
-      return {
-        src: `/images/artworks/${filename}`,
-        alt: title,
-        title,
-      };
-    });
-
-    return {
-      props: {
-        images,
-      },
-    };
-  } catch (err) {
-    return {
-      props: {
-        images: [],
-      },
-    };
-  }
+  return {
+    props: {
+      images,
+    },
+  };
 };
