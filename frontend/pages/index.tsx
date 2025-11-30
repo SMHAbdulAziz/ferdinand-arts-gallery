@@ -326,14 +326,18 @@ export const getStaticProps: GetStaticProps = async () => {
   const path = await import('path');
 
   const artworksDir = path.join(process.cwd(), 'public/images/artworks');
-  const images = fs.readdirSync(artworksDir)
-    .filter((file) => file.endsWith('.jpeg'))
-    .map((file) => ({
-      src: `/images/artworks/${file}`,
-      alt: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
-      title: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
-      description: 'A beautiful artwork by Ferdinand Ssekyanja.',
-    }));
+  let images: { src: string; alt: string; title: string; description: string }[] = [];
+
+  if (fs.existsSync(artworksDir)) {
+    images = fs.readdirSync(artworksDir)
+      .filter((file) => file.endsWith('.jpeg'))
+      .map((file) => ({
+        src: `/images/artworks/${file}`,
+        alt: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
+        title: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
+        description: 'A beautiful artwork by Ferdinand Ssekyanja.',
+      }));
+  }
 
   return {
     props: {
