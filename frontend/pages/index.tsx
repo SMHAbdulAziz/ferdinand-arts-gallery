@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { GetStaticProps } from 'next';
 import Layout from '../components/layout/Layout';
 import ImageCarousel from '../components/ui/ImageCarousel';
-import fs from 'fs';
-import path from 'path';
 
 type ArtworkImage = {
   src: string;
@@ -324,6 +322,9 @@ const HomePage: React.FC<HomePageProps> = ({ images }) => {
 export default HomePage;
 
 export const getStaticProps: GetStaticProps = async () => {
+  const fs = await import('fs');
+  const path = await import('path');
+
   const artworksDir = path.join(process.cwd(), 'public/images/artworks');
   const images = fs.readdirSync(artworksDir)
     .filter((file) => file.endsWith('.jpeg'))
