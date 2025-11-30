@@ -337,6 +337,15 @@ export const getStaticProps: GetStaticProps = async () => {
         title: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
         description: 'A beautiful artwork by Ferdinand Ssekyanja.',
       }));
+  } else {
+    images = [
+      {
+        src: '/images/gallery-hero.jpg',
+        alt: 'Gallery Hero',
+        title: 'Gallery Hero',
+        description: 'Fallback image for the gallery.',
+      },
+    ];
   }
 
   return {
