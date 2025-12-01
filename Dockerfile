@@ -17,8 +17,11 @@ WORKDIR /app
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
 
-# Copy all frontend source files
+# Copy all frontend source files (including public folder with images)
 COPY frontend ./
+
+# Ensure public folder exists in the final location for runtime access
+RUN mkdir -p .next/standalone/public && cp -r public/* .next/standalone/public/ 2>/dev/null || true
 
 # Set build-time environment variables
 ENV NODE_ENV=production
@@ -45,9 +48,6 @@ COPY --from=builder --chown=ferdinand:ferdinand /app/.next/standalone ./
 
 # Copy static files
 COPY --from=builder --chown=ferdinand:ferdinand /app/.next/static ./.next/static
-
-# Copy public folder (images, assets, etc.)
-COPY --from=builder --chown=ferdinand:ferdinand /app/public ./public
 
 # Copy healthcheck file
 COPY --from=builder /app/healthcheck.js ./healthcheck.js
