@@ -40,12 +40,14 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 
-# Copy public assets
-COPY --from=builder /app/public ./public
-
-# Copy standalone build
+# Copy standalone build (includes server and dependencies)
 COPY --from=builder --chown=ferdinand:ferdinand /app/.next/standalone ./
+
+# Copy static files
 COPY --from=builder --chown=ferdinand:ferdinand /app/.next/static ./.next/static
+
+# Copy public folder (images, assets, etc.)
+COPY --from=builder --chown=ferdinand:ferdinand /app/public ./public
 
 # Copy healthcheck file
 COPY --from=builder /app/healthcheck.js ./healthcheck.js
