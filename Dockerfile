@@ -20,9 +20,6 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy all frontend source files (including public folder with images)
 COPY frontend ./
 
-# Verify public folder exists and list contents
-RUN ls -la && ls -la public/ | head -10
-
 # Set build-time environment variables
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1

@@ -322,31 +322,19 @@ const HomePage: React.FC<HomePageProps> = ({ images }) => {
 export default HomePage;
 
 export const getStaticProps: GetStaticProps = async () => {
-  const fs = await import('fs');
-  const path = await import('path');
-
-  const artworksDir = path.join(process.cwd(), 'public/images/artworks');
-  let images: { src: string; alt: string; title: string; description: string }[] = [];
-
-  if (fs.existsSync(artworksDir)) {
-    images = fs.readdirSync(artworksDir)
-      .filter((file) => file.endsWith('.jpeg'))
-      .map((file) => ({
-        src: `/images/artworks/${file}`,
-        alt: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
-        title: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
-        description: 'A beautiful artwork by Ferdinand Ssekyanja.',
-      }));
-  } else {
-    images = [
-      {
-        src: '/images/gallery-hero.jpg',
-        alt: 'Gallery Hero',
-        title: 'Gallery Hero',
-        description: 'Fallback image for the gallery.',
-      },
-    ];
-  }
+  // Static list of artwork images
+  const images = [
+    { src: '/images/artworks/playful-giraffe.jpeg', alt: 'Playful Giraffe', title: 'Playful Giraffe', description: 'A vibrant and playful giraffe artwork by Ferdinand Ssekyanja.' },
+    { src: '/images/artworks/lion-geometric-cubist-multicolor-facets.jpeg', alt: 'Geometric Lion', title: 'Geometric Cubist Lion', description: 'A stunning geometric interpretation of a lion.' },
+    { src: '/images/artworks/african-woman-profile-gold-earrings-portrait.jpeg', alt: 'African Woman Portrait', title: 'African Woman with Gold Earrings', description: 'A beautiful portrait celebrating African beauty.' },
+    { src: '/images/artworks/elephant-abstract-vivid-color-patterns.jpeg', alt: 'Abstract Elephant', title: 'Vivid Abstract Elephant', description: 'An elephant brought to life with vivid color patterns.' },
+    { src: '/images/artworks/zebra-explosive-blue-orange-abstract.jpeg', alt: 'Explosive Zebra', title: 'Blue and Orange Zebra', description: 'An explosive abstract zebra with bold colors.' },
+    { src: '/images/artworks/cheetah-street-art-neon-explosion.jpeg', alt: 'Neon Cheetah', title: 'Street Art Cheetah', description: 'A neon explosion of street art featuring a cheetah.' },
+    { src: '/images/artworks/lion-fiery-majesty-bold-expression.jpeg', alt: 'Fiery Lion', title: 'Fiery Majestic Lion', description: 'A bold and fiery expression of lion majesty.' },
+    { src: '/images/artworks/gorilla-impressionistic-colorful.jpeg', alt: 'Colorful Gorilla', title: 'Impressionistic Gorilla', description: 'An impressionistic take on a powerful gorilla.' },
+    { src: '/images/artworks/eagle-majestic-vibrant-abstract-background.jpeg', alt: 'Majestic Eagle', title: 'Vibrant Abstract Eagle', description: 'A majestic eagle with vibrant abstract elements.' },
+    { src: '/images/artworks/leopard-vivid-expression-blue-orange-abstract.jpeg', alt: 'Vivid Leopard', title: 'Blue Orange Leopard', description: 'A leopard with vivid blue and orange expression.' },
+  ];
 
   return {
     props: {
