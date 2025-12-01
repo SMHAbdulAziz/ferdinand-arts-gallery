@@ -57,4 +57,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node healthcheck.js
 
 # Start the standalone server
-CMD ["node", "server.js"]
+CMD ["node", ".next/standalone/server.js"]
