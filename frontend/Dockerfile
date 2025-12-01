@@ -16,6 +16,8 @@ WORKDIR /app
 
 # Copy dependencies from deps stage
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy all source files
 COPY . .
 
 # Set build-time environment variables
@@ -36,15 +38,19 @@ RUN addgroup --system --gid 1001 ferdinand && \
 # Set production environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV PORT=3000
 
-# Copy necessary files from builder
+# Copy public assets
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
+
+# Copy standalone build
+COPY --from=builder --chown=ferdinand:ferdinand /app/.next/standalone ./
+COPY --from=builder --chown=ferdinand:ferdinand /app/.next/static ./.next/static
+
+# Copy healthcheck file
 COPY --from=builder /app/healthcheck.js ./healthcheck.js
 
-# Change ownership to ferdinand user
-RUN chown -R ferdinand:ferdinand /app
+# Change to non-root user
 USER ferdinand
 
 # Expose port
