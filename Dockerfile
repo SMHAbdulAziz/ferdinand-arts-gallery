@@ -20,6 +20,9 @@ COPY --from=deps /app/node_modules ./node_modules
 # Copy all frontend source files (including public folder with images)
 COPY frontend ./
 
+# Verify public folder exists and list contents
+RUN ls -la && ls -la public/ | head -10
+
 # Set build-time environment variables
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
@@ -28,7 +31,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 # Copy public folder to standalone output (Next.js standalone doesn't include public by default)
-RUN cp -r public .next/standalone/public
+RUN if [ -d "public" ]; then cp -r public .next/standalone/public; fi
 
 # Stage 3: Runner (Production)
 FROM node:18-alpine AS runner
