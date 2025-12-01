@@ -6,9 +6,9 @@ FROM node:18-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy package files and install ALL dependencies (including devDependencies for build)
 COPY package.json package-lock.json* ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci && npm cache clean --force
 
 # Stage 2: Builder
 FROM node:18-alpine AS builder
@@ -24,9 +24,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Build the application
 RUN npm run build
-
-# Install sharp with platform-specific dependencies
-RUN npm install --include=optional sharp && npm cache clean --force
 
 # Stage 3: Runner (Production)
 FROM node:18-alpine AS runner
@@ -44,6 +41,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
+COPY --from=builder /app/healthcheck.js ./healthcheck.js
 
 # Change ownership to ferdinand user
 RUN chown -R ferdinand:ferdinand /app
@@ -57,4 +55,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node healthcheck.js
 
 # Start the standalone server
-CMD ["node", ".next/standalone/server.js"]
+CMD ["node", "server.js"]
