@@ -11,14 +11,15 @@ const activeRaffles = [
     artworkTitle: 'Playful Giraffe',
     artistName: 'Ferdinand Ssekyanja',
     artworkImage: '/images/artworks/playful-giraffe.jpg',
-    ticketPrice: 50,
+    ticketPrice: 25,
     maxTickets: 100,
-    ticketsSold: 23,
+    ticketsSold: 0,
     endDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 days from now
-    description: 'A vibrant acrylic painting that captures the playful spirit of the giraffe rendered in bold strokes and an expressive color palette.',
+    description: 'A vibrant acrylic painting that captures the playful spirit of the giraffe rendered in bold strokes and an expressive color palette. This original artwork showcases Ferdinand\'s unique contemporary African-inspired style.',
     dimensions: '100cm × 100cm',
     medium: 'Acrylic on Canvas',
-    estimatedValue: 700
+    estimatedValue: 1050,
+    year: '2024'
   }
 ];
 
@@ -108,25 +109,29 @@ const RafflesPage: React.FC = () => {
                       <p className="text-primary-600">{raffle.dimensions}</p>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-primary-900 mb-2">Artist</h4>
-                      <p className="text-primary-600">{raffle.artistName}</p>
+                      <h4 className="font-semibold text-primary-900 mb-2">Year</h4>
+                      <p className="text-primary-600">{raffle.year}</p>
                     </div>
                     <div>
                       <h4 className="font-semibold text-primary-900 mb-2">Estimated Value</h4>
-                      <p className="text-primary-600">${raffle.estimatedValue}</p>
+                      <p className="text-primary-600 font-bold">${raffle.estimatedValue}</p>
                     </div>
                   </div>
                   
-                  <div className="bg-accent-50 p-6 border border-accent-200">
-                    <h4 className="font-semibold text-accent-900 mb-3">Impact of Your Purchase</h4>
+                  <div className="bg-accent-50 p-6 border border-accent-200 rounded-lg">
+                    <h4 className="font-semibold text-accent-900 mb-3 flex items-center">
+                      <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                      </svg>
+                      Impact of Your Purchase
+                    </h4>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span>Artist support (70%)</span>
-                        <span className="font-semibold">${(raffle.ticketPrice * 0.7).toFixed(0)} per ticket</span>
+                        <span>Supports Ferdinand's aviation education</span>
+                        <span className="font-semibold text-accent-700">10% to FOMI</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Education fund (30%)</span>
-                        <span className="font-semibold">${(raffle.ticketPrice * 0.3).toFixed(0)} per ticket</span>
+                      <div className="flex justify-between items-center pt-2 border-t border-accent-200">
+                        <span className="text-xs text-accent-700">Every ticket helps fund his dreams</span>
                       </div>
                     </div>
                   </div>
@@ -210,18 +215,18 @@ const RafflesPage: React.FC = () => {
       <section className="py-16 bg-white">
         <div className="container-custom section-padding">
           <h2 className="font-serif text-display-sm text-primary-900 text-center mb-12">
-            How Our Raffles Work
+            How It Works
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
             <div className="text-center">
               <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-accent-600">1</span>
               </div>
-              <h3 className="font-serif text-lg text-primary-900 mb-3">Purchase Tickets</h3>
+              <h3 className="font-serif text-lg text-primary-900 mb-3">Purchase Ticket</h3>
               <p className="text-primary-600 text-sm leading-relaxed">
-                Buy raffle tickets for featured artwork. Each ticket gives you a chance to win 
-                while supporting Ferdinand's education.
+                Secure PayPal checkout for $25. Each ticket gives you a chance to win 
+                while supporting Ferdinand's aviation education dreams.
               </p>
             </div>
             
@@ -229,10 +234,10 @@ const RafflesPage: React.FC = () => {
               <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-accent-600">2</span>
               </div>
-              <h3 className="font-serif text-lg text-primary-900 mb-3">Random Drawing</h3>
+              <h3 className="font-serif text-lg text-primary-900 mb-3">Get Confirmation</h3>
               <p className="text-primary-600 text-sm leading-relaxed">
-                When the raffle period ends, we conduct a transparent random drawing 
-                to select the winner.
+                Instant email confirmation with your raffle entry details. You'll receive 
+                updates leading up to the drawing date.
               </p>
             </div>
             
@@ -240,10 +245,21 @@ const RafflesPage: React.FC = () => {
               <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-accent-600">3</span>
               </div>
-              <h3 className="font-serif text-lg text-primary-900 mb-3">Win & Impact</h3>
+              <h3 className="font-serif text-lg text-primary-900 mb-3">Random Drawing</h3>
               <p className="text-primary-600 text-sm leading-relaxed">
-                The winner receives authentic artwork while 70% of proceeds support 
-                Ferdinand's aviation education fund.
+                Fair random selection when raffle ends. Winner notified by email and 
+                receives this beautiful original artwork with free shipping included.
+              </p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-accent-600">4</span>
+              </div>
+              <h3 className="font-serif text-lg text-primary-900 mb-3">Winner Notified</h3>
+              <p className="text-primary-600 text-sm leading-relaxed">
+                Free shipping included. Artwork comes with Certificate of Authenticity. 
+                Even if you don't win, you've helped fund Ferdinand's education.
               </p>
             </div>
           </div>

@@ -55,17 +55,18 @@ const RaffleTicketPurchase: React.FC<RaffleTicketPurchaseProps> = ({
   };
 
   return (
-    <div className="bg-white border border-primary-200 overflow-hidden">
+    <div className="bg-white border border-primary-200 overflow-hidden rounded-lg shadow-lg">
       {/* Artwork Display */}
-      <div className="aspect-square relative">
+      <div className="aspect-square relative bg-gray-100">
         <Image
           src={artworkImage}
           alt={artworkTitle}
           fill
-          className="object-cover"
+          className="object-contain"
+          priority
         />
         <div className="absolute top-4 left-4">
-          <span className="bg-accent-500 text-white px-3 py-1 text-sm font-medium">
+          <span className="bg-accent-500 text-white px-3 py-1 text-sm font-medium rounded">
             Active Raffle
           </span>
         </div>
@@ -157,8 +158,11 @@ const RaffleTicketPurchase: React.FC<RaffleTicketPurchaseProps> = ({
           </div>
 
           {/* Total Cost */}
-          <div className="flex items-center justify-between p-4 bg-accent-50 border border-accent-200">
-            <span className="font-medium text-accent-900">Total Cost</span>
+          <div className="flex items-center justify-between p-4 bg-accent-50 border-2 border-accent-200 rounded-lg">
+            <div>
+              <span className="text-sm text-accent-700 block">Total Price</span>
+              <span className="text-xs text-accent-600">Includes 10% donation to FOMI</span>
+            </div>
             <span className="text-2xl font-bold text-accent-900">${totalCost}</span>
           </div>
 
@@ -185,11 +189,30 @@ const RaffleTicketPurchase: React.FC<RaffleTicketPurchaseProps> = ({
           </button>
 
           {/* Legal Text */}
-          <p className="text-xs text-primary-500 leading-relaxed">
-            By purchasing tickets, you agree to our Terms of Service and Privacy Policy. 
-            Winner will be selected randomly and notified via email. 70% of proceeds 
-            support Ferdinand's education fund.
-          </p>
+          <div className="space-y-2\">
+            <div className=\"flex items-center text-xs text-green-600\">
+              <svg className=\"w-4 h-4 mr-1\" fill=\"currentColor\" viewBox=\"0 0 20 20\">
+                <path fillRule=\"evenodd\" d=\"M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z\" clipRule=\"evenodd\" />
+              </svg>
+              Secure payment processing with PayPal
+            </div>
+            <div className=\"flex items-center text-xs text-green-600\">
+              <svg className=\"w-4 h-4 mr-1\" fill=\"currentColor\" viewBox=\"0 0 20 20\">
+                <path fillRule=\"evenodd\" d=\"M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z\" clipRule=\"evenodd\" />
+              </svg>
+              Instant raffle entry confirmation
+            </div>
+            <div className=\"flex items-center text-xs text-green-600\">
+              <svg className=\"w-4 h-4 mr-1\" fill=\"currentColor\" viewBox=\"0 0 20 20\">
+                <path fillRule=\"evenodd\" d=\"M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z\" clipRule=\"evenodd\" />
+              </svg>
+              Support young artists and ministry work
+            </div>
+            <p className=\"text-xs text-primary-500 leading-relaxed pt-2 border-t border-primary-200\">
+              By purchasing tickets, you agree to our Terms of Service. Winner will be selected 
+              randomly and notified via email. Includes 10% donation to FOMI ministry.
+            </p>
+          </div>
         </div>
       </div>
     </div>
