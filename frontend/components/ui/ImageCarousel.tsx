@@ -69,7 +69,7 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   return (
     <div className={`relative w-full ${className}`}>
       {/* Main Image Container */}
-      <div className="relative aspect-[10/16] overflow-hidden rounded-lg bg-gray-100">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-gray-100">
         <Image
           src={images[currentIndex].src}
           alt={images[currentIndex].alt}
