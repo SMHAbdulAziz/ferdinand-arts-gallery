@@ -128,7 +128,7 @@ const RafflesPage: React.FC = () => {
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span>Supports Ferdinand's aviation education</span>
-                        <span className="font-semibold text-accent-700">10% to FOMI</span>
+                        <span className="font-semibold text-accent-700">10% to FQMH</span>
                       </div>
                       <div className="flex justify-between items-center pt-2 border-t border-accent-200">
                         <span className="text-xs text-accent-700">Every ticket helps fund his dreams</span>

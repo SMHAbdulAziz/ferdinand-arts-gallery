@@ -161,7 +161,7 @@ const RaffleTicketPurchase: React.FC<RaffleTicketPurchaseProps> = ({
           <div className="flex items-center justify-between p-4 bg-accent-50 border-2 border-accent-200 rounded-lg">
             <div>
               <span className="text-sm text-accent-700 block">Total Price</span>
-              <span className="text-xs text-accent-600">Includes 10% donation to FOMI</span>
+              <span className="text-xs text-accent-600">Includes 10% donation to FQMH</span>
             </div>
             <span className="text-2xl font-bold text-accent-900">${totalCost}</span>
           </div>
@@ -210,7 +210,7 @@ const RaffleTicketPurchase: React.FC<RaffleTicketPurchaseProps> = ({
             </div>
             <p className="text-xs text-primary-500 leading-relaxed pt-2 border-t border-primary-200">
               By purchasing tickets, you agree to our Terms of Service. Winner will be selected 
-              randomly and notified via email. Includes 10% donation to FOMI ministry.
+              randomly and notified via email. Includes 10% donation to FQMH ministry.
             </p>
           </div>
         </div>
