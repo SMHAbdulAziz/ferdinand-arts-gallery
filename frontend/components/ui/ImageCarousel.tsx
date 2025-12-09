@@ -79,44 +79,47 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
         />
       </div>
 
-      {/* Image Info Overlay */}
-      <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 text-white p-4">
-        <h3 className="text-lg font-bold">{images[currentIndex].title}</h3>
-        <p className="text-sm">{images[currentIndex].description}</p>
-      </div>
-
       {/* Navigation Arrows */}
       {showArrows && (
         <>
           <button
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md"
+            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 z-10"
             onClick={goToPrevious}
+            aria-label="Previous image"
           >
             &lt;
           </button>
           <button
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md"
+            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white rounded-full p-2 shadow-md hover:bg-gray-100 z-10"
             onClick={goToNext}
+            aria-label="Next image"
           >
             &gt;
           </button>
         </>
       )}
 
-      {/* Dots Navigation */}
+      {/* Dots Navigation - Positioned above the description */}
       {showDots && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
           {images.map((_, index) => (
             <button
               key={index}
-              className={`w-3 h-3 rounded-full ${
-                index === currentIndex ? 'bg-white' : 'bg-gray-500'
+              className={`w-3 h-3 rounded-full transition-all ${
+                index === currentIndex ? 'bg-white scale-110' : 'bg-white bg-opacity-50'
               }`}
               onClick={() => goToSlide(index)}
+              aria-label={`Go to image ${index + 1}`}
             />
           ))}
         </div>
       )}
+
+      {/* Image Info Overlay - Now at the bottom without overlap */}
+      <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent text-white p-6 pb-4">
+        <h3 className="text-xl font-bold mb-1">{images[currentIndex].title}</h3>
+        <p className="text-sm opacity-90">{images[currentIndex].description}</p>
+      </div>
     </div>
   );
 };
