@@ -1,0 +1,16 @@
+{
+  "name": "The FUND Gallery",
+  "short_name": "FUND Gallery",
+  "description": "Supporting young artists through community raffles",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "theme_color": "#1f2937",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/"
+}
