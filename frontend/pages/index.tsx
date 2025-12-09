@@ -330,11 +330,11 @@ export const getStaticProps: GetStaticProps = async () => {
 
   if (fs.existsSync(artworksDir)) {
     images = fs.readdirSync(artworksDir)
-      .filter((file) => file.endsWith('.jpeg') && !file.includes('Certificate') && !file.includes('prepped'))
+      .filter((file) => file.endsWith('.jpg') && !file.includes('Certificate') && !file.includes('prepped'))
       .map((file) => ({
         src: `/images/artworks/${file}`,
-        alt: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
-        title: file.replace(/-/g, ' ').replace(/\.jpeg$/, ''),
+        alt: file.replace(/-/g, ' ').replace(/\.jpg$/, ''),
+        title: file.replace(/-/g, ' ').replace(/\.jpg$/, ''),
         description: 'A beautiful artwork by Ferdinand Ssekyanja.',
       }));
   }

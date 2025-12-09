@@ -24,7 +24,7 @@ const updatedArtworks: Artwork[] = [
     dimensions: '100cm × 100cm',
     year: '2024',
     price: '$1050', // Updated price
-    image: '/images/artworks/playful-giraffe.jpeg',
+    image: '/images/artworks/playful-giraffe.jpg',
     description: 'A vibrant acrylic painting that captures the playful spirit of the giraffe rendered in bold strokes and an expressive color palette.',
     category: 'Featured'
   },
@@ -36,7 +36,7 @@ const updatedArtworks: Artwork[] = [
     dimensions: '80cm × 60cm',
     year: '2024',
     price: '$825', // Updated price
-    image: '/images/artworks/african-heritage-portrait-vibrant-colors.jpeg',
+    image: '/images/artworks/african-heritage-portrait-vibrant-colors.jpg',
     description: 'A stunning portrait celebrating African beauty and elegance, featuring intricate detail in the golden earrings.',
     category: 'Portraits'
   },
@@ -48,7 +48,7 @@ const updatedArtworks: Artwork[] = [
     dimensions: '90cm × 70cm',
     year: '2024',
     price: '$975', // Updated price
-    image: '/images/artworks/child-figure-blue-outfit-textured-expression.jpeg',
+    image: '/images/artworks/child-figure-blue-outfit-textured-expression.jpg',
     description: 'A powerful portrayal of the king of beasts, rendered in golden tones that emphasize strength and nobility.',
     category: 'Wildlife'
   },
@@ -60,7 +60,7 @@ const updatedArtworks: Artwork[] = [
     dimensions: '100cm × 80cm',
     year: '2024',
     price: '$1125', // Updated price
-    image: '/images/artworks/elephant-family-waterfront-serene-bond.jpeg',
+    image: '/images/artworks/elephant-family-waterfront-serene-bond.jpg',
     description: 'Contemporary street art style meets wildlife in this explosive neon interpretation of the fastest land animal.',
     category: 'Contemporary'
   },
@@ -72,7 +72,7 @@ const updatedArtworks: Artwork[] = [
     dimensions: '85cm × 65cm',
     year: '2024',
     price: '$900', // Updated price
-    image: '/images/artworks/zebra-explosive-blue-orange-abstract.jpeg',
+    image: '/images/artworks/zebra-explosive-blue-orange-abstract.jpg',
     description: 'An abstract interpretation of the zebra using bold blue and orange contrasts to create dynamic movement.',
     category: 'Abstract'
   },
@@ -84,7 +84,7 @@ const updatedArtworks: Artwork[] = [
     dimensions: '75cm × 75cm',
     year: '2024',
     price: '$870', // Updated price
-    image: '/images/artworks/gorilla-impressionistic-colorful.jpeg',
+    image: '/images/artworks/gorilla-impressionistic-colorful.jpg',
     description: 'A colorful impressionistic take on the gentle giant of the forest, emphasizing emotion and movement.',
     category: 'Wildlife'
   },
@@ -96,7 +96,7 @@ const updatedArtworks: Artwork[] = [
     dimensions: '90cm × 90cm',
     year: '2024',
     price: '$1050', // Updated price
-    image: '/images/artworks/lion-geometric-cubist-multicolor-facets.jpeg',
+    image: '/images/artworks/lion-geometric-cubist-multicolor-facets.jpg',
     description: 'A cubist interpretation breaking down the lion into geometric facets of brilliant color.',
     category: 'Cubist'
   },
@@ -108,7 +108,7 @@ const updatedArtworks: Artwork[] = [
     dimensions: '95cm × 75cm',
     year: '2024',
     price: '$975', // Updated price
-    image: '/images/artworks/bull-dynamic-blue-orange-contemporary.jpeg',
+    image: '/images/artworks/bull-dynamic-blue-orange-contemporary.jpg',
     description: 'A contemporary piece capturing the raw power and energy of the bull in dynamic blue and orange tones.',
     category: 'Contemporary'
   }
