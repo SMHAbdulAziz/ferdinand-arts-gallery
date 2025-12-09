@@ -67,14 +67,14 @@ const ImageCarousel: React.FC<ImageCarouselProps> = ({
   }
 
   return (
-    <div className={`relative w-full ${className}`}>
+    <div className={`relative w-full max-w-2xl mx-auto ${className}`}>
       {/* Main Image Container */}
       <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-gray-100">
         <Image
           src={images[currentIndex].src}
           alt={images[currentIndex].alt}
           fill
-          className="object-cover transition-transform duration-500 hover:scale-105"
+          className="object-contain transition-transform duration-500"
           priority
         />
       </div>
