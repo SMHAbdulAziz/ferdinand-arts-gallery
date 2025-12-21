@@ -94,3 +94,11 @@ export function getAuthHeader(token) {
     'Content-Type': 'application/json'
   };
 }
+
+/**
+ * Generate secure remember-me token (64 character hex string)
+ */
+export function generateRememberToken() {
+  return crypto.randomBytes(32).toString('hex');
+}
+

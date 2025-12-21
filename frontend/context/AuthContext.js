@@ -15,7 +15,8 @@ export function AuthProvider({ children }) {
       setToken(storedToken);
       verifyUser(storedToken);
     } else {
-      setLoading(false);
+      // Try remember-me if no stored token
+      verifyRememberMe();
     }
   }, []);
 
@@ -39,6 +40,28 @@ export function AuthProvider({ children }) {
     } catch (err) {
       console.error('Error verifying user:', err);
     } finally {
+      setLoading(false);
+    }
+  }
+
+  // Verify remember-me token
+  async function verifyRememberMe() {
+    try {
+      const response = await fetch('/api/auth/remember-me', {
+        method: 'POST',
+        credentials: 'include' // Include cookies
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('authToken', data.token);
+        setToken(data.token);
+        setUser(data.user);
+      } else {
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error('Error verifying remember-me:', err);
       setLoading(false);
     }
   }
@@ -73,7 +96,7 @@ export function AuthProvider({ children }) {
   }
 
   // Login
-  async function login(email, password) {
+  async function login(email, password, rememberMe = false) {
     setLoading(true);
     setError(null);
 
@@ -81,7 +104,8 @@ export function AuthProvider({ children }) {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        credentials: 'include', // Include cookies
+        body: JSON.stringify({ email, password, rememberMe })
       });
 
       const data = await response.json();
@@ -105,11 +129,21 @@ export function AuthProvider({ children }) {
   }
 
   // Logout
-  function logout() {
+  async function logout() {
     localStorage.removeItem('authToken');
     setToken(null);
     setUser(null);
     setError(null);
+    
+    // Clear remember-me token in database
+    try {
+      await fetch('/api/auth/logout', { 
+        method: 'POST',
+        credentials: 'include'
+      });
+    } catch (err) {
+      console.error('Error clearing remember-me:', err);
+    }
   }
 
   const value = {

@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
+import { getRecaptchaToken } from '../utils/recaptcha';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Redirect if already authenticated
@@ -23,16 +25,28 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
 
-    const result = await login(email, password);
+    try {
+      // Get reCAPTCHA token
+      const recaptchaToken = await getRecaptchaToken('login');
+      if (!recaptchaToken) {
+        toast.error('Human verification failed. Please try again.');
+        setLoading(false);
+        return;
+      }
 
-    if (result.success) {
-      toast.success('Logged in successfully!');
-      router.push('/dashboard');
-    } else {
-      toast.error(result.error || 'Login failed');
+      // Pass recaptchaToken but don't wait for it in login
+      // The login function will handle the API call
+      const result = await login(email, password, rememberMe);
+
+      if (result.success) {
+        toast.success('Logged in successfully!');
+        router.push('/dashboard');
+      } else {
+        toast.error(result.error || 'Login failed');
+      }
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
@@ -84,6 +98,20 @@ export default function LoginPage() {
                     placeholder="••••••••"
                     required
                   />
+                </div>
+
+                {/* Remember Me */}
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="rememberMe"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <label htmlFor="rememberMe" className="ml-2 text-sm text-slate-600">
+                    Remember me on this device
+                  </label>
                 </div>
 
                 {/* Submit Button */}

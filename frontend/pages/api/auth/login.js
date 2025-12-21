@@ -1,4 +1,5 @@
-import { verifyPassword, generateToken, isValidEmail } from '../../../utils/auth';
+import { verifyPassword, generateToken, isValidEmail, generateRememberToken } from '../../../utils/auth';
+import { verifyRecaptcha } from '../../../utils/recaptchaServer';
 import { query } from '../../../utils/db';
 
 export default async function handler(req, res) {
@@ -6,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, password } = req.body;
+  const { email, password, rememberMe, recaptchaToken } = req.body;
 
   try {
     if (!email || !password) {
@@ -15,6 +16,14 @@ export default async function handler(req, res) {
 
     if (!isValidEmail(email)) {
       return res.status(400).json({ error: 'Invalid email format' });
+    }
+
+    // Verify reCAPTCHA if token provided
+    if (recaptchaToken) {
+      const recaptchaResult = await verifyRecaptcha(recaptchaToken);
+      if (!recaptchaResult.success) {
+        return res.status(403).json({ error: 'Human verification failed. Please try again.' });
+      }
     }
 
     // Find user
@@ -37,10 +46,26 @@ export default async function handler(req, res) {
     // Generate token
     const token = generateToken(user.id, user.email);
 
+    // Handle remember-me token
+    let rememberToken = null;
+    if (rememberMe) {
+      rememberToken = generateRememberToken();
+      const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+      
+      await query(
+        'UPDATE users SET remember_token = $1, remember_token_expires = $2 WHERE id = $3',
+        [rememberToken, expiresAt, user.id]
+      );
+
+      // Set HTTP-only cookie (can't be accessed by JavaScript)
+      res.setHeader('Set-Cookie', `rememberMe=${rememberToken}; Path=/; Max-Age=${30 * 24 * 60 * 60}; HttpOnly; Secure; SameSite=Strict`);
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Login successful',
       token,
+      rememberMe: !!rememberToken,
       user: {
         id: user.id,
         email: user.email,

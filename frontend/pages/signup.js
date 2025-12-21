@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
+import { getRecaptchaToken } from '../utils/recaptcha';
 import toast from 'react-hot-toast';
 
 export default function SignupPage() {
@@ -25,16 +26,26 @@ export default function SignupPage() {
     e.preventDefault();
     setLoading(true);
 
-    const result = await signup(email, password, firstName, lastName);
+    try {
+      // Get reCAPTCHA token
+      const recaptchaToken = await getRecaptchaToken('signup');
+      if (!recaptchaToken) {
+        toast.error('Human verification failed. Please try again.');
+        setLoading(false);
+        return;
+      }
 
-    if (result.success) {
-      toast.success('Account created! Redirecting to dashboard...');
-      setTimeout(() => router.push('/dashboard'), 1500);
-    } else {
-      toast.error(result.error || 'Signup failed');
+      const result = await signup(email, password, firstName, lastName);
+
+      if (result.success) {
+        toast.success('Account created! Redirecting to dashboard...');
+        setTimeout(() => router.push('/dashboard'), 1500);
+      } else {
+        toast.error(result.error || 'Signup failed');
+      }
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
