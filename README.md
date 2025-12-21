@@ -10,6 +10,8 @@ This gallery website supports THE FUND's mission to help talented young artists 
 
 - **Artist Galleries**: Showcase artwork with high-quality images and detailed descriptions
 - **Raffle System**: Secure ticket purchasing and automated winner selection
+- **User Authentication**: Email/password signup and login with JWT tokens
+- **User Dashboard**: View raffle tickets, purchase history, and account details
 - **Payment Processing**: Stripe integration for seamless transactions
 - **Admin Dashboard**: Manage artworks, raffles, users, and view analytics
 - **Email Notifications**: Automated winner announcements and marketing campaigns
@@ -56,6 +58,37 @@ This gallery website supports THE FUND's mission to help talented young artists 
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:5000
    - Database: localhost:5432
+
+## User Authentication
+
+The application features a complete user authentication system with email/password registration and secure JWT-based authentication.
+
+### User Features
+- **Sign Up**: Create account with email, password, first name, and last name
+- **Login**: Authenticate with email and password to receive JWT token
+- **Dashboard**: View raffle tickets and purchase history
+- **Profile**: See account information and transaction summary
+
+### Getting Started with Auth
+1. Navigate to `/signup` to create an account
+2. Fill in your details and choose a secure password (8+ chars, uppercase, lowercase, number)
+3. You'll be automatically logged in and taken to your dashboard
+4. View your raffle tickets and purchase history
+5. Click your profile icon to access dropdown menu and logout
+
+### For Developers
+See [AUTHENTICATION_GUIDE.md](./AUTHENTICATION_GUIDE.md) for:
+- Complete API endpoint documentation
+- Environment variable setup
+- Frontend component usage
+- Testing endpoints with curl
+- Troubleshooting guide
+
+See [AUTH_DEPLOYMENT_GUIDE.md](./AUTH_DEPLOYMENT_GUIDE.md) for:
+- Deployment steps for Railway
+- Pre/post-deployment checklists
+- Security verification
+- Common issues and fixes
 
 ### Development Setup
 
