@@ -64,6 +64,7 @@ CREATE TABLE raffles (
     description TEXT,
     ticket_price DECIMAL(8,2) NOT NULL,
     max_tickets INTEGER,
+    minimum_threshold_tickets INTEGER NOT NULL, -- PROTOCOL: minimum tickets to award artwork
     start_date TIMESTAMP NOT NULL,
     end_date TIMESTAMP NOT NULL,
     drawing_date TIMESTAMP,
@@ -73,6 +74,10 @@ CREATE TABLE raffles (
     total_revenue DECIMAL(10,2) DEFAULT 0,
     artist_share_percentage DECIMAL(5,2) DEFAULT 70.00,
     foundation_share_percentage DECIMAL(5,2) DEFAULT 30.00,
+    threshold_met BOOLEAN DEFAULT NULL, -- NULL until raffle ends, then TRUE/FALSE
+    outcome_type VARCHAR(50) DEFAULT NULL, -- ARTWORK_AWARDED or CASH_PRIZE_AWARDED
+    cash_prize_percentage DECIMAL(5,2) DEFAULT 70.00, -- PROTOCOL: % of pool winner gets if threshold missed
+    outcome_timestamp TIMESTAMP, -- When outcome was determined
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -85,8 +90,19 @@ CREATE TABLE tickets (
     ticket_number INTEGER NOT NULL,
     purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     stripe_payment_intent_id VARCHAR(255),
+    entry_method VARCHAR(50) DEFAULT 'paid', -- paid or free_entry (PROTOCOL compliant)
     status VARCHAR(50) DEFAULT 'active', -- active, refunded, cancelled
     UNIQUE(raffle_id, ticket_number)
+);
+
+-- Free raffle entries table (email-based, no purchase)
+CREATE TABLE free_raffle_entries (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    raffle_id UUID REFERENCES raffles(id) ON DELETE CASCADE,
+    email VARCHAR(255) NOT NULL,
+    entry_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status VARCHAR(50) DEFAULT 'valid', -- valid, used, cancelled
+    UNIQUE(raffle_id, email) -- One free entry per person per raffle (PROTOCOL requirement)
 );
 
 -- Transactions table
@@ -139,8 +155,8 @@ CREATE INDEX idx_transactions_status ON transactions(status);
 -- Insert default settings
 INSERT INTO settings (key, value, description) VALUES
 ('site_config', '{"site_name": "THE FUND Gallery", "tagline": "Supporting Young Artists Through Art", "contact_email": "info@thefund.org"}', 'Basic site configuration'),
-('raffle_config', '{"default_duration_days": 30, "min_ticket_price": 25, "max_ticket_price": 100, "max_tickets_per_user": 50}', 'Default raffle configuration'),
-('payment_config', '{"currency": "USD", "artist_share_default": 70, "foundation_share_default": 30}', 'Payment and revenue sharing configuration'),
+('raffle_config', '{"default_duration_days": 30, "min_ticket_price": 25, "max_ticket_price": 100, "max_tickets_per_user": null, "free_entry_enabled": true, "free_entry_limit_per_person": 1, "allow_config_changes_after_launch": false, "winner_notification_days": 2, "public_outcome_disclosure": true}', 'Default raffle configuration per Raffle Protocols'),
+('payment_config', '{"currency": "USD", "artist_share_default": 70, "foundation_share_default": 30, "cash_prize_percentage": 70}', 'Payment and revenue sharing configuration'),
 ('email_config', '{"from_name": "THE FUND Gallery", "from_email": "noreply@thefund.org", "reply_to": "support@thefund.org"}', 'Email configuration');
 
 -- Insert Ferdinand as the first artist

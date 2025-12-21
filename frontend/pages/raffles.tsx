@@ -211,6 +211,60 @@ const RafflesPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Past Raffle Results (PROTOCOL: Transparency) */}
+      <section className="py-16 bg-white">
+        <div className="container-custom section-padding">
+          <h2 className="font-serif text-display-sm text-primary-900 text-center mb-12">
+            Completed Raffles & Results
+          </h2>
+          
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center py-12 bg-primary-50 rounded-lg border-2 border-dashed border-primary-300">
+              <p className="text-primary-600 mb-4">
+                Past raffle results and winner announcements will be displayed here
+              </p>
+              <p className="text-primary-500 text-sm">
+                Each completed raffle undergoes a verified random drawing and public disclosure of results per our Raffle Protocols.
+              </p>
+            </div>
+
+            {/* Example completed raffle (when available) */}
+            {/* 
+            <div className="mt-8 bg-white border-2 border-primary-200 rounded-lg overflow-hidden">
+              <div className="grid md:grid-cols-3 gap-6 p-8">
+                <div className="md:col-span-2">
+                  <h3 className="font-serif text-2xl text-primary-900 mb-4">Raffle Title</h3>
+                  <div className="space-y-2 text-primary-700 mb-6">
+                    <p><strong>Outcome:</strong> Artwork Awarded</p>
+                    <p><strong>Tickets Sold:</strong> 145 / 100 minimum (threshold met ✓)</p>
+                    <p><strong>Total Pool:</strong> $3,625.00</p>
+                    <p><strong>Winner:</strong> Randomly selected and notified</p>
+                  </div>
+                  <Link href="/raffle-results/[id]" as="/raffle-results/example">
+                    <a className="btn-secondary">View Complete Results</a>
+                  </Link>
+                </div>
+                <div className="md:col-span-1">
+                  <div className="bg-green-100 border-2 border-green-400 p-6 rounded-lg text-center">
+                    <p className="text-green-900 font-bold">🎉 Artwork Awarded</p>
+                    <p className="text-sm text-green-800 mt-2">Winner Announced</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            */}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="/raffle-protocols">
+              <a className="text-primary-600 hover:text-primary-700 font-semibold text-sm">
+                View Full Raffle Protocols & Transparency Standards →
+              </a>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works */}
       <section className="py-16 bg-white">
         <div className="container-custom section-padding">

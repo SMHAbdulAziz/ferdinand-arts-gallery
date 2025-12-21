@@ -1,4 +1,6 @@
-// Handle PayPal webhook/completion
+// Handle PayPal webhook/completion (PROTOCOL COMPLIANT)
+const { Pool } = require('pg');
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -32,17 +34,15 @@ export default async function handler(req, res) {
     const order = await orderDetails.json();
 
     if (order.status === 'COMPLETED') {
-      // Connect to database and record the purchase
-      const { Pool } = require('pg');
       const pool = new Pool({
         connectionString: process.env.DATABASE_URL,
         ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
       });
 
       try {
-        // Get the active raffle (assuming there's one active raffle for Ferdinand's Giraffe)
+        // Get the active raffle
         const raffleQuery = await pool.query(
-          "SELECT id, tickets_sold, ticket_price FROM raffles WHERE status = 'active' LIMIT 1"
+          "SELECT id, tickets_sold, ticket_price, max_tickets, minimum_threshold_tickets FROM raffles WHERE status = 'active' LIMIT 1"
         );
         
         if (raffleQuery.rows.length === 0) {
@@ -51,6 +51,15 @@ export default async function handler(req, res) {
 
         const raffle = raffleQuery.rows[0];
         const ticketCount = Math.floor(parseFloat(amount) / raffle.ticket_price);
+
+        // PROTOCOL: Validate ticket count against max_tickets if applicable
+        if (raffle.max_tickets && raffle.tickets_sold + ticketCount > raffle.max_tickets) {
+          return res.status(400).json({ 
+            error: 'Not enough tickets remaining',
+            tickets_available: raffle.max_tickets - raffle.tickets_sold,
+            requested: ticketCount
+          });
+        }
 
         // Create or get user
         let user;
@@ -69,12 +78,12 @@ export default async function handler(req, res) {
           user = newUserQuery.rows[0];
         }
 
-        // Create tickets
+        // Create tickets with entry_method = 'paid'
         for (let i = 0; i < ticketCount; i++) {
           const ticketNumber = raffle.tickets_sold + i + 1;
           await pool.query(
-            'INSERT INTO tickets (raffle_id, user_id, ticket_number, stripe_payment_intent_id) VALUES ($1, $2, $3, $4)',
-            [raffle.id, user.id, ticketNumber, orderId]
+            'INSERT INTO tickets (raffle_id, user_id, ticket_number, stripe_payment_intent_id, entry_method) VALUES ($1, $2, $3, $4, $5)',
+            [raffle.id, user.id, ticketNumber, orderId, 'paid']
           );
         }
 
@@ -92,13 +101,22 @@ export default async function handler(req, res) {
 
         // Calculate ministry donation (10%)
         const donationAmount = parseFloat(amount) * 0.1;
+        const newTicketsSold = raffle.tickets_sold + ticketCount;
         
+        // Check if threshold is now met
+        const thresholdStatus = newTicketsSold >= raffle.minimum_threshold_tickets ? 'threshold_met' : 'threshold_pending';
+
         res.status(200).json({ 
           success: true, 
           message: 'Raffle entry recorded',
           donation: donationAmount,
           ticketCount: ticketCount,
-          newTicketsSold: raffle.tickets_sold + ticketCount
+          newTicketsSold: newTicketsSold,
+          minimumThreshold: raffle.minimum_threshold_tickets,
+          thresholdStatus: thresholdStatus,
+          message_detail: thresholdStatus === 'threshold_met' 
+            ? 'Minimum threshold reached! Artwork will be awarded to winner.'
+            : `${raffle.minimum_threshold_tickets - newTicketsSold} more tickets needed to award artwork`
         });
         
       } catch (dbError) {

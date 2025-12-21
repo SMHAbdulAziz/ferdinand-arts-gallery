@@ -1,4 +1,4 @@
-// Get current raffle status and ticket counts
+// Get current raffle status and ticket counts (PROTOCOL COMPLIANT)
 const { Pool } = require('pg');
 
 export default async function handler(req, res) {
@@ -20,11 +20,13 @@ export default async function handler(req, res) {
         r.description,
         r.ticket_price,
         r.max_tickets,
+        r.minimum_threshold_tickets,
         r.tickets_sold,
         r.total_revenue,
         r.start_date,
         r.end_date,
         r.status,
+        r.cash_prize_percentage,
         a.title as artwork_title,
         a.description as artwork_description,
         a.estimated_value,
@@ -54,13 +56,30 @@ export default async function handler(req, res) {
     const now = new Date();
     const daysRemaining = Math.max(0, Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)));
 
+    // PROTOCOL: Calculate threshold status
+    const ticketsNeededForThreshold = Math.max(0, raffle.minimum_threshold_tickets - raffle.tickets_sold);
+    const thresholdPercentage = Math.round((raffle.tickets_sold / raffle.minimum_threshold_tickets) * 100);
+
     res.status(200).json({
       success: true,
       raffle: {
         ...raffle,
         tickets_remaining: ticketsRemaining,
         days_remaining: daysRemaining,
-        images: raffle.images || []
+        images: raffle.images || [],
+        // PROTOCOL: Threshold information for display
+        threshold: {
+          minimum_required: raffle.minimum_threshold_tickets,
+          tickets_sold: raffle.tickets_sold,
+          tickets_needed: ticketsNeededForThreshold,
+          percentage_to_threshold: thresholdPercentage,
+          threshold_met: raffle.tickets_sold >= raffle.minimum_threshold_tickets
+        },
+        // PROTOCOL: Outcome scenarios for transparency
+        outcome_scenarios: {
+          if_threshold_met: 'One winner will receive the original artwork and Certificate of Authenticity',
+          if_threshold_not_met: `One winner will receive a cash prize of approximately $${(raffle.total_revenue * raffle.cash_prize_percentage / 100).toFixed(2)}`
+        }
       }
     });
 
