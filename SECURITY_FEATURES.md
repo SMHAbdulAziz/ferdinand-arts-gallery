@@ -1,0 +1,324 @@
+# Remember Me & reCAPTCHA Setup Guide
+
+## Overview
+
+Two new security and UX features have been added:
+
+1. **Remember Me on This Device** - Persistent login with secure cookies
+2. **Google reCAPTCHA v3** - Human verification to prevent bot attacks
+
+---
+
+## 1. Remember Me Feature
+
+### How It Works
+
+- User checks "Remember me on this device" during login
+- A secure 64-character token is generated and stored in the database
+- An HTTP-only secure cookie is set (30-day expiration)
+- On next visit, if cookie is valid, user is auto-logged in
+- Token is cleared from database when user logs out
+
+### Database Setup
+
+The `users` table needs two new columns:
+
+```sql
+ALTER TABLE users ADD COLUMN remember_token VARCHAR(255);
+ALTER TABLE users ADD COLUMN remember_token_expires TIMESTAMP;
+```
+
+### API Endpoints
+
+**POST /api/auth/login**
+- Now accepts `rememberMe` boolean in request body
+- Returns `rememberMe` flag in response
+- Sets HTTP-only cookie if remember-me is enabled
+
+**POST /api/auth/remember-me**
+- Verifies remember-me cookie and returns new JWT
+- Used automatically on app startup
+
+**POST /api/auth/logout**
+- Clears remember-me token from database
+- Deletes remember-me cookie
+
+### Frontend Features
+
+**Login Form**
+```
+☐ Remember me on this device
+```
+
+Checkbox automatically handles:
+- Collecting user preference
+- Passing to login endpoint
+- Setting auth state with role
+
+---
+
+## 2. Google reCAPTCHA v3 Setup
+
+### Prerequisites
+
+1. Go to [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin)
+2. Sign in with your Google account
+3. Click "Create" or "+" button
+
+### Configuration Steps
+
+**Create New Site:**
+
+1. **Label**: "THE FUND Gallery" (or your site name)
+2. **reCAPTCHA Type**: Select **reCAPTCHA v3**
+3. **Domains**: Add your domain(s):
+   - `localhost` (for local development)
+   - `thefundgallery.org` (production)
+   - `*.railway.app` (if using Railway)
+4. **Accept reCAPTCHA Terms**: Check the box
+5. **Click Create**
+
+### Get Your Keys
+
+After creating, you'll see:
+- **Site Key** (public, share freely)
+- **Secret Key** (keep private, never commit)
+
+### Add Environment Variables
+
+**Local (.env.local file):**
+```
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY=YOUR_SITE_KEY_HERE
+RECAPTCHA_SECRET_KEY=YOUR_SECRET_KEY_HERE
+```
+
+**Railway Environment Variables:**
+
+1. Go to your Railway project
+2. Click "Variables" tab
+3. Add both variables:
+   - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` = Your site key
+   - `RECAPTCHA_SECRET_KEY` = Your secret key
+
+⚠️ **Important**: The `NEXT_PUBLIC_` prefix makes the site key visible to the browser (this is normal and expected for reCAPTCHA v3). The secret key must NEVER be exposed.
+
+### How It Works
+
+**Client Side (Invisible):**
+- reCAPTCHA script is loaded in `_app.tsx`
+- On form submission, a token is generated
+- Token is sent to backend with login/signup request
+- User doesn't see any popup (v3 is invisible)
+
+**Server Side (Verification):**
+- Backend verifies token with Google servers
+- Returns a **score** between 0.0 and 1.0:
+  - `1.0` = Very likely legitimate user
+  - `0.0` = Very likely bot
+- Threshold: `0.5` (adjustable in code)
+- Requests below threshold are rejected
+
+### Scoring System
+
+Edit the threshold in `/frontend/utils/recaptchaServer.js`:
+
+```javascript
+const threshold = 0.5; // Adjust based on your needs
+// 0.9 = Very strict (may reject legitimate users)
+// 0.5 = Balanced (default)
+// 0.2 = Lenient (may allow bots)
+```
+
+**Recommended values:**
+- **High security**: 0.8-0.9
+- **Balanced**: 0.5-0.7
+- **Low friction**: 0.3-0.5
+
+### Testing reCAPTCHA
+
+In the [Admin Console](https://www.google.com/recaptcha/admin), you can:
+- View analytics and traffic
+- See score distribution
+- Monitor bot attempts
+- Generate test tokens for development
+
+---
+
+## Database Schema
+
+```sql
+-- Existing columns
+CREATE TABLE users (
+  id UUID PRIMARY KEY,
+  email VARCHAR UNIQUE NOT NULL,
+  password_hash VARCHAR NOT NULL,
+  first_name VARCHAR,
+  last_name VARCHAR,
+  phone VARCHAR,
+  role VARCHAR DEFAULT 'user',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW(),
+  
+  -- NEW: Remember Me Support
+  remember_token VARCHAR(255),
+  remember_token_expires TIMESTAMP,
+  
+  -- Existing
+  preferences JSONB,
+  address JSONB
+);
+
+-- Index for faster remember-me lookups
+CREATE INDEX idx_users_remember_token ON users(remember_token);
+```
+
+---
+
+## Security Best Practices
+
+### Remember Me
+
+✅ **What's Protected:**
+- Token is stored as plain string (you should hash it in production)
+- Cookie is HTTP-only (can't be accessed by JavaScript)
+- Cookie is Secure flag (only sent over HTTPS)
+- SameSite=Strict (prevents CSRF attacks)
+- 30-day expiration
+
+🔒 **Production Improvement:**
+```javascript
+// Hash the remember token before storing
+const rememberTokenHash = hashPassword(rememberToken);
+await query(
+  'UPDATE users SET remember_token = $1 WHERE id = $2',
+  [rememberTokenHash, userId]
+);
+```
+
+### reCAPTCHA v3
+
+✅ **What's Protected:**
+- Prevents automated signup/login attempts
+- Bot score-based filtering
+- Invisible to users (no friction)
+- Server-side verification required
+
+⚠️ **Limitations:**
+- Score is indicative, not guaranteed
+- Won't stop determined attackers
+- Should be combined with rate limiting
+- Monitor admin console for trends
+
+**Next Steps for Hardening:**
+1. Implement rate limiting on login endpoint
+2. Add account lockout after N failed attempts
+3. Implement IP-based blocking for suspicious activity
+4. Add email verification for new accounts
+
+---
+
+## Testing
+
+### Local Development
+
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000/login`
+
+**Test Cases:**
+1. Login without remember-me → token NOT stored
+2. Login with remember-me → cookie set, 30-day expiration
+3. Refresh page → auto-login without form submission
+4. Logout → cookie cleared, token deleted from DB
+5. Try accessing admin without auth → redirected to login
+
+### Testing reCAPTCHA
+
+In your Google reCAPTCHA Admin Console:
+- Generate test tokens for development
+- Monitor requests in real-time
+- Check analytics dashboard
+
+---
+
+## Troubleshooting
+
+### Remember Me Not Working
+
+**Issue**: User logs in, but not remembered on refresh
+
+**Solutions:**
+1. Check if `remember_token` and `remember_token_expires` columns exist
+2. Verify cookie is being set (check browser DevTools > Application > Cookies)
+3. Check if `credentials: 'include'` is in fetch calls
+4. Verify token hasn't expired
+
+### reCAPTCHA Errors
+
+**Issue**: "reCAPTCHA not loaded" or verification fails
+
+**Solutions:**
+1. Verify environment variables are set correctly
+2. Check that site key matches in Google Admin Console
+3. Ensure domain is added to allowed domains
+4. Check browser console for JavaScript errors
+5. Verify secret key is correct on backend
+
+**Common Errors:**
+- `ERR_RECAPTCHA_INVALID_SITE_KEY` → Wrong site key in env vars
+- `Invalid site key` → Domain not added to Google Console
+- `Invalid request signature` → Wrong secret key
+
+### Cookie Not Set
+
+**Issue**: HTTP-only cookie not appearing in browser
+
+**Solutions:**
+1. Check if `SameSite=Strict` is compatible with your setup
+2. Ensure requests use `credentials: 'include'`
+3. Verify HTTPS is being used (required for Secure flag)
+4. Check server response headers for `Set-Cookie`
+
+---
+
+## Monitoring
+
+### Recommended Metrics to Track
+
+1. **Remember Me Usage:**
+   - % of users checking remember-me
+   - Average cookie lifespan
+   - Auto-login conversion rate
+
+2. **reCAPTCHA Scores:**
+   - Average score distribution
+   - % of requests rejected
+   - Spam/bot patterns
+
+### Queries to Monitor
+
+```sql
+-- Check active remember-me tokens
+SELECT COUNT(*) as active_tokens 
+FROM users 
+WHERE remember_token IS NOT NULL 
+AND remember_token_expires > NOW();
+
+-- Check for suspicious login patterns
+SELECT email, COUNT(*) as failed_attempts 
+FROM auth_logs 
+WHERE result = 'failed' 
+GROUP BY email 
+HAVING COUNT(*) > 5;
+```
+
+---
+
+## References
+
+- [Google reCAPTCHA v3 Docs](https://developers.google.com/recaptcha/docs/v3)
+- [HTTP-only Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Security)
+- [SameSite Cookie Attribute](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite)
+
