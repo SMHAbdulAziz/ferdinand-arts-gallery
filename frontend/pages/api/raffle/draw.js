@@ -1,13 +1,25 @@
 // Execute raffle drawing and determine outcome (PROTOCOL COMPLIANT)
 const { Pool } = require('pg');
 const crypto = require('crypto');
+const emailService = require('../../../services/emailService');
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // TODO: Add auth check for admin-only access
+  // ADMIN AUTHENTICATION REQUIRED
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) {
+    return res.status(401).json({ error: 'Missing authorization token' });
+  }
+
+  // Validate admin token
+  const adminToken = process.env.ADMIN_API_TOKEN;
+  if (!adminToken || token !== adminToken) {
+    return res.status(403).json({ error: 'Invalid admin token' });
+  }
+
   const raffleId = req.query.raffleId || req.body.raffleId;
 
   if (!raffleId) {
@@ -23,7 +35,7 @@ export default async function handler(req, res) {
     // Get raffle details
     const raffleQuery = await pool.query(
       `SELECT id, artwork_id, ticket_price, max_tickets, minimum_threshold_tickets, 
-              tickets_sold, total_revenue, status, cash_prize_percentage, artist_share_percentage
+              tickets_sold, total_revenue, status, cash_prize_percentage, artist_share_percentage, title
        FROM raffles WHERE id = $1`,
       [raffleId]
     );
@@ -67,6 +79,8 @@ export default async function handler(req, res) {
 
     // Get or create user for free-entry winners
     let winnerId = winnerEntry.user_id;
+    let winnerEmail = null;
+
     if (!winnerId) {
       // This is a free entry, need to identify them
       const freeEntryQuery = await pool.query(
@@ -78,11 +92,18 @@ export default async function handler(req, res) {
       
       if (freeEntryQuery.rows.length > 0) {
         const email = freeEntryQuery.rows[0].email;
+        winnerEmail = email;
         // Find or create user
         const userQuery = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
         if (userQuery.rows.length > 0) {
           winnerId = userQuery.rows[0].id;
         }
+      }
+    } else {
+      // Get email for paid ticket winner
+      const userQuery = await pool.query('SELECT email FROM users WHERE id = $1', [winnerId]);
+      if (userQuery.rows.length > 0) {
+        winnerEmail = userQuery.rows[0].email;
       }
     }
 
@@ -133,7 +154,20 @@ export default async function handler(req, res) {
       ]
     );
 
-    // TODO: Send winner notification email
+    // Send winner notification email
+    if (winnerEmail) {
+      const prizeText = thresholdMet 
+        ? 'Original artwork + Certificate of Authenticity'
+        : `Cash prize of $${prizeAmount.toFixed(2)}`;
+      
+      await emailService.sendWinnerNotification(
+        winnerEmail,
+        raffle.title,
+        outcomeType,
+        prizeText,
+        raffleId
+      );
+    }
 
     res.status(200).json({
       success: true,
@@ -143,9 +177,10 @@ export default async function handler(req, res) {
       tickets_sold: raffle.tickets_sold,
       minimum_threshold: raffle.minimum_threshold_tickets,
       winner_id: winnerId,
+      winner_email: winnerEmail,
       prize_amount: prizeAmount,
       draw_timestamp: drawTimestamp,
-      message: `Raffle drawing complete. ${outcomeType}: winner notified.`
+      message: `Raffle drawing complete. ${outcomeType}: winner notified at ${winnerEmail}.`
     });
 
   } catch (error) {

@@ -1,5 +1,6 @@
 // Free raffle entry via email (PROTOCOL COMPLIANT - optional entry method)
 const { Pool } = require('pg');
+const emailService = require('../../../services/emailService');
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -26,7 +27,7 @@ export default async function handler(req, res) {
   try {
     // Check raffle exists and is active
     const raffleQuery = await pool.query(
-      `SELECT id, status FROM raffles WHERE id = $1`,
+      `SELECT id, status, title FROM raffles WHERE id = $1`,
       [raffleId]
     );
 
@@ -34,7 +35,9 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'Raffle not found' });
     }
 
-    if (raffleQuery.rows[0].status !== 'active') {
+    const raffle = raffleQuery.rows[0];
+
+    if (raffle.status !== 'active') {
       return res.status(400).json({ error: 'Raffle is not active' });
     }
 
@@ -71,7 +74,12 @@ export default async function handler(req, res) {
 
     const entry = insertQuery.rows[0];
 
-    // TODO: Send confirmation email with raffle details and disclaimer
+    // Send confirmation email
+    await emailService.sendFreeEntryConfirmation(
+      email,
+      raffle.title,
+      raffleId
+    );
 
     res.status(201).json({
       success: true,
