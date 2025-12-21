@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useAuth } from '../../context/AuthContext';
 
 const Header: React.FC = () => {
   const router = useRouter();
+  const { isAuthenticated, user, logout, loading } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -56,11 +59,61 @@ const Header: React.FC = () => {
             ))}
           </nav>
 
-          {/* CTA Button */}
+          {/* CTA Button & Auth */}
           <div className="hidden lg:flex lg:items-center lg:space-x-4">
-            <Link href="/raffle" className="btn-primary">
-              Support Artists
-            </Link>
+            {!loading && (
+              <>
+                {isAuthenticated ? (
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowUserMenu(!showUserMenu)}
+                      className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-primary-50 transition-colors"
+                    >
+                      <div className="w-8 h-8 bg-primary-900 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                        {user?.firstName?.charAt(0) || 'U'}
+                      </div>
+                      <span className="text-sm font-medium text-primary-900">{user?.firstName}</span>
+                      <svg className={`h-4 w-4 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                      </svg>
+                    </button>
+
+                    {/* User Dropdown Menu */}
+                    {showUserMenu && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-primary-200 z-50">
+                        <Link href="/dashboard" className="block px-4 py-2 text-sm text-primary-900 hover:bg-primary-50 first:rounded-t-lg">
+                          Dashboard
+                        </Link>
+                        <button
+                          onClick={() => {
+                            logout();
+                            setShowUserMenu(false);
+                            router.push('/');
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 last:rounded-b-lg"
+                        >
+                          Logout
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <Link href="/login" className="text-sm font-medium text-primary-900 hover:text-primary-600 transition-colors">
+                      Login
+                    </Link>
+                    <Link href="/signup" className="btn-primary">
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </>
+            )}
+            {isAuthenticated && (
+              <Link href="/raffle" className="btn-primary">
+                Support Artists
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
