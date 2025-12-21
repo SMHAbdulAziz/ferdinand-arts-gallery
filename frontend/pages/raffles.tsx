@@ -1,48 +1,103 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import RaffleTicketPurchase from '../components/raffle/RaffleTicketPurchase';
 
-// Mock data - would come from API in real implementation
-const activeRaffles = [
-  {
-    id: 'playful-giraffe',
-    artworkTitle: 'Playful Giraffe',
-    artistName: 'Ferdinand Ssekyanja',
-    artworkImage: '/images/artworks/playful-giraffe.jpg',
-    ticketPrice: 25,
-    maxTickets: 100,
-    ticketsSold: 0,
-    endDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), // 15 days from now
-    description: 'A vibrant acrylic painting that captures the playful spirit of the giraffe rendered in bold strokes and an expressive color palette. This original artwork showcases Ferdinand\'s unique contemporary African-inspired style.',
-    dimensions: '100cm × 100cm',
-    medium: 'Acrylic on Canvas',
-    estimatedValue: 1050,
-    year: '2024'
-  }
-];
+interface Raffle {
+  id: string;
+  title: string;
+  artwork_title: string;
+  artist_name: string;
+  description: string;
+  images: string[];
+  ticket_price: number;
+  max_tickets: number;
+  tickets_sold: number;
+  end_date: string;
+  medium: string;
+  dimensions: string;
+  estimated_value: number;
+  year: string;
+}
 
-const upcomingRaffles = [
-  {
-    id: 'majestic-lion',
-    artworkTitle: 'Majestic Lion',
-    artistName: 'Ferdinand Ssekyanja',
-    artworkImage: '/images/artworks/coming-soon.jpg',
-    estimatedValue: 800,
-    launchDate: 'Late October 2025'
-  },
-  {
-    id: 'wise-elephant',
-    artworkTitle: 'Wise Elephant', 
-    artistName: 'Ferdinand Ssekyanja',
-    artworkImage: '/images/artworks/coming-soon.jpg',
-    estimatedValue: 900,
-    launchDate: 'November 2025'
-  }
-];
+interface UpcomingRaffle {
+  id: string;
+  title: string;
+  artwork_title: string;
+  artist_name: string;
+  estimated_value: number;
+  start_date: string;
+}
 
 const RafflesPage: React.FC = () => {
+  const [activeRaffles, setActiveRaffles] = useState<Raffle[]>([]);
+  const [upcomingRaffles, setUpcomingRaffles] = useState<UpcomingRaffle[]>([]);
+  const [loadingActive, setLoadingActive] = useState(true);
+  const [loadingUpcoming, setLoadingUpcoming] = useState(true);
+
+  useEffect(() => {
+    fetchActiveRaffles();
+    fetchUpcomingRaffles();
+  }, []);
+
+  const fetchActiveRaffles = async () => {
+    try {
+      const response = await fetch('/api/raffle/status');
+      const data = await response.json();
+      
+      if (data.success && data.raffle) {
+        const raffle = data.raffle;
+        setActiveRaffles([{
+          id: raffle.id,
+          title: raffle.title,
+          artwork_title: raffle.artwork_title,
+          artist_name: raffle.artist_name,
+          description: raffle.artwork_description || raffle.description,
+          images: raffle.images || [],
+          ticket_price: raffle.ticket_price,
+          max_tickets: raffle.max_tickets,
+          tickets_sold: raffle.tickets_sold,
+          end_date: raffle.end_date,
+          medium: raffle.medium,
+          dimensions: raffle.dimensions,
+          estimated_value: raffle.estimated_value,
+          year: new Date(raffle.start_date).getFullYear().toString()
+        }]);
+      }
+    } catch (error) {
+      console.error('Failed to fetch active raffles:', error);
+    } finally {
+      setLoadingActive(false);
+    }
+  };
+
+  const fetchUpcomingRaffles = async () => {
+    try {
+      const response = await fetch('/api/raffle/upcoming');
+      const data = await response.json();
+      
+      if (data.success && data.raffles) {
+        setUpcomingRaffles(data.raffles.map((raffle: any) => ({
+          id: raffle.id,
+          title: raffle.title,
+          artwork_title: raffle.artwork_title,
+          artist_name: raffle.artist_name,
+          estimated_value: raffle.estimated_value,
+          start_date: raffle.start_date
+        })));
+      }
+    } catch (error) {
+      console.error('Failed to fetch upcoming raffles:', error);
+    } finally {
+      setLoadingUpcoming(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  };
   return (
     <Layout
       title="Art Raffles - THE FUND Gallery"
@@ -70,19 +125,24 @@ const RafflesPage: React.FC = () => {
             Active Raffles
           </h2>
           
-          {activeRaffles.length > 0 ? (
+          {loadingActive ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+              <p className="text-primary-600">Loading active raffles...</p>
+            </div>
+          ) : activeRaffles.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
               {activeRaffles.map((raffle) => (
                 <div key={raffle.id} className="space-y-8">
                   {/* Raffle Purchase Component */}
                   <RaffleTicketPurchase
                     raffleId={raffle.id}
-                    artworkTitle={raffle.artworkTitle}
-                    artworkImage={raffle.artworkImage}
-                    ticketPrice={raffle.ticketPrice}
-                    maxTickets={raffle.maxTickets}
-                    ticketsSold={raffle.ticketsSold}
-                    endDate={raffle.endDate}
+                    artworkTitle={raffle.artwork_title}
+                    artworkImage={raffle.images?.[0] || '/images/artworks/coming-soon.jpg'}
+                    ticketPrice={raffle.ticket_price}
+                    maxTickets={raffle.max_tickets}
+                    ticketsSold={raffle.tickets_sold}
+                    endDate={new Date(raffle.end_date)}
                   />
                 </div>
               ))}
@@ -92,7 +152,7 @@ const RafflesPage: React.FC = () => {
                 <div key={`${raffle.id}-details`} className="space-y-6">
                   <div>
                     <h3 className="font-serif text-2xl text-primary-900 mb-4">
-                      About "{raffle.artworkTitle}"
+                      About "{raffle.artwork_title}"
                     </h3>
                     <p className="text-primary-700 leading-relaxed mb-6">
                       {raffle.description}
@@ -114,7 +174,7 @@ const RafflesPage: React.FC = () => {
                     </div>
                     <div>
                       <h4 className="font-semibold text-primary-900 mb-2">Estimated Value</h4>
-                      <p className="text-primary-600 font-bold">${raffle.estimatedValue}</p>
+                      <p className="text-primary-600 font-bold">${raffle.estimated_value}</p>
                     </div>
                   </div>
                   
@@ -152,62 +212,78 @@ const RafflesPage: React.FC = () => {
               <h3 className="font-serif text-xl text-primary-600 mb-4">
                 No active raffles at the moment
               </h3>
-              <p className="text-primary-500">
+              <p className="text-primary-500 mb-6">
                 Check back soon for upcoming artwork raffles!
               </p>
+              {upcomingRaffles.length > 0 && (
+                <Link href="#upcoming" className="text-primary-600 hover:text-primary-700 font-semibold">
+                  View Upcoming Raffles ↓
+                </Link>
+              )}
             </div>
           )}
         </div>
       </section>
 
       {/* Upcoming Raffles */}
-      <section className="py-16 bg-primary-50">
+      <section className="py-16 bg-primary-50" id="upcoming">
         <div className="container-custom section-padding">
           <h2 className="font-serif text-display-sm text-primary-900 text-center mb-12">
             Coming Soon
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {upcomingRaffles.map((raffle) => (
-              <div key={raffle.id} className="bg-white border border-primary-200 overflow-hidden">
-                <div className="aspect-square relative bg-primary-100">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-primary-400 font-medium">Coming Soon</span>
-                  </div>
-                  <div className="absolute top-4 left-4">
-                    <span className="bg-primary-600 text-white px-3 py-1 text-sm font-medium">
-                      Upcoming
-                    </span>
-                  </div>
-                </div>
-                
-                <div className="p-6">
-                  <h3 className="font-serif text-xl text-primary-900 mb-2">
-                    {raffle.artworkTitle}
-                  </h3>
-                  <p className="text-primary-600 mb-4">{raffle.artistName}</p>
-                  
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-primary-600">Estimated Value</span>
-                      <span className="font-semibold">${raffle.estimatedValue}</span>
+          {loadingUpcoming ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+              <p className="text-primary-600">Loading upcoming raffles...</p>
+            </div>
+          ) : upcomingRaffles.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+              {upcomingRaffles.map((raffle) => (
+                <div key={raffle.id} className="bg-white border border-primary-200 overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="aspect-square relative bg-primary-100">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-primary-400 font-medium">Coming Soon</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-primary-600">Expected Launch</span>
-                      <span className="font-semibold">{raffle.launchDate}</span>
+                    <div className="absolute top-4 left-4">
+                      <span className="bg-primary-600 text-white px-3 py-1 text-sm font-medium rounded">
+                        Upcoming
+                      </span>
                     </div>
                   </div>
                   
-                  <button 
-                    className="w-full btn-secondary"
-                    disabled
-                  >
-                    Notify Me When Available
-                  </button>
+                  <div className="p-6">
+                    <h3 className="font-serif text-xl text-primary-900 mb-2">
+                      {raffle.artwork_title}
+                    </h3>
+                    <p className="text-primary-600 mb-4">{raffle.artist_name}</p>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-primary-600">Estimated Value</span>
+                        <span className="font-semibold">${raffle.estimated_value}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-primary-600">Expected Launch</span>
+                        <span className="font-semibold">{formatDate(raffle.start_date)}</span>
+                      </div>
+                    </div>
+                    
+                    <button 
+                      className="w-full bg-primary-100 text-primary-600 py-2 rounded-lg hover:bg-primary-200 font-semibold text-sm transition-colors"
+                      disabled
+                    >
+                      Coming Soon
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-primary-600">No upcoming raffles scheduled yet.</p>
+            </div>
+          )}
         </div>
       </section>
 

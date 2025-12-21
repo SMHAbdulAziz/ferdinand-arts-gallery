@@ -118,19 +118,47 @@ export default function RafflePage() {
   }
 
   if (error) {
+    const isNoRaffleError = error.includes('No active raffle') || error.includes('not found');
+    
     return (
       <Layout>
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl mb-4">⚠️</div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Raffle</h1>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <button 
-              onClick={fetchRaffleStatus}
-              className="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700"
-            >
-              Try Again
-            </button>
+          <div className="text-center max-w-md">
+            <div className="text-6xl mb-4">{isNoRaffleError ? '🎨' : '⚠️'}</div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              {isNoRaffleError ? 'No Active Raffle' : 'Unable to Load Raffle'}
+            </h1>
+            <p className="text-gray-600 mb-6">
+              {isNoRaffleError 
+                ? 'There are no active raffles at the moment. Check out upcoming raffles or visit the gallery.'
+                : error}
+            </p>
+            <div className="space-y-3">
+              {isNoRaffleError && (
+                <>
+                  <a 
+                    href="/raffles"
+                    className="block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 font-semibold"
+                  >
+                    View All Raffles
+                  </a>
+                  <a 
+                    href="/exhibitions"
+                    className="block bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 font-semibold"
+                  >
+                    View Exhibitions
+                  </a>
+                </>
+              )}
+              {!isNoRaffleError && (
+                <button 
+                  onClick={fetchRaffleStatus}
+                  className="w-full bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 font-semibold"
+                >
+                  Try Again
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </Layout>
