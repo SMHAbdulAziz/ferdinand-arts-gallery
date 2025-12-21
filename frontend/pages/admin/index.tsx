@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useAuth } from '../../context/AuthContext';
 
 // Simple admin layout without the main site header/footer
-const AdminLayout: React.FC<{ children: React.ReactNode; title: string }> = ({ children, title }) => (
+const AdminLayout: React.FC<{ children: React.ReactNode; title: string }> = ({ children, title }) => {
+  const router = useRouter();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
+  return (
   <div className="min-h-screen bg-gray-100">
     <nav className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -11,10 +22,18 @@ const AdminLayout: React.FC<{ children: React.ReactNode; title: string }> = ({ c
             <h1 className="text-xl font-semibold text-gray-900">THE FUND Admin</h1>
           </div>
           <div className="flex items-center space-x-4">
+            {user && (
+              <span className="text-sm text-gray-600">
+                {user.email}
+              </span>
+            )}
             <Link href="/" className="text-gray-600 hover:text-gray-900">
               View Site
             </Link>
-            <button className="text-gray-600 hover:text-gray-900">
+            <button 
+              onClick={handleLogout}
+              className="text-gray-600 hover:text-gray-900 font-medium"
+            >
               Logout
             </button>
           </div>
@@ -29,9 +48,36 @@ const AdminLayout: React.FC<{ children: React.ReactNode; title: string }> = ({ c
       </div>
     </div>
   </div>
-);
+  );
+};
 
 const AdminDashboard: React.FC = () => {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  // Redirect to login if not authenticated or not admin
+  useEffect(() => {
+    if (!loading && (!user || user.role !== 'admin')) {
+      router.push('/login');
+    }
+  }, [user, loading, router]);
+
+  // Show loading state
+  if (loading) {
+    return (
+      <AdminLayout title="Loading...">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  // Don't render if not authenticated or not admin
+  if (!user || user.role !== 'admin') {
+    return null;
+  }
+
   // Mock data - would come from API
   const stats = {
     totalRaffles: 1,
