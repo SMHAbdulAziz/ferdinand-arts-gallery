@@ -1,5 +1,5 @@
-import { verifyToken, extractToken } from '../../utils/auth';
-import { query } from '../../utils/db';
+import { verifyToken, extractToken } from '../../../utils/auth';
+import { query } from '../../../utils/db';
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

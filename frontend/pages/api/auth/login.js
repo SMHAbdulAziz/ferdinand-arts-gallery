@@ -1,5 +1,5 @@
-import { verifyPassword, generateToken, isValidEmail } from '../../utils/auth';
-import { query } from '../../utils/db';
+import { verifyPassword, generateToken, isValidEmail } from '../../../utils/auth';
+import { query } from '../../../utils/db';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
