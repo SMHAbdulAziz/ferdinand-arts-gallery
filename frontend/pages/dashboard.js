@@ -90,12 +90,20 @@ export default function DashboardPage() {
                   </h1>
                   <p className="text-slate-600 mt-2">{user?.email}</p>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
-                >
-                  Logout
-                </button>
+                <div className="flex gap-3">
+                  <Link
+                    href="/profile"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition"
+                  >
+                    My Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
     // Get user from database
     const result = await query(
-      'SELECT id, email, first_name, last_name, phone, role, email_verified, created_at FROM users WHERE id = $1',
+      'SELECT id, email, first_name, last_name, phone, country_code, address, role, email_verified, created_at FROM users WHERE id = $1',
       [decoded.userId]
     );
 
@@ -38,6 +38,8 @@ export default async function handler(req, res) {
         firstName: user.first_name,
         lastName: user.last_name,
         phone: user.phone,
+        countryCode: user.country_code,
+        address: user.address ? JSON.parse(user.address) : null,
         role: user.role,
         emailVerified: user.email_verified,
         createdAt: user.created_at
