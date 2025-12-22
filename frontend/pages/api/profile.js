@@ -64,6 +64,14 @@ export default async function handler(req, res) {
 
     const user = result.rows[0];
 
+    let parsedAddress = null;
+    try {
+      parsedAddress = user.address ? JSON.parse(user.address) : null;
+    } catch (parseErr) {
+      console.warn('Failed to parse address JSON:', parseErr);
+      parsedAddress = null;
+    }
+
     return res.status(200).json({
       success: true,
       message: 'Profile updated successfully',
@@ -74,7 +82,7 @@ export default async function handler(req, res) {
         lastName: user.last_name,
         phone: user.phone,
         countryCode: user.country_code,
-        address: user.address ? JSON.parse(user.address) : null,
+        address: parsedAddress,
         role: user.role
       }
     });
