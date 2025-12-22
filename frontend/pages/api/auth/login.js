@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, password, rememberMe, recaptchaToken } = req.body;
+  const { email, password, rememberMe, hcaptchaToken } = req.body;
 
   try {
     if (!email || !password) {
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
     }
 
     // Verify hCAPTCHA token
-    if (!recaptchaToken) {
+    if (!hcaptchaToken) {
       return res.status(400).json({ error: 'hCAPTCHA verification required' });
     }
 
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       const hcaptchaResponse = await fetch('https://hcaptcha.com/siteverify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${process.env.HCAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
+        body: `secret=${process.env.HCAPTCHA_SECRET_KEY}&response=${hcaptchaToken}`
       });
 
       const hcaptchaData = await hcaptchaResponse.json();

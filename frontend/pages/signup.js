@@ -105,15 +105,15 @@ export default function SignupPage() {
     }
 
     try {
-      // Get reCAPTCHA v2 token from checkbox
-      const recaptchaToken = getRecaptchaV2Token();
-      if (!recaptchaToken) {
-        toast.error('Please verify the reCAPTCHA checkbox');
+      // Get hCAPTCHA token from widget
+      const hcaptchaToken = getRecaptchaV2Token();
+      if (!hcaptchaToken) {
+        toast.error('Please verify the hCAPTCHA widget');
         setLoading(false);
         return;
       }
 
-      const result = await signup(email, password, firstName, lastName, phone, countryCode, recaptchaToken);
+      const result = await signup(email, password, firstName, lastName, phone, countryCode, hcaptchaToken);
 
       if (result.success) {
         toast.success('Account created! Redirecting to dashboard...');

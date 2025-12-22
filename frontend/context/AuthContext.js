@@ -67,7 +67,7 @@ export function AuthProvider({ children }) {
   }
 
   // Signup
-  async function signup(email, password, firstName, lastName, phone, countryCode, recaptchaToken) {
+  async function signup(email, password, firstName, lastName, phone, countryCode, hcaptchaToken) {
     setLoading(true);
     setError(null);
 
@@ -75,7 +75,7 @@ export function AuthProvider({ children }) {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, firstName, lastName, phone, countryCode, recaptchaToken })
+        body: JSON.stringify({ email, password, firstName, lastName, phone, countryCode, hcaptchaToken })
       });
 
       const data = await response.json();
@@ -96,7 +96,7 @@ export function AuthProvider({ children }) {
   }
 
   // Login
-  async function login(email, password, rememberMe = false, recaptchaToken = null) {
+  async function login(email, password, rememberMe = false, hcaptchaToken = null) {
     setLoading(true);
     setError(null);
 
@@ -105,7 +105,7 @@ export function AuthProvider({ children }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Include cookies
-        body: JSON.stringify({ email, password, rememberMe, recaptchaToken })
+        body: JSON.stringify({ email, password, rememberMe, hcaptchaToken })
       });
 
       const data = await response.json();

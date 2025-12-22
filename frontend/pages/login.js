@@ -54,16 +54,16 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Get reCAPTCHA v2 token from checkbox
-      const recaptchaToken = getRecaptchaV2Token();
-      if (!recaptchaToken) {
-        toast.error('Please verify the reCAPTCHA checkbox');
+      // Get hCAPTCHA token from widget
+      const hcaptchaToken = getRecaptchaV2Token();
+      if (!hcaptchaToken) {
+        toast.error('Please verify the hCAPTCHA widget');
         setLoading(false);
         return;
       }
 
-      // Pass recaptchaToken to login function
-      const result = await login(email, password, rememberMe, recaptchaToken);
+      // Pass hcaptchaToken to login function
+      const result = await login(email, password, rememberMe, hcaptchaToken);
 
       if (result.success) {
         toast.success('Logged in successfully!');
