@@ -390,7 +390,75 @@ Each country has different phone number requirements:
 
 The library handles all these variations automatically based on the selected country code.
 
-### Troubleshooting Phone Validation
+### Troubleshooting reCAPTCHA
+
+**Issue**: "Human verification failed. Please try again."
+
+**Most Common Cause**: Environment variables not set on Railway
+
+**Step-by-step fix:**
+
+1. **Check if reCAPTCHA keys are in Railway environment:**
+   - Go to your Railway project dashboard
+   - Click "Variables" tab
+   - Verify both variables exist:
+     - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` (should match Google Console)
+     - `RECAPTCHA_SECRET_KEY` (should match Google Console)
+
+2. **If variables are missing, add them:**
+   - Get keys from [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin)
+   - In Railway Variables tab, click "Add Variable" twice
+   - Add each key with exact names above
+   - Save and re-deploy
+
+3. **Check if domain is added to Google Console:**
+   - Go to [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin)
+   - Select your site ("THE FUND Gallery" or similar)
+   - Click "Settings"
+   - Under "Domains", verify your domain is listed:
+     - For production: `thefundgallery.org`
+     - For Railway: `*.railway.app`
+     - For development: `localhost`
+   - If missing, click "Add Domain" and add it
+
+4. **Verify keys are correct:**
+   - Site key should start with `6Lc...` (public, safe to share)
+   - Secret key should contain hyphens and underscores (KEEP PRIVATE)
+   - They should match between Google Console and Railway Variables
+
+5. **Check browser console for errors:**
+   - Open DevTools (F12) → Console tab
+   - Look for errors like:
+     - `ERR_RECAPTCHA_INVALID_SITE_KEY` → Wrong site key
+     - `Invalid site key` → Domain not added to Google Console
+     - `reCAPTCHA script not loaded` → Check script loading
+   - Check Network tab to see if reCAPTCHA script loads from Google
+
+6. **Test reCAPTCHA is working:**
+   - In [Google reCAPTCHA Admin Console](https://www.google.com/recaptcha/admin)
+   - Click your site
+   - Go to "Analytics" tab
+   - You should see recent requests if reCAPTCHA is active
+   - If you see "0 requests", the integration isn't working
+
+**If everything is configured but still failing:**
+
+Check the server logs on Railway:
+- Go to Railway project → Click "Deployments" tab
+- Click the active deployment
+- View "Logs" to see backend errors
+- Look for reCAPTCHA verification messages
+
+**Issues and Solutions:**
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `ERR_RECAPTCHA_INVALID_SITE_KEY` | Wrong site key in env vars | Verify key matches Google Console exactly |
+| `Invalid site key` | Domain not allowed | Add domain to Google Console settings |
+| `Invalid request signature` | Wrong secret key | Verify secret key matches Google Console |
+| `timeout-or-duplicate` | Token was used twice or expired | Tokens expire quickly, don't reuse |
+| `bad-request` | Malformed request to Google | Check network requests in DevTools |
+| Score too low (0.0-0.4) | User appears bot-like | Adjust threshold in recaptchaServer.js or verify legitimate user |
 
 **Issue**: "Invalid phone number for this country"
 
