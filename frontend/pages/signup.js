@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
-import { getRecaptchaToken } from '../utils/recaptcha';
+import { getRecaptchaV2Token, resetRecaptchaV2 } from '../utils/recaptchaV2';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import { getCountryCodeFromCallingCode } from '../utils/countryCodeMap';
 import toast from 'react-hot-toast';
@@ -77,21 +77,23 @@ export default function SignupPage() {
     }
 
     try {
-      // Get reCAPTCHA token
-      const recaptchaToken = await getRecaptchaToken('signup');
+      // Get reCAPTCHA v2 token from checkbox
+      const recaptchaToken = getRecaptchaV2Token();
       if (!recaptchaToken) {
-        toast.error('Human verification failed. Please try again.');
+        toast.error('Please verify the reCAPTCHA checkbox');
         setLoading(false);
         return;
       }
 
-      const result = await signup(email, password, firstName, lastName, phone, countryCode);
+      const result = await signup(email, password, firstName, lastName, phone, countryCode, recaptchaToken);
 
       if (result.success) {
         toast.success('Account created! Redirecting to dashboard...');
+        resetRecaptchaV2();
         setTimeout(() => router.push('/dashboard'), 1500);
       } else {
         toast.error(result.error || 'Signup failed');
+        resetRecaptchaV2();
       }
     } finally {
       setLoading(false);
@@ -238,6 +240,14 @@ export default function SignupPage() {
                   <p className="text-xs text-slate-500 mt-2">
                     Minimum 8 characters, uppercase, lowercase, and number required
                   </p>
+                </div>
+
+                {/* reCAPTCHA Checkbox */}
+                <div className="flex justify-center my-4">
+                  <div 
+                    className="g-recaptcha" 
+                    data-sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  ></div>
                 </div>
 
                 {/* Submit Button */}

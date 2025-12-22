@@ -1,5 +1,4 @@
 import { verifyPassword, generateToken, isValidEmail, generateRememberToken } from '../../../utils/auth';
-import { verifyRecaptcha } from '../../../utils/recaptchaServer';
 import { query } from '../../../utils/db';
 
 export default async function handler(req, res) {
@@ -18,12 +17,26 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid email format' });
     }
 
-    // Verify reCAPTCHA if token provided
-    if (recaptchaToken) {
-      const recaptchaResult = await verifyRecaptcha(recaptchaToken);
-      if (!recaptchaResult.success) {
-        return res.status(403).json({ error: 'Human verification failed. Please try again.' });
+    // Verify reCAPTCHA v2 token
+    if (!recaptchaToken) {
+      return res.status(400).json({ error: 'reCAPTCHA verification required' });
+    }
+
+    try {
+      const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
+      });
+
+      const recaptchaData = await recaptchaResponse.json();
+      if (!recaptchaData.success) {
+        console.error('reCAPTCHA verification failed:', recaptchaData);
+        return res.status(400).json({ error: 'Human verification failed. Please try again.' });
       }
+    } catch (recaptchaErr) {
+      console.error('reCAPTCHA error:', recaptchaErr);
+      return res.status(400).json({ error: 'Human verification failed. Please try again.' });
     }
 
     // Find user

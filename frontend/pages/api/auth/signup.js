@@ -8,9 +8,32 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, password, firstName, lastName, phone, countryCode } = req.body;
+  const { email, password, firstName, lastName, phone, countryCode, recaptchaToken } = req.body;
 
   try {
+    // Validate reCAPTCHA token
+    if (!recaptchaToken) {
+      return res.status(400).json({ error: 'reCAPTCHA verification required' });
+    }
+
+    // Verify reCAPTCHA with Google
+    try {
+      const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
+      });
+
+      const recaptchaData = await recaptchaResponse.json();
+      if (!recaptchaData.success) {
+        console.error('reCAPTCHA verification failed:', recaptchaData);
+        return res.status(400).json({ error: 'Human verification failed. Please try again.' });
+      }
+    } catch (recaptchaErr) {
+      console.error('reCAPTCHA error:', recaptchaErr);
+      return res.status(400).json({ error: 'Human verification failed. Please try again.' });
+    }
+
     // Validate input
     if (!email || !password || !firstName || !lastName || !phone) {
       return res.status(400).json({ error: 'Email, password, first name, last name, and phone are required' });

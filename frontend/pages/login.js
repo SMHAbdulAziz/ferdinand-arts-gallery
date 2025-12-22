@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
-import { getRecaptchaToken } from '../utils/recaptcha';
+import { getRecaptchaV2Token, resetRecaptchaV2 } from '../utils/recaptchaV2';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
@@ -26,10 +26,12 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Get reCAPTCHA token
-      const recaptchaToken = await getRecaptchaToken('login');
+      // Get reCAPTCHA v2 token from checkbox
+      const recaptchaToken = getRecaptchaV2Token();
       if (!recaptchaToken) {
-        console.warn('reCAPTCHA token not obtained, proceeding without verification');
+        toast.error('Please verify the reCAPTCHA checkbox');
+        setLoading(false);
+        return;
       }
 
       // Pass recaptchaToken to login function
@@ -37,9 +39,11 @@ export default function LoginPage() {
 
       if (result.success) {
         toast.success('Logged in successfully!');
+        resetRecaptchaV2();
         router.push('/dashboard');
       } else {
         toast.error(result.error || 'Login failed');
+        resetRecaptchaV2();
       }
     } finally {
       setLoading(false);
@@ -109,6 +113,14 @@ export default function LoginPage() {
                   <label htmlFor="rememberMe" className="ml-2 text-sm text-slate-600">
                     Remember me on this device
                   </label>
+                </div>
+
+                {/* reCAPTCHA Checkbox */}
+                <div className="flex justify-center">
+                  <div 
+                    className="g-recaptcha" 
+                    data-sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  ></div>
                 </div>
 
                 {/* Submit Button */}
