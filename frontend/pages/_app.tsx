@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
         strategy="afterInteractive"
         onLoad={() => {
           console.log('✓ hCAPTCHA script loaded successfully');
-          if (typeof window !== 'undefined' && (window as any).hcaptcha) {
+          if (typeof window !== 'undefined' && window['hcaptcha']) {
             console.log('✓ hcaptcha object available');
           }
         }}
