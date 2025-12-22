@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -14,12 +14,26 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [recaptchaReady, setRecaptchaReady] = useState(false);
 
   // Redirect if already authenticated
   if (isAuthenticated) {
     router.push('/dashboard');
     return null;
   }
+
+  // Check if reCAPTCHA script is loaded
+  useEffect(() => {
+    const checkRecaptcha = () => {
+      if (typeof window !== 'undefined' && window.grecaptcha) {
+        setRecaptchaReady(true);
+        console.log('✓ reCAPTCHA ready to render');
+      } else {
+        setTimeout(checkRecaptcha, 100);
+      }
+    };
+    checkRecaptcha();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -117,10 +131,16 @@ export default function LoginPage() {
 
                 {/* reCAPTCHA Checkbox - Following Google's Official Setup */}
                 <div className="flex justify-center">
-                  <div 
-                    className="g-recaptcha" 
-                    data-sitekey="6LcUHjMsAAAAAOf1xRYir1mhp6MyP5Uw29f3o5WB"
-                  ></div>
+                  {recaptchaReady ? (
+                    <div 
+                      className="g-recaptcha" 
+                      data-sitekey="6LcUHjMsAAAAAOf1xRYir1mhp6MyP5Uw29f3o5WB"
+                    ></div>
+                  ) : (
+                    <div className="text-center text-sm text-slate-600">
+                      Loading security verification...
+                    </div>
+                  )}
                 </div>
 
                 {/* Submit Button */}

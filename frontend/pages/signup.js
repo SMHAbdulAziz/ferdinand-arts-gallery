@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -20,6 +20,20 @@ export default function SignupPage() {
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [recaptchaReady, setRecaptchaReady] = useState(false);
+
+  // Check if reCAPTCHA script is loaded
+  useEffect(() => {
+    const checkRecaptcha = () => {
+      if (typeof window !== 'undefined' && window.grecaptcha) {
+        setRecaptchaReady(true);
+        console.log('✓ reCAPTCHA ready to render');
+      } else {
+        setTimeout(checkRecaptcha, 100);
+      }
+    };
+    checkRecaptcha();
+  }, []);
 
   // Validate phone number in real-time
   const validatePhoneInput = (phoneValue) => {
@@ -244,10 +258,16 @@ export default function SignupPage() {
 
                 {/* reCAPTCHA Checkbox - Following Google's Official Setup */}
                 <div className="flex justify-center">
-                  <div 
-                    className="g-recaptcha" 
-                    data-sitekey="6LcUHjMsAAAAAOf1xRYir1mhp6MyP5Uw29f3o5WB"
-                  ></div>
+                  {recaptchaReady ? (
+                    <div 
+                      className="g-recaptcha" 
+                      data-sitekey="6LcUHjMsAAAAAOf1xRYir1mhp6MyP5Uw29f3o5WB"
+                    ></div>
+                  ) : (
+                    <div className="text-center text-sm text-slate-600">
+                      Loading security verification...
+                    </div>
+                  )}
                 </div>
 
                 {/* Submit Button */}

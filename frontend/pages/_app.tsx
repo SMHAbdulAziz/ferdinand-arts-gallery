@@ -2,30 +2,25 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { AuthProvider } from '../context/AuthContext'
 import { Toaster } from 'react-hot-toast'
-import Head from 'next/head'
+import Script from 'next/script'
 
 export default function App({ Component, pageProps }: AppProps) {
-  // Verify reCAPTCHA env var is loaded on client
-  if (typeof window !== 'undefined') {
-    const recaptchaSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
-    if (!recaptchaSiteKey) {
-      console.warn('⚠️ reCAPTCHA site key not configured: NEXT_PUBLIC_RECAPTCHA_SITE_KEY not found');
-    } else {
-      console.log('✓ reCAPTCHA site key loaded:', recaptchaSiteKey.substring(0, 10) + '...');
-      console.log('Build timestamp:', new Date().toISOString());
-    }
-  }
-
   return (
     <>
-      <Head>
-        {/* Google reCAPTCHA v2 Checkbox Script */}
-        <script
-          src="https://www.google.com/recaptcha/api.js"
-          async
-          defer
-        ></script>
-      </Head>
+      {/* Google reCAPTCHA v2 Checkbox Script - Using Next.js Script component */}
+      <Script
+        src="https://www.google.com/recaptcha/api.js"
+        strategy="afterInteractive"
+        onLoad={() => {
+          console.log('✓ reCAPTCHA script loaded successfully');
+          if (typeof window !== 'undefined' && window.grecaptcha) {
+            console.log('✓ grecaptcha object available');
+          }
+        }}
+        onError={() => {
+          console.error('✗ Failed to load reCAPTCHA script');
+        }}
+      />
       <AuthProvider>
         <Component {...pageProps} />
         <Toaster />
