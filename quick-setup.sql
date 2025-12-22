@@ -49,7 +49,13 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(100),
     last_name VARCHAR(100),
     phone VARCHAR(50),
+    country_code VARCHAR(10),
     address JSONB,
+    role VARCHAR(50) DEFAULT 'user',
+    email_verified BOOLEAN DEFAULT FALSE,
+    remember_token VARCHAR(255),
+    remember_token_expires TIMESTAMP,
+    marketing_consent BOOLEAN DEFAULT FALSE,
     preferences JSONB DEFAULT '{"marketing": true, "raffle_updates": true}',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -84,6 +90,7 @@ CREATE TABLE IF NOT EXISTS tickets (
     ticket_number INTEGER NOT NULL,
     purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     stripe_payment_intent_id VARCHAR(255),
+    entry_method VARCHAR(50) DEFAULT 'paid',
     status VARCHAR(50) DEFAULT 'active',
     UNIQUE(raffle_id, ticket_number)
 );
