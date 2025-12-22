@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
+  const hcaptchaContainerRef = useRef(null);
   // Force rebuild with clean hCAPTCHA implementation
 
   // Redirect if already authenticated
@@ -23,12 +24,24 @@ export default function LoginPage() {
     return null;
   }
 
-  // Check if hCAPTCHA script is loaded
+  // Check if hCAPTCHA script is loaded and render widget
   useEffect(() => {
     const checkHcaptcha = () => {
       if (typeof window !== 'undefined' && window['hcaptcha']) {
-        setRecaptchaReady(true);
-        console.log('✓ hCAPTCHA ready to render');
+        // Try to render the hCAPTCHA widget in the container
+        try {
+          if (hcaptchaContainerRef.current && !hcaptchaContainerRef.current.hasAttribute('data-rendered')) {
+            window.hcaptcha.render(hcaptchaContainerRef.current, {
+              sitekey: '25f017a0-d5cc-4350-b376-abec707c652e'
+            });
+            hcaptchaContainerRef.current.setAttribute('data-rendered', 'true');
+            console.log('✓ hCAPTCHA widget rendered');
+          }
+          setRecaptchaReady(true);
+        } catch (err) {
+          console.error('Error rendering hCAPTCHA:', err);
+          setTimeout(checkHcaptcha, 100);
+        }
       } else {
         setTimeout(checkHcaptcha, 100);
       }
@@ -132,16 +145,7 @@ export default function LoginPage() {
 
                 {/* hCAPTCHA Widget */}
                 <div className="flex justify-center">
-                  {recaptchaReady ? (
-                    <div 
-                      className="h-captcha" 
-                      data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY || "25f017a0-d5cc-4350-b376-abec707c652e"}
-                    ></div>
-                  ) : (
-                    <div className="text-center text-sm text-slate-600">
-                      Loading security verification...
-                    </div>
-                  )}
+                  <div ref={hcaptchaContainerRef}></div>
                 </div>
 
                 {/* Submit Button */}
