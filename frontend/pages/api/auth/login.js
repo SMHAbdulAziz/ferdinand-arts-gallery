@@ -23,6 +23,9 @@ export default async function handler(req, res) {
     }
 
     try {
+      console.log('🔐 Verifying hCAPTCHA token:', hcaptchaToken.substring(0, 20) + '...');
+      console.log('🔑 Using secret key starting with:', process.env.HCAPTCHA_SECRET_KEY?.substring(0, 10) + '...');
+      
       const hcaptchaResponse = await fetch('https://hcaptcha.com/siteverify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -30,12 +33,19 @@ export default async function handler(req, res) {
       });
 
       const hcaptchaData = await hcaptchaResponse.json();
+      console.log('📋 hCAPTCHA Response:', JSON.stringify(hcaptchaData, null, 2));
+      
       if (!hcaptchaData.success) {
-        console.error('hCAPTCHA verification failed:', hcaptchaData);
-        return res.status(400).json({ error: 'Human verification failed. Please try again.' });
+        console.error('❌ hCAPTCHA verification failed:', hcaptchaData);
+        console.error('Error codes:', hcaptchaData['error-codes']);
+        return res.status(400).json({ 
+          error: 'Human verification failed. Please try again.',
+          details: hcaptchaData['error-codes']
+        });
       }
+      console.log('✅ hCAPTCHA verification succeeded');
     } catch (hcaptchaErr) {
-      console.error('hCAPTCHA error:', hcaptchaErr);
+      console.error('❌ hCAPTCHA error:', hcaptchaErr);
       return res.status(400).json({ error: 'Human verification failed. Please try again.' });
     }
 
