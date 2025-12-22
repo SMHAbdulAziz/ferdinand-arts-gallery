@@ -1,6 +1,7 @@
 import { query } from '../../utils/db';
 import { parsePhoneNumber } from 'libphonenumber-js';
 import jwt from 'jsonwebtoken';
+import { getCountryCodeFromCallingCode } from '../../utils/countryCodeMap';
 
 export default async function handler(req, res) {
   if (req.method !== 'PUT') {
@@ -22,7 +23,8 @@ export default async function handler(req, res) {
     // Validate phone if provided
     if (phone) {
       try {
-        const parsed = parsePhoneNumber(phone, countryCode);
+        const isoCountryCode = getCountryCodeFromCallingCode(countryCode);
+        const parsed = parsePhoneNumber(phone, isoCountryCode);
         if (!parsed || !parsed.isValid()) {
           return res.status(400).json({ 
             error: 'Invalid phone number for the selected country'

@@ -6,6 +6,7 @@ import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
 import { getRecaptchaToken } from '../utils/recaptcha';
 import { parsePhoneNumber } from 'libphonenumber-js';
+import { getCountryCodeFromCallingCode } from '../utils/countryCodeMap';
 import toast from 'react-hot-toast';
 
 export default function SignupPage() {
@@ -28,7 +29,9 @@ export default function SignupPage() {
     }
 
     try {
-      const parsed = parsePhoneNumber(phoneValue, countryCode);
+      // Get the proper ISO country code from the calling code
+      const isoCountryCode = getCountryCodeFromCallingCode(countryCode);
+      const parsed = parsePhoneNumber(phoneValue, isoCountryCode);
       if (parsed && parsed.isValid()) {
         setPhoneError('');
       } else {
@@ -60,7 +63,8 @@ export default function SignupPage() {
 
     // Final phone validation
     try {
-      const parsed = parsePhoneNumber(phone, countryCode);
+      const isoCountryCode = getCountryCodeFromCallingCode(countryCode);
+      const parsed = parsePhoneNumber(phone, isoCountryCode);
       if (!parsed || !parsed.isValid()) {
         toast.error('Please enter a valid phone number');
         setLoading(false);

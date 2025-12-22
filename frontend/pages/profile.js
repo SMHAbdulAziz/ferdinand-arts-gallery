@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
 import { parsePhoneNumber } from 'libphonenumber-js';
+import { getCountryCodeFromCallingCode } from '../utils/countryCodeMap';
 import toast from 'react-hot-toast';
 
 export default function ProfilePage() {
@@ -58,7 +59,9 @@ export default function ProfilePage() {
     }
 
     try {
-      const parsed = parsePhoneNumber(phoneValue, countryCode);
+      // Get the proper ISO country code from the calling code
+      const isoCountryCode = getCountryCodeFromCallingCode(countryCode);
+      const parsed = parsePhoneNumber(phoneValue, isoCountryCode);
       if (parsed && parsed.isValid()) {
         setPhoneError('');
         return true;

@@ -1,6 +1,7 @@
 import { hashPassword, isValidEmail, validatePassword } from '../../../utils/auth';
 import { query } from '../../../utils/db';
-import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js';
+import { parsePhoneNumber } from 'libphonenumber-js';
+import { getCountryCodeFromCallingCode } from '../../../utils/countryCodeMap';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -23,7 +24,8 @@ export default async function handler(req, res) {
     // Extract country code from the countryCode field (e.g., "+1" -> "US")
     let parsedPhone;
     try {
-      parsedPhone = parsePhoneNumber(phone, countryCode);
+      const isoCountryCode = getCountryCodeFromCallingCode(countryCode);
+      parsedPhone = parsePhoneNumber(phone, isoCountryCode);
       if (!parsedPhone || !parsedPhone.isValid()) {
         return res.status(400).json({ 
           error: 'Invalid phone number for the selected country. Please check the format.' 
