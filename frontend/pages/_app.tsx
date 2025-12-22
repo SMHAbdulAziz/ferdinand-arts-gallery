@@ -12,6 +12,7 @@ export default function App({ Component, pageProps }: AppProps) {
       console.warn('⚠️ reCAPTCHA site key not configured: NEXT_PUBLIC_RECAPTCHA_SITE_KEY not found');
     } else {
       console.log('✓ reCAPTCHA site key loaded:', recaptchaSiteKey.substring(0, 10) + '...');
+      console.log('Build timestamp:', new Date().toISOString());
     }
   }
 
