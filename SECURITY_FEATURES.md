@@ -2,11 +2,12 @@
 
 ## Overview
 
-Three new security and UX features have been added:
+Four key features have been implemented:
 
 1. **Remember Me on This Device** - Persistent login with secure cookies
 2. **Google reCAPTCHA v3** - Human verification to prevent bot attacks
 3. **International Phone Validation** - Accurate phone number validation for all countries
+4. **User Profile Management** - Keep contact and address information up-to-date
 
 ---
 
@@ -412,7 +413,116 @@ Clear the error by:
 
 ---
 
-## References
+## 4. User Profile Management
+
+### Overview
+
+Users can manage and update their personal information at any time through the profile page. This ensures contact details and mailing address are always current for raffle win notifications and prize shipments.
+
+### Accessing the Profile Page
+
+**From the Dashboard:**
+1. Log in to your account
+2. Click "My Profile" button in the top right
+3. Or navigate to `/profile`
+
+### What Can Be Updated
+
+**Personal Information:**
+- First Name
+- Last Name
+- Email (read-only - cannot be changed)
+
+**Contact Information:**
+- Phone Number (with country code)
+- Validated using libphonenumber-js for accuracy
+
+**Mailing Address:**
+- Street Address
+- City
+- State / Province
+- ZIP / Postal Code
+- Country
+
+### How It Works
+
+**Client Side:**
+- Form loads with current information from user profile
+- Phone validation occurs in real-time as user types
+- Submit button disabled until phone is valid (if provided)
+- Success message shown after profile is updated
+- Address stored as structured JSONB object
+
+**Server Side:**
+- PUT `/api/profile` endpoint validates all data
+- Phone number validated against international standards
+- Address stored with all fields structured for easy querying
+- Returns updated user object with all changes
+- Requires valid JWT token (user must be logged in)
+
+### Data Storage
+
+Address is stored as JSONB in the database:
+
+```json
+{
+  "street": "123 Main Street",
+  "city": "New York",
+  "state": "NY",
+  "zipCode": "10001",
+  "country": "United States"
+}
+```
+
+This structure allows:
+- Easy filtering/sorting by location
+- Integration with shipping services
+- Accurate win notifications
+
+### Phone Validation
+
+Same validation as signup form:
+- Real-time feedback as user types
+- Shows error if number is invalid for selected country
+- Supports 20+ countries with proper digit requirements
+- Stores formatted international number (e.g., "+1 (555) 123-4567")
+
+### Why This Matters
+
+**For Winners:**
+- We can contact winners about their prize immediately
+- Ensures we have correct mailing address for shipment
+- No delays due to outdated contact information
+
+**For Purchasers:**
+- Order updates can be sent to correct phone number
+- Purchases shipped to confirmed address
+- Billing and shipping address match current information
+
+**For Users:**
+- Update info anytime without re-registering
+- Easy to manage multiple addresses (update as needed)
+- One-click access from dashboard
+
+### Troubleshooting
+
+**Issue**: "Cannot update profile" error
+
+**Solutions:**
+1. Ensure you're logged in (check for valid session)
+2. Verify phone number is valid for selected country
+3. Check internet connection
+4. Try refreshing the page and logging in again
+
+**Issue**: Changes don't appear after saving
+
+**Solutions:**
+1. Refresh page to see updated information
+2. Verify save was successful (look for green success message)
+3. Check browser DevTools for any error messages
+4. Contact support if issue persists
+
+---
 
 - [Google reCAPTCHA v3 Docs](https://developers.google.com/recaptcha/docs/v3)
 - [HTTP-only Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Security)
