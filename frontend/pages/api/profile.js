@@ -20,7 +20,8 @@ export default async function handler(req, res) {
 
     const { firstName, lastName, phone, countryCode, address } = req.body;
 
-    // Validate phone if provided
+    // Validate and format phone if provided
+    let internationalPhone = null;
     if (phone) {
       try {
         const isoCountryCode = getCountryCodeFromCallingCode(countryCode);
@@ -30,6 +31,8 @@ export default async function handler(req, res) {
             error: 'Invalid phone number for the selected country'
           });
         }
+        // Store the formatted international phone number
+        internationalPhone = parsed.formatInternational();
       } catch (err) {
         return res.status(400).json({ 
           error: 'Invalid phone number format'
@@ -51,7 +54,7 @@ export default async function handler(req, res) {
       [
         firstName || null,
         lastName || null,
-        phone || null,
+        internationalPhone || null,
         countryCode || null,
         address ? JSON.stringify(address) : null,
         userId

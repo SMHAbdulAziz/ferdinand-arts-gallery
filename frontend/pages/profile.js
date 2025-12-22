@@ -37,8 +37,31 @@ export default function ProfilePage() {
       setFirstName(user.firstName || '');
       setLastName(user.lastName || '');
       setEmail(user.email || '');
-      setCountryCode(user.countryCode || '+1');
-      setPhone(user.phone || '');
+      
+      // Handle phone number - could be old format (+912146082123) or new format (split into country_code + phone)
+      if (user.phone) {
+        let cc = user.countryCode || '+1';
+        let ph = user.phone;
+        
+        // If phone is in old international format (starts with +), parse it
+        if (ph.startsWith('+')) {
+          try {
+            const parsed = parsePhoneNumber(ph);
+            if (parsed) {
+              cc = '+' + parsed.countryCallingCode;
+              ph = parsed.nationalNumber;
+            }
+          } catch (err) {
+            // If parsing fails, use as-is
+          }
+        }
+        
+        setCountryCode(cc);
+        setPhone(ph);
+      } else {
+        setCountryCode(user.countryCode || '+1');
+        setPhone('');
+      }
       
       // Load address from JSONB
       if (user.address) {
