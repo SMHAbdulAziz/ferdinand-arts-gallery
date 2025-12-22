@@ -4,7 +4,7 @@
  */
 export function getRecaptchaV2Token() {
   if (typeof window === 'undefined' || !window.grecaptcha) {
-    console.warn('reCAPTCHA v2 not loaded');
+    console.error('reCAPTCHA v2 not loaded in window.grecaptcha');
     return null;
   }
 
@@ -14,6 +14,7 @@ export function getRecaptchaV2Token() {
       console.warn('reCAPTCHA checkbox not verified - user must check the box');
       return null;
     }
+    console.log('✓ reCAPTCHA v2 token obtained');
     return token;
   } catch (error) {
     console.error('Error getting reCAPTCHA v2 token:', error);
@@ -31,6 +32,7 @@ export function resetRecaptchaV2() {
 
   try {
     window.grecaptcha.reset();
+    console.log('✓ reCAPTCHA v2 reset');
   } catch (error) {
     console.error('Error resetting reCAPTCHA v2:', error);
   }
