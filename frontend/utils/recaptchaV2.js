@@ -9,13 +9,14 @@ export function getHcaptchaToken() {
   }
 
   try {
+    // hCAPTCHA returns the token string directly
     const token = window.hcaptcha.getResponse();
-    if (!token || !token.response) {
+    if (!token) {
       console.warn('hCAPTCHA challenge not completed - user must complete the challenge');
       return null;
     }
-    console.log('✓ hCAPTCHA token obtained');
-    return token.response;
+    console.log('✓ hCAPTCHA token obtained:', token.substring(0, 20) + '...');
+    return token;
   } catch (error) {
     console.error('Error getting hCAPTCHA token:', error);
     return null;
