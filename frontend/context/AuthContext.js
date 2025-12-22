@@ -96,7 +96,7 @@ export function AuthProvider({ children }) {
   }
 
   // Login
-  async function login(email, password, rememberMe = false) {
+  async function login(email, password, rememberMe = false, recaptchaToken = null) {
     setLoading(true);
     setError(null);
 
@@ -105,7 +105,7 @@ export function AuthProvider({ children }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include', // Include cookies
-        body: JSON.stringify({ email, password, rememberMe })
+        body: JSON.stringify({ email, password, rememberMe, recaptchaToken })
       });
 
       const data = await response.json();

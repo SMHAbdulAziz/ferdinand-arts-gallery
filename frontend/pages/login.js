@@ -29,14 +29,11 @@ export default function LoginPage() {
       // Get reCAPTCHA token
       const recaptchaToken = await getRecaptchaToken('login');
       if (!recaptchaToken) {
-        toast.error('Human verification failed. Please try again.');
-        setLoading(false);
-        return;
+        console.warn('reCAPTCHA token not obtained, proceeding without verification');
       }
 
-      // Pass recaptchaToken but don't wait for it in login
-      // The login function will handle the API call
-      const result = await login(email, password, rememberMe);
+      // Pass recaptchaToken to login function
+      const result = await login(email, password, rememberMe, recaptchaToken);
 
       if (result.success) {
         toast.success('Logged in successfully!');
