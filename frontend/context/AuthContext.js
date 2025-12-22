@@ -109,8 +109,13 @@ export function AuthProvider({ children }) {
       });
 
       const data = await response.json();
+      console.log('📡 Login API Response:', { status: response.status, data });
 
       if (!response.ok) {
+        console.error('❌ Login failed:', data);
+        if (data.details) {
+          console.error('Error codes from hCaptcha:', data.details);
+        }
         throw new Error(data.error || 'Login failed');
       }
 
