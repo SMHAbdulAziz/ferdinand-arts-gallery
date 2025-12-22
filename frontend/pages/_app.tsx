@@ -13,7 +13,7 @@ export default function App({ Component, pageProps }: AppProps) {
         strategy="afterInteractive"
         onLoad={() => {
           console.log('✓ reCAPTCHA script loaded successfully');
-          if (typeof window !== 'undefined' && window.grecaptcha) {
+          if (typeof window !== 'undefined' && (window as any).grecaptcha) {
             console.log('✓ grecaptcha object available');
           }
         }}

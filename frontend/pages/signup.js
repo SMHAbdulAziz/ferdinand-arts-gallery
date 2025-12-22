@@ -25,7 +25,7 @@ export default function SignupPage() {
   // Check if reCAPTCHA script is loaded
   useEffect(() => {
     const checkRecaptcha = () => {
-      if (typeof window !== 'undefined' && window.grecaptcha) {
+      if (typeof window !== 'undefined' && (window as any).grecaptcha) {
         setRecaptchaReady(true);
         console.log('✓ reCAPTCHA ready to render');
       } else {
