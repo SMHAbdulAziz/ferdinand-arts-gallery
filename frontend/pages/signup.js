@@ -25,7 +25,7 @@ export default function SignupPage() {
   // Check if hCAPTCHA script is loaded
   useEffect(() => {
     const checkHcaptcha = () => {
-      if (typeof window !== 'undefined' && (window as any).hcaptcha) {
+      if (typeof window !== 'undefined' && window['hcaptcha']) {
         setRecaptchaReady(true);
         console.log('✓ hCAPTCHA ready to render');
       } else {
