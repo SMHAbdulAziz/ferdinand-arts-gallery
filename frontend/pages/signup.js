@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Layout from '../components/layout/Layout';
 import { useAuth } from '../context/AuthContext';
 import { getRecaptchaToken } from '../utils/recaptcha';
+import { parsePhoneNumber } from 'libphonenumber-js';
 import toast from 'react-hot-toast';
 
 export default function SignupPage() {
@@ -14,17 +15,62 @@ export default function SignupPage() {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [countryCode, setCountryCode] = useState('+1');
+  const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Redirect if already authenticated
-  if (isAuthenticated) {
-    router.push('/dashboard');
-    return null;
-  }
+  // Validate phone number in real-time
+  const validatePhoneInput = (phoneValue) => {
+    if (!phoneValue) {
+      setPhoneError('');
+      return;
+    }
+
+    try {
+      const parsed = parsePhoneNumber(phoneValue, countryCode);
+      if (parsed && parsed.isValid()) {
+        setPhoneError('');
+      } else {
+        setPhoneError('Invalid phone number for this country');
+      }
+    } catch (err) {
+      setPhoneError('Invalid phone format');
+    }
+  };
+
+  const handlePhoneChange = (e) => {
+    const value = e.target.value;
+    setPhone(value);
+    validatePhoneInput(value);
+  };
+
+  const handleCountryCodeChange = (e) => {
+    const value = e.target.value;
+    setCountryCode(value);
+    // Revalidate phone with new country code
+    if (phone) {
+      validatePhoneInput(phone);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    // Final phone validation
+    try {
+      const parsed = parsePhoneNumber(phone, countryCode);
+      if (!parsed || !parsed.isValid()) {
+        toast.error('Please enter a valid phone number');
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      toast.error('Invalid phone number');
+      setLoading(false);
+      return;
+    }
 
     try {
       // Get reCAPTCHA token
@@ -35,7 +81,7 @@ export default function SignupPage() {
         return;
       }
 
-      const result = await signup(email, password, firstName, lastName);
+      const result = await signup(email, password, firstName, lastName, phone, countryCode);
 
       if (result.success) {
         toast.success('Account created! Redirecting to dashboard...');
@@ -47,6 +93,12 @@ export default function SignupPage() {
       setLoading(false);
     }
   };
+
+  // Redirect if already authenticated
+  if (isAuthenticated) {
+    router.push('/dashboard');
+    return null;
+  }
 
   return (
     <>
@@ -70,7 +122,7 @@ export default function SignupPage() {
                 {/* First Name */}
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-slate-700 mb-2">
-                    First Name (Optional)
+                    First Name *
                   </label>
                   <input
                     type="text"
@@ -79,13 +131,14 @@ export default function SignupPage() {
                     onChange={(e) => setFirstName(e.target.value)}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="John"
+                    required
                   />
                 </div>
 
                 {/* Last Name */}
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-medium text-slate-700 mb-2">
-                    Last Name (Optional)
+                    Last Name *
                   </label>
                   <input
                     type="text"
@@ -94,13 +147,64 @@ export default function SignupPage() {
                     onChange={(e) => setLastName(e.target.value)}
                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Doe"
+                    required
                   />
+                </div>
+
+                {/* Phone Number */}
+                <div>
+                  <label htmlFor="phone" className="block text-sm font-medium text-slate-700 mb-2">
+                    Phone Number *
+                  </label>
+                  <div className="flex gap-2">
+                    <select
+                      value={countryCode}
+                      onChange={handleCountryCodeChange}
+                      className="w-24 px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required
+                    >
+                      <option value="+1">🇺🇸 +1</option>
+                      <option value="+44">🇬🇧 +44</option>
+                      <option value="+91">🇮🇳 +91</option>
+                      <option value="+86">🇨🇳 +86</option>
+                      <option value="+81">🇯🇵 +81</option>
+                      <option value="+33">🇫🇷 +33</option>
+                      <option value="+49">🇩🇪 +49</option>
+                      <option value="+39">🇮🇹 +39</option>
+                      <option value="+34">🇪🇸 +34</option>
+                      <option value="+31">🇳🇱 +31</option>
+                      <option value="+46">🇸🇪 +46</option>
+                      <option value="+47">🇳🇴 +47</option>
+                      <option value="+41">🇨🇭 +41</option>
+                      <option value="+43">🇦🇹 +43</option>
+                      <option value="+61">🇦🇺 +61</option>
+                      <option value="+64">🇳🇿 +64</option>
+                      <option value="+1-246">🇧🇧 +1-246</option>
+                      <option value="+1-242">🇧🇸 +1-242</option>
+                      <option value="+1-441">🇧🇲 +1-441</option>
+                      <option value="+1-876">🇯🇲 +1-876</option>
+                    </select>
+                    <input
+                      type="tel"
+                      id="phone"
+                      value={phone}
+                      onChange={handlePhoneChange}
+                      className={`flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                        phoneError ? 'border-red-500' : 'border-slate-300'
+                      }`}
+                      placeholder="(555) 123-4567"
+                      required
+                    />
+                  </div>
+                  {phoneError && (
+                    <p className="text-sm text-red-600 mt-1">{phoneError}</p>
+                  )}
                 </div>
 
                 {/* Email */}
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-2">
-                    Email Address
+                    Email Address *
                   </label>
                   <input
                     type="email"
@@ -135,7 +239,7 @@ export default function SignupPage() {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || phoneError !== ''}
                   className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-2 px-4 rounded-lg transition duration-200 mt-6"
                 >
                   {loading ? 'Creating Account...' : 'Sign Up'}

@@ -1,21 +1,38 @@
 import { hashPassword, isValidEmail, validatePassword } from '../../../utils/auth';
 import { query } from '../../../utils/db';
+import { parsePhoneNumber, isValidPhoneNumber } from 'libphonenumber-js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { email, password, firstName, lastName } = req.body;
+  const { email, password, firstName, lastName, phone, countryCode } = req.body;
 
   try {
     // Validate input
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password are required' });
+    if (!email || !password || !firstName || !lastName || !phone) {
+      return res.status(400).json({ error: 'Email, password, first name, last name, and phone are required' });
     }
 
     if (!isValidEmail(email)) {
       return res.status(400).json({ error: 'Invalid email format' });
+    }
+
+    // Validate phone number using libphonenumber-js
+    // Extract country code from the countryCode field (e.g., "+1" -> "US")
+    let parsedPhone;
+    try {
+      parsedPhone = parsePhoneNumber(phone, countryCode);
+      if (!parsedPhone || !parsedPhone.isValid()) {
+        return res.status(400).json({ 
+          error: 'Invalid phone number for the selected country. Please check the format.' 
+        });
+      }
+    } catch (err) {
+      return res.status(400).json({ 
+        error: 'Invalid phone number format. Please enter a valid number.' 
+      });
     }
 
     const passwordValidation = validatePassword(password);
@@ -36,12 +53,15 @@ export default async function handler(req, res) {
     // Hash password
     const passwordHash = hashPassword(password);
 
+    // Store the formatted international phone number
+    const internationalPhone = parsedPhone.formatInternational();
+
     // Create user
     const result = await query(
-      `INSERT INTO users (email, password_hash, first_name, last_name)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, email, first_name, last_name, created_at`,
-      [email.toLowerCase(), passwordHash, firstName || '', lastName || '']
+      `INSERT INTO users (email, password_hash, first_name, last_name, phone, country_code)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id, email, first_name, last_name, phone, country_code, created_at`,
+      [email.toLowerCase(), passwordHash, firstName, lastName, internationalPhone, countryCode]
     );
 
     const user = result.rows[0];
@@ -53,7 +73,9 @@ export default async function handler(req, res) {
         id: user.id,
         email: user.email,
         firstName: user.first_name,
-        lastName: user.last_name
+        lastName: user.last_name,
+        phone: user.phone,
+        countryCode: user.country_code
       }
     });
   } catch (error) {

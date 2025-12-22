@@ -2,10 +2,11 @@
 
 ## Overview
 
-Two new security and UX features have been added:
+Three new security and UX features have been added:
 
 1. **Remember Me on This Device** - Persistent login with secure cookies
 2. **Google reCAPTCHA v3** - Human verification to prevent bot attacks
+3. **International Phone Validation** - Accurate phone number validation for all countries
 
 ---
 
@@ -316,9 +317,105 @@ HAVING COUNT(*) > 5;
 
 ---
 
+## 3. International Phone Number Validation
+
+### Overview
+
+Phone numbers are validated using `libphonenumber-js`, which is Google's international phone number library ported to JavaScript. This ensures accurate validation across all countries without artificial digit restrictions.
+
+### How It Works
+
+**Client Side:**
+- Real-time validation as user types
+- Shows error message if number is invalid for selected country
+- Submit button disabled until phone is valid
+- User can change country code and validation updates automatically
+
+**Server Side:**
+- Parses phone number with selected country code using libphonenumber-js
+- Validates against international phone standards
+- Stores formatted international number (e.g., "+1 (555) 123-4567")
+- Returns descriptive error if number is invalid
+
+### Supported Countries
+
+The signup form includes 20+ countries with proper validation:
+
+- 🇺🇸 United States (+1) - 10 digits
+- 🇬🇧 United Kingdom (+44) - 10-11 digits
+- 🇮🇳 India (+91) - 10 digits
+- 🇨🇳 China (+86) - 11 digits
+- 🇯🇵 Japan (+81) - 10 digits
+- 🇫🇷 France (+33) - 9 digits
+- 🇩🇪 Germany (+49) - 10-11 digits
+- 🇮🇹 Italy (+39) - 10 digits
+- 🇪🇸 Spain (+34) - 9 digits
+- 🇳🇱 Netherlands (+31) - 9 digits
+- 🇸🇪 Sweden (+46) - 9 digits
+- 🇳🇴 Norway (+47) - 8 digits
+- 🇨🇭 Switzerland (+41) - 9 digits
+- 🇦🇹 Austria (+43) - 10 digits
+- 🇦🇺 Australia (+61) - 9 digits
+- 🇳🇿 New Zealand (+64) - 9-10 digits
+- 🇧🇧 Barbados (+1-246) - 10 digits
+- 🇧🇸 Bahamas (+1-242) - 10 digits
+- 🇧🇲 Bermuda (+1-441) - 10 digits
+- 🇯🇲 Jamaica (+1-876) - 10 digits
+
+### Adding More Countries
+
+Edit [signup.js](gallery-website/frontend/pages/signup.js) to add more country options in the dropdown:
+
+```jsx
+<option value="+55">🇧🇷 +55</option>  {/* Brazil */}
+<option value="+1-52">🇲🇽 +1-52</option>  {/* Mexico */}
+<option value="+27">🇿🇦 +27</option>  {/* South Africa */}
+```
+
+The validation will automatically work for any valid country code recognized by libphonenumber-js.
+
+### Validation Rules
+
+Each country has different phone number requirements:
+
+| Country | Code | Typical Length | Format |
+|---------|------|---|---------|
+| US/Canada | +1 | 10 | (555) 123-4567 |
+| UK | +44 | 10-11 | 20 7946 0958 |
+| France | +33 | 9 | 1 42 68 53 00 |
+| Germany | +49 | 10-11 | 30 12345678 |
+| India | +91 | 10 | 9876543210 |
+| China | +86 | 11 | 10 1234 5678 |
+
+The library handles all these variations automatically based on the selected country code.
+
+### Troubleshooting Phone Validation
+
+**Issue**: "Invalid phone number for this country"
+
+**Solutions:**
+1. Verify you selected the correct country from the dropdown
+2. Check that the phone number is complete for your country
+3. Try entering without special characters: `5551234567`
+4. Ensure all required digits are included (varies by country)
+
+**Issue**: Submit button is disabled even with a valid number
+
+**Solution**: The button disables when:
+- Phone validation error exists
+- Form is being submitted (shows "Creating Account...")
+
+Clear the error by:
+1. Changing the country code to match your number
+2. Re-entering the phone number
+3. Pressing backspace and adding digits back
+
+---
+
 ## References
 
 - [Google reCAPTCHA v3 Docs](https://developers.google.com/recaptcha/docs/v3)
 - [HTTP-only Cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Security)
 - [SameSite Cookie Attribute](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite)
+- [libphonenumber-js Documentation](https://gitlab.com/catamphetamine/libphonenumber-js)
 

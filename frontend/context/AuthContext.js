@@ -67,7 +67,7 @@ export function AuthProvider({ children }) {
   }
 
   // Signup
-  async function signup(email, password, firstName, lastName) {
+  async function signup(email, password, firstName, lastName, phone, countryCode) {
     setLoading(true);
     setError(null);
 
@@ -75,7 +75,7 @@ export function AuthProvider({ children }) {
       const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, firstName, lastName })
+        body: JSON.stringify({ email, password, firstName, lastName, phone, countryCode })
       });
 
       const data = await response.json();
