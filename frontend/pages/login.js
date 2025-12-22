@@ -115,18 +115,12 @@ export default function LoginPage() {
                   </label>
                 </div>
 
-                {/* reCAPTCHA Checkbox */}
+                {/* reCAPTCHA Checkbox - Following Google's Official Setup */}
                 <div className="flex justify-center">
-                  {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY ? (
-                    <div 
-                      className="g-recaptcha" 
-                      data-sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                    ></div>
-                  ) : (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded text-sm">
-                      ⚠️ reCAPTCHA not configured. Contact support.
-                    </div>
-                  )}
+                  <div 
+                    className="g-recaptcha" 
+                    data-sitekey="6LcUHjMsAAAAAOf1xRYir1mhp6MyP5Uw29f3o5WB"
+                  ></div>
                 </div>
 
                 {/* Submit Button */}
