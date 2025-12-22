@@ -11,26 +11,26 @@ export default async function handler(req, res) {
   const { email, password, firstName, lastName, phone, countryCode, recaptchaToken } = req.body;
 
   try {
-    // Validate reCAPTCHA token
+    // Validate hCAPTCHA token
     if (!recaptchaToken) {
-      return res.status(400).json({ error: 'reCAPTCHA verification required' });
+      return res.status(400).json({ error: 'hCAPTCHA verification required' });
     }
 
-    // Verify reCAPTCHA with Google
+    // Verify hCAPTCHA with hCaptcha service
     try {
-      const recaptchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      const hcaptchaResponse = await fetch('https://hcaptcha.com/siteverify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
+        body: `secret=${process.env.HCAPTCHA_SECRET_KEY}&response=${recaptchaToken}`
       });
 
-      const recaptchaData = await recaptchaResponse.json();
-      if (!recaptchaData.success) {
-        console.error('reCAPTCHA verification failed:', recaptchaData);
+      const hcaptchaData = await hcaptchaResponse.json();
+      if (!hcaptchaData.success) {
+        console.error('hCAPTCHA verification failed:', hcaptchaData);
         return res.status(400).json({ error: 'Human verification failed. Please try again.' });
       }
-    } catch (recaptchaErr) {
-      console.error('reCAPTCHA error:', recaptchaErr);
+    } catch (hcaptchaErr) {
+      console.error('hCAPTCHA error:', hcaptchaErr);
       return res.status(400).json({ error: 'Human verification failed. Please try again.' });
     }
 

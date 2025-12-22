@@ -1,39 +1,50 @@
 /**
- * Get reCAPTCHA v2 Checkbox token
- * User must manually check the checkbox first
+ * Get hCAPTCHA token
+ * User must manually complete the hCAPTCHA challenge first
  */
-export function getRecaptchaV2Token() {
-  if (typeof window === 'undefined' || !window.grecaptcha) {
-    console.error('reCAPTCHA v2 not loaded in window.grecaptcha');
+export function getHcaptchaToken() {
+  if (typeof window === 'undefined' || !window.hcaptcha) {
+    console.error('hCAPTCHA not loaded in window.hcaptcha');
     return null;
   }
 
   try {
-    const token = window.grecaptcha.getResponse();
-    if (!token) {
-      console.warn('reCAPTCHA checkbox not verified - user must check the box');
+    const token = window.hcaptcha.getResponse();
+    if (!token || !token.response) {
+      console.warn('hCAPTCHA challenge not completed - user must complete the challenge');
       return null;
     }
-    console.log('✓ reCAPTCHA v2 token obtained');
-    return token;
+    console.log('✓ hCAPTCHA token obtained');
+    return token.response;
   } catch (error) {
-    console.error('Error getting reCAPTCHA v2 token:', error);
+    console.error('Error getting hCAPTCHA token:', error);
     return null;
   }
 }
 
 /**
- * Reset reCAPTCHA v2 after form submission
+ * Reset hCAPTCHA after form submission
  */
-export function resetRecaptchaV2() {
-  if (typeof window === 'undefined' || !window.grecaptcha) {
+export function resetHcaptcha() {
+  if (typeof window === 'undefined' || !window.hcaptcha) {
     return;
   }
 
   try {
-    window.grecaptcha.reset();
-    console.log('✓ reCAPTCHA v2 reset');
+    window.hcaptcha.reset();
+    console.log('✓ hCAPTCHA reset');
   } catch (error) {
-    console.error('Error resetting reCAPTCHA v2:', error);
+    console.error('Error resetting hCAPTCHA:', error);
   }
+}
+
+/**
+ * Legacy exports for backward compatibility
+ */
+export function getRecaptchaV2Token() {
+  return getHcaptchaToken();
+}
+
+export function resetRecaptchaV2() {
+  return resetHcaptcha();
 }

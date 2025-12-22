@@ -22,17 +22,17 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
 
-  // Check if reCAPTCHA script is loaded
+  // Check if hCAPTCHA script is loaded
   useEffect(() => {
-    const checkRecaptcha = () => {
-      if (typeof window !== 'undefined' && (window as any).grecaptcha) {
+    const checkHcaptcha = () => {
+      if (typeof window !== 'undefined' && (window as any).hcaptcha) {
         setRecaptchaReady(true);
-        console.log('✓ reCAPTCHA ready to render');
+        console.log('✓ hCAPTCHA ready to render');
       } else {
-        setTimeout(checkRecaptcha, 100);
+        setTimeout(checkHcaptcha, 100);
       }
     };
-    checkRecaptcha();
+    checkHcaptcha();
   }, []);
 
   // Validate phone number in real-time
@@ -256,12 +256,12 @@ export default function SignupPage() {
                   </p>
                 </div>
 
-                {/* reCAPTCHA Checkbox - Following Google's Official Setup */}
+                {/* hCAPTCHA Widget */}
                 <div className="flex justify-center">
                   {recaptchaReady ? (
                     <div 
-                      className="g-recaptcha" 
-                      data-sitekey="6LcUHjMsAAAAAOf1xRYir1mhp6MyP5Uw29f3o5WB"
+                      className="h-captcha" 
+                      data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY || "25f017a0-d5cc-4350-b376-abec707c652e"}
                     ></div>
                   ) : (
                     <div className="text-center text-sm text-slate-600">
