@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
+  // Force rebuild with clean hCAPTCHA implementation
 
   // Redirect if already authenticated
   if (isAuthenticated) {

@@ -21,8 +21,9 @@ export default function SignupPage() {
   const [phoneError, setPhoneError] = useState('');
   const [loading, setLoading] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
+  // Force rebuild with clean hCAPTCHA implementation
 
-  // Check if hCAPTCHA script is loaded
+  // Check if reCAPTCHA script is loaded
   useEffect(() => {
     const checkHcaptcha = () => {
       if (typeof window !== 'undefined' && window['hcaptcha']) {
