@@ -5,8 +5,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta charSet="utf-8" />
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <meta name="theme-color" content="#1f2937" />
         <meta name="description" content="The FUND Gallery - Supporting young artists through community raffles. A ministry of the FUNDamental Qahal of the Most High." />
         
