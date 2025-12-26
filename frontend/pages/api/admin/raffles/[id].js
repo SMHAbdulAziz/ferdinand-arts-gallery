@@ -38,6 +38,16 @@ async function handleUpdateRaffle(req, res, raffleId) {
     cash_prize_percentage
   } = req.body;
 
+  // Validate required fields
+  if (!title || !ticket_price || !max_tickets || !start_date || !end_date) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Validate that max_tickets >= minimum_threshold_tickets
+  if (parseInt(max_tickets) < parseInt(minimum_threshold_tickets)) {
+    return res.status(400).json({ error: 'Max tickets must be greater than or equal to minimum threshold' });
+  }
+
   try {
     const result = await pool.query(
       `UPDATE raffles SET
@@ -71,8 +81,11 @@ async function handleUpdateRaffle(req, res, raffleId) {
       raffle: result.rows[0]
     });
   } catch (error) {
-    console.error('Database error:', error);
-    res.status(500).json({ error: 'Failed to update raffle' });
+    console.error('Database error updating raffle:', error.message, error.detail);
+    res.status(500).json({ 
+      error: 'Failed to update raffle',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }
 
