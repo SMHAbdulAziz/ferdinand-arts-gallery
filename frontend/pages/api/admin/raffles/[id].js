@@ -48,19 +48,6 @@ async function handleUpdateRaffle(req, res, raffleId) {
     return res.status(400).json({ error: 'Max tickets must be greater than or equal to minimum threshold' });
   }
 
-  // Validate artwork_id is either null, undefined, or a valid UUID format (if provided)
-  let validArtworkId = null;
-  if (artwork_id) {
-    // Check if it's a UUID (36 characters with hyphens at positions 8, 13, 18, 23)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (uuidRegex.test(artwork_id)) {
-      validArtworkId = artwork_id;
-    } else {
-      // If it's not a UUID and not empty, it's invalid
-      return res.status(400).json({ error: 'Invalid artwork_id format. Must be a UUID or empty/null.' });
-    }
-  }
-
   try {
     const result = await pool.query(
       `UPDATE raffles SET
@@ -80,7 +67,7 @@ async function handleUpdateRaffle(req, res, raffleId) {
       [
         title, description, ticket_price, max_tickets,
         minimum_threshold_tickets, status, start_date, end_date,
-        validArtworkId, cash_prize_percentage, raffleId
+        artwork_id || null, cash_prize_percentage, raffleId
       ]
     );
 
