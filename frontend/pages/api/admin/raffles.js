@@ -30,8 +30,11 @@ async function handleGetRaffles(req, res) {
       raffles: result.rows
     });
   } catch (error) {
-    console.error('Database error:', error);
-    res.status(500).json({ error: 'Failed to fetch raffles' });
+    console.error('Database error fetching raffles:', error.message);
+    res.status(500).json({ 
+      error: 'Failed to fetch raffles',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }
 

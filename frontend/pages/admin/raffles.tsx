@@ -51,11 +51,24 @@ const AdminRafflesPage: React.FC = () => {
   const fetchRaffles = async () => {
     try {
       const token = localStorage.getItem('authToken');
+      if (!token) {
+        console.error('No auth token found');
+        setLoading(false);
+        return;
+      }
+      
       const response = await fetch('/api/admin/raffles', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API error:', errorData);
+        return;
+      }
+      
       const data = await response.json();
       if (data.success) {
         setRaffles(data.raffles);

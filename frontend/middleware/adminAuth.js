@@ -1,5 +1,4 @@
 // Middleware to protect admin-only endpoints
-const { Pool } = require('pg');
 
 /**
  * Admin authentication middleware
@@ -33,38 +32,18 @@ async function withAdminAuth(handler) {
 
 /**
  * Validate admin token
- * Can be either:
- * 1. Hardcoded admin token from environment
- * 2. JWT token validation
- * 3. Database session lookup
+ * Uses environment variable for MVP (simple and fast)
  */
 async function validateAdminToken(token) {
-  // Method 1: Simple environment variable check (quickest for MVP)
+  // Check against environment variable
   const adminToken = process.env.ADMIN_API_TOKEN;
-  if (adminToken && token === adminToken) {
-    return true;
-  }
-
-  // Method 2: Database session validation (optional)
-  try {
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-    });
-
-    const query = await pool.query(
-      `SELECT id FROM admin_sessions 
-       WHERE token = $1 AND expires_at > NOW()`,
-      [token]
-    );
-
-    await pool.end();
-
-    return query.rows.length > 0;
-  } catch (error) {
-    console.error('Database auth check failed:', error);
+  
+  if (!adminToken) {
+    console.warn('ADMIN_API_TOKEN not configured in environment');
     return false;
   }
+  
+  return token === adminToken;
 }
 
 /**
