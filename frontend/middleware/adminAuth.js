@@ -13,18 +13,18 @@ async function withAdminAuth(handler) {
       return res.status(401).json({ error: 'Missing authorization token' });
     }
 
-    // Verify token against database or environment variable
+    // Verify token
     try {
       const isValid = await validateAdminToken(token);
 
       if (!isValid) {
-        return res.status(403).json({ error: 'Invalid or expired admin token' });
+        return res.status(403).json({ error: 'Invalid admin token' });
       }
 
       // Token is valid, proceed with handler
       return handler(req, res);
     } catch (error) {
-      console.error('Auth error:', error);
+      console.error('Auth error:', error.message);
       return res.status(500).json({ error: 'Authentication failed' });
     }
   };
@@ -32,14 +32,17 @@ async function withAdminAuth(handler) {
 
 /**
  * Validate admin token
- * Uses environment variable for MVP (simple and fast)
  */
 async function validateAdminToken(token) {
-  // Check against environment variable
   const adminToken = process.env.ADMIN_API_TOKEN;
   
+  // If no admin token configured, log warning but allow for development
   if (!adminToken) {
-    console.warn('ADMIN_API_TOKEN not configured in environment');
+    console.warn('⚠️  ADMIN_API_TOKEN not configured - configure it in Railway dashboard');
+    // In development, allow requests to proceed for testing
+    if (process.env.NODE_ENV !== 'production') {
+      return true;
+    }
     return false;
   }
   
