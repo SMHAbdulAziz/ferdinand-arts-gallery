@@ -50,7 +50,12 @@ const AdminRafflesPage: React.FC = () => {
 
   const fetchRaffles = async () => {
     try {
-      const response = await fetch('/api/admin/raffles');
+      const token = localStorage.getItem('authToken');
+      const response = await fetch('/api/admin/raffles', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       const data = await response.json();
       if (data.success) {
         setRaffles(data.raffles);
@@ -76,6 +81,7 @@ const AdminRafflesPage: React.FC = () => {
     e.preventDefault();
     
     try {
+      const token = localStorage.getItem('authToken');
       const method = editingId ? 'PUT' : 'POST';
       const url = editingId 
         ? `/api/admin/raffles/${editingId}`
@@ -83,7 +89,10 @@ const AdminRafflesPage: React.FC = () => {
 
       const response = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(formData)
       });
 
@@ -104,9 +113,13 @@ const AdminRafflesPage: React.FC = () => {
 
   const handleStatusChange = async (raffleId: string, newStatus: string) => {
     try {
+      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/admin/raffles/${raffleId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ status: newStatus })
       });
 
@@ -128,8 +141,12 @@ const AdminRafflesPage: React.FC = () => {
     if (!confirm('Are you sure you want to delete this raffle?')) return;
 
     try {
+      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/admin/raffles/${raffleId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       const data = await response.json();

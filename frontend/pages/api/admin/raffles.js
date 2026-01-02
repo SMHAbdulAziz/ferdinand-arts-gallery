@@ -1,12 +1,13 @@
 // Admin raffle management endpoints
 const { Pool } = require('pg');
+const { withAdminAuth } = require('../../../middleware/adminAuth');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   if (req.method === 'GET') {
     return handleGetRaffles(req, res);
   } else if (req.method === 'POST') {
@@ -15,6 +16,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 }
+
+export default withAdminAuth(handler);
 
 async function handleGetRaffles(req, res) {
   try {

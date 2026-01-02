@@ -6,7 +6,7 @@ const { Pool } = require('pg');
  * Checks for valid admin token in Authorization header
  * Format: Bearer <admin_token>
  */
-export async function withAdminAuth(handler) {
+async function withAdminAuth(handler) {
   return async (req, res) => {
     const token = req.headers.authorization?.replace('Bearer ', '');
 
@@ -71,10 +71,11 @@ async function validateAdminToken(token) {
  * Quick helper to check if request is from admin
  * Can be used in non-Next.js contexts
  */
-export async function isAdminRequest(authHeader) {
+async function isAdminRequest(authHeader) {
   if (!authHeader) return false;
   const token = authHeader.replace('Bearer ', '');
   return validateAdminToken(token);
 }
 
-export default withAdminAuth;
+module.exports = { withAdminAuth, isAdminRequest };
+module.exports.default = withAdminAuth;
