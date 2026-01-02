@@ -40,12 +40,10 @@ const AdminNewArtworkPage: React.FC = () => {
     setSubmitting(true);
 
     try {
-      const token = localStorage.getItem('authToken');
       const response = await fetch('/api/admin/artworks', {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
       });

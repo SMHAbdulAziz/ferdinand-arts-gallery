@@ -39,12 +39,7 @@ const AdminTicketsPage: React.FC = () => {
 
   const fetchTickets = async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await fetch('/api/admin/tickets', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await fetch('/api/admin/tickets');
       const data = await response.json();
       if (data.success) {
         setTickets(data.tickets);

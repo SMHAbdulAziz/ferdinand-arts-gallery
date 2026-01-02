@@ -1,6 +1,5 @@
 // Admin user management endpoints
 const { Pool } = require('pg');
-const { withAdminAuth } = require('../../../middleware/adminAuth');
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -40,4 +39,4 @@ async function handleGetUsers(req, res) {
   }
 }
 
-export default withAdminAuth(handler);
+export default handler;

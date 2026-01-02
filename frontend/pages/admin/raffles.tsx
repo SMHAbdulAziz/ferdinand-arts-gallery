@@ -50,18 +50,7 @@ const AdminRafflesPage: React.FC = () => {
 
   const fetchRaffles = async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        console.error('No auth token found');
-        setLoading(false);
-        return;
-      }
-      
-      const response = await fetch('/api/admin/raffles', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await fetch('/api/admin/raffles');
       
       if (!response.ok) {
         const errorData = await response.json();
@@ -94,7 +83,6 @@ const AdminRafflesPage: React.FC = () => {
     e.preventDefault();
     
     try {
-      const token = localStorage.getItem('authToken');
       const method = editingId ? 'PUT' : 'POST';
       const url = editingId 
         ? `/api/admin/raffles/${editingId}`
@@ -103,8 +91,7 @@ const AdminRafflesPage: React.FC = () => {
       const response = await fetch(url, {
         method,
         headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(formData)
       });
@@ -128,12 +115,10 @@ const AdminRafflesPage: React.FC = () => {
 
   const handleStatusChange = async (raffleId: string, newStatus: string) => {
     try {
-      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/admin/raffles/${raffleId}`, {
         method: 'PATCH',
         headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ status: newStatus })
       });
@@ -156,12 +141,8 @@ const AdminRafflesPage: React.FC = () => {
     if (!confirm('Are you sure you want to delete this raffle?')) return;
 
     try {
-      const token = localStorage.getItem('authToken');
       const response = await fetch(`/api/admin/raffles/${raffleId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
+        method: 'DELETE'
       });
 
       const data = await response.json();

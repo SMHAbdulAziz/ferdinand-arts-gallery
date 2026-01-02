@@ -37,12 +37,7 @@ const AdminUsersPage: React.FC = () => {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      const response = await fetch('/api/admin/users', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      const response = await fetch('/api/admin/users');
       const data = await response.json();
       if (data.success) {
         setUsers(data.users);
