@@ -47,8 +47,23 @@ async function handleUpdateRaffle(req, res, raffleId) {
   }
 
   // Validate that max_tickets >= minimum_threshold_tickets
-  if (parseInt(max_tickets) < parseInt(minimum_threshold_tickets)) {
-    return res.status(400).json({ error: 'Max tickets must be greater than or equal to minimum threshold' });
+  const maxTicketsNum = parseInt(max_tickets);
+  const thresholdTicketsNum = parseInt(minimum_threshold_tickets) || 0;
+  
+  if (thresholdTicketsNum > maxTicketsNum) {
+    return res.status(400).json({ 
+      error: 'Minimum threshold tickets cannot exceed max tickets',
+      details: `Threshold (${thresholdTicketsNum}) must be <= Max Tickets (${maxTicketsNum})`
+    });
+  }
+
+  // Validate dates
+  const startDate = new Date(start_date);
+  const endDate = new Date(end_date);
+  if (endDate <= startDate) {
+    return res.status(400).json({ 
+      error: 'End date must be after start date' 
+    });
   }
 
   try {

@@ -54,6 +54,26 @@ async function handleCreateRaffle(req, res) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
+  // Validate threshold vs max tickets
+  const maxTicketsNum = parseInt(max_tickets);
+  const thresholdTicketsNum = parseInt(minimum_threshold_tickets) || 0;
+  
+  if (thresholdTicketsNum > maxTicketsNum) {
+    return res.status(400).json({ 
+      error: 'Minimum threshold tickets cannot exceed max tickets',
+      details: `Threshold (${thresholdTicketsNum}) must be <= Max Tickets (${maxTicketsNum})`
+    });
+  }
+
+  // Validate dates
+  const startDate = new Date(start_date);
+  const endDate = new Date(end_date);
+  if (endDate <= startDate) {
+    return res.status(400).json({ 
+      error: 'End date must be after start date' 
+    });
+  }
+
   try {
     const result = await pool.query(
       `INSERT INTO raffles (
@@ -76,6 +96,13 @@ async function handleCreateRaffle(req, res) {
     });
   } catch (error) {
     console.error('Database error:', error);
-    res.status(500).json({ error: 'Failed to create raffle' });
+    // Check for specific database errors
+    if (error.message && error.message.includes('duplicate')) {
+      return res.status(400).json({ error: 'A raffle with this title already exists' });
+    }
+    res.status(500).json({ 
+      error: 'Failed to create raffle',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }

@@ -103,7 +103,9 @@ const AdminRafflesPage: React.FC = () => {
         resetForm();
         alert(editingId ? 'Raffle updated!' : 'Raffle created!');
       } else {
-        alert(data.error || 'Failed to save raffle');
+        // Show detailed error message if available
+        const errorMsg = data.details ? `${data.error}\n\n${data.details}` : (data.error || 'Failed to save raffle');
+        alert(errorMsg);
       }
     } catch (error) {
       alert('Error saving raffle');
