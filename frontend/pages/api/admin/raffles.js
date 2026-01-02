@@ -51,8 +51,17 @@ async function handleCreateRaffle(req, res) {
     cash_prize_percentage
   } = req.body;
 
+  console.log('Creating raffle with data:', {
+    title,
+    ticket_price,
+    max_tickets,
+    minimum_threshold_tickets,
+    status
+  });
+
   // Validate required fields
   if (!title || !ticket_price || !max_tickets || !start_date || !end_date) {
+    console.warn('Missing required fields');
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
@@ -77,6 +86,7 @@ async function handleCreateRaffle(req, res) {
   }
 
   try {
+    console.log('Inserting into database...');
     const result = await pool.query(
       `INSERT INTO raffles (
         title, description, ticket_price, max_tickets, 
@@ -85,19 +95,21 @@ async function handleCreateRaffle(req, res) {
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 0, 0, NOW())
       RETURNING id, title, status`,
       [
-        title, description, ticket_price, max_tickets,
-        minimum_threshold_tickets, status, start_date, end_date,
-        artwork_id || null, cash_prize_percentage
+        title, description, ticket_price, maxTicketsNum,
+        thresholdTicketsNum, status, start_date, end_date,
+        artwork_id || null, cash_prize_percentage || 30
       ]
     );
 
+    console.log('Raffle created successfully:', result.rows[0]);
     res.status(201).json({
       success: true,
       message: 'Raffle created successfully',
       raffle: result.rows[0]
     });
   } catch (error) {
-    console.error('Database error:', error);
+    console.error('Database error creating raffle:', error.message);
+    console.error('Error details:', error);
     // Check for specific database errors
     if (error.message && error.message.includes('duplicate')) {
       return res.status(400).json({ error: 'A raffle with this title already exists' });
