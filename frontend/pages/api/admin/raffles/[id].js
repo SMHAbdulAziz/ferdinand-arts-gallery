@@ -32,6 +32,7 @@ async function handleUpdateRaffle(req, res, raffleId) {
     description,
     ticket_price,
     max_tickets,
+    minimum_threshold_tickets,
     status,
     start_date,
     end_date,
@@ -42,6 +43,17 @@ async function handleUpdateRaffle(req, res, raffleId) {
   // Validate required fields
   if (!title || !ticket_price || !max_tickets || !start_date || !end_date) {
     return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Validate that max_tickets >= minimum_threshold_tickets
+  const maxTicketsNum = parseInt(max_tickets);
+  const thresholdTicketsNum = parseInt(minimum_threshold_tickets) || 0;
+  
+  if (thresholdTicketsNum > maxTicketsNum) {
+    return res.status(400).json({ 
+      error: 'Minimum threshold tickets cannot exceed max tickets',
+      details: `Threshold (${thresholdTicketsNum}) must be <= Max Tickets (${maxTicketsNum})`
+    });
   }
 
   // Validate dates
@@ -55,7 +67,7 @@ async function handleUpdateRaffle(req, res, raffleId) {
 
   try {
     console.log('Updating raffle with ID:', raffleId);
-    console.log('Update data:', { title, ticket_price, max_tickets, status });
+    console.log('Update data:', { title, ticket_price, maxTicketsNum, thresholdTicketsNum, status });
     
     const result = await pool.query(
       `UPDATE raffles SET
@@ -63,17 +75,18 @@ async function handleUpdateRaffle(req, res, raffleId) {
         description = $2,
         ticket_price = $3,
         max_tickets = $4,
-        status = $5,
-        start_date = $6,
-        end_date = $7,
-        artwork_id = $8,
-        cash_prize_percentage = $9,
+        minimum_threshold_tickets = $5,
+        status = $6,
+        start_date = $7,
+        end_date = $8,
+        artwork_id = $9,
+        cash_prize_percentage = $10,
         updated_at = NOW()
-      WHERE id = $10
+      WHERE id = $11
       RETURNING id, title, status`,
       [
-        title, description, ticket_price, parseInt(max_tickets),
-        status, start_date, end_date,
+        title, description, ticket_price, maxTicketsNum,
+        thresholdTicketsNum, status, start_date, end_date,
         artwork_id || null, cash_prize_percentage || 70, raffleId
       ]
     );
