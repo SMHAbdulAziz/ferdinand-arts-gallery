@@ -66,6 +66,9 @@ async function handleUpdateRaffle(req, res, raffleId) {
   }
 
   try {
+    console.log('Updating raffle with ID:', raffleId);
+    console.log('Update data:', { title, ticket_price, maxTicketsNum, thresholdTicketsNum, status });
+    
     const result = await pool.query(
       `UPDATE raffles SET
         title = $1,
@@ -82,9 +85,9 @@ async function handleUpdateRaffle(req, res, raffleId) {
       WHERE id = $11
       RETURNING id, title, status`,
       [
-        title, description, ticket_price, max_tickets,
-        minimum_threshold_tickets, status, start_date, end_date,
-        artwork_id || null, cash_prize_percentage, raffleId
+        title, description, ticket_price, maxTicketsNum,
+        thresholdTicketsNum, status, start_date, end_date,
+        artwork_id || null, cash_prize_percentage || 70, raffleId
       ]
     );
 
@@ -92,6 +95,7 @@ async function handleUpdateRaffle(req, res, raffleId) {
       return res.status(404).json({ error: 'Raffle not found' });
     }
 
+    console.log('Raffle updated successfully:', result.rows[0]);
     res.status(200).json({
       success: true,
       message: 'Raffle updated successfully',
@@ -99,6 +103,7 @@ async function handleUpdateRaffle(req, res, raffleId) {
     });
   } catch (error) {
     console.error('Database error updating raffle:', error.message, error.detail);
+    console.error('Full error:', error);
     res.status(500).json({ 
       error: 'Failed to update raffle',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -114,6 +119,7 @@ async function handlePatchRaffle(req, res, raffleId) {
   }
 
   try {
+    console.log(`Updating raffle ${raffleId} status to ${status}`);
     const result = await pool.query(
       `UPDATE raffles SET
         status = $1,
@@ -127,19 +133,25 @@ async function handlePatchRaffle(req, res, raffleId) {
       return res.status(404).json({ error: 'Raffle not found' });
     }
 
+    console.log('Status updated successfully:', result.rows[0]);
     res.status(200).json({
       success: true,
       message: 'Raffle status updated successfully',
       raffle: result.rows[0]
     });
   } catch (error) {
-    console.error('Database error:', error);
-    res.status(500).json({ error: 'Failed to update raffle status' });
+    console.error('Database error updating status:', error.message);
+    console.error('Full error:', error);
+    res.status(500).json({ 
+      error: 'Failed to update raffle status',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }
 
 async function handleDeleteRaffle(req, res, raffleId) {
   try {
+    console.log(`Deleting raffle with ID: ${raffleId}`);
     const result = await pool.query(
       'DELETE FROM raffles WHERE id = $1 RETURNING id',
       [raffleId]
@@ -149,12 +161,17 @@ async function handleDeleteRaffle(req, res, raffleId) {
       return res.status(404).json({ error: 'Raffle not found' });
     }
 
+    console.log('Raffle deleted successfully');
     res.status(200).json({
       success: true,
       message: 'Raffle deleted successfully'
     });
   } catch (error) {
-    console.error('Database error:', error);
-    res.status(500).json({ error: 'Failed to delete raffle' });
+    console.error('Database error deleting raffle:', error.message);
+    console.error('Full error:', error);
+    res.status(500).json({ 
+      error: 'Failed to delete raffle',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 }

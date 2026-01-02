@@ -20,16 +20,19 @@ export default handler;
 
 async function handleGetRaffles(req, res) {
   try {
+    console.log('Fetching raffles...');
     const result = await pool.query(
       'SELECT id, title, status, tickets_sold, max_tickets, start_date, end_date FROM raffles ORDER BY created_at DESC'
     );
 
+    console.log(`Found ${result.rows.length} raffles`);
     res.status(200).json({
       success: true,
       raffles: result.rows
     });
   } catch (error) {
     console.error('Database error fetching raffles:', error.message);
+    console.error('Full error:', error);
     res.status(500).json({ 
       error: 'Failed to fetch raffles',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
@@ -86,18 +89,29 @@ async function handleCreateRaffle(req, res) {
   }
 
   try {
-    console.log('Inserting into database...');
+    console.log('Inserting into database with values:', {
+      title,
+      ticket_price,
+      max_tickets: maxTicketsNum,
+      minimum_threshold_tickets: thresholdTicketsNum,
+      status,
+      start_date,
+      end_date,
+      artwork_id: artwork_id || null,
+      cash_prize_percentage: cash_prize_percentage || 70
+    });
+
     const result = await pool.query(
       `INSERT INTO raffles (
         title, description, ticket_price, max_tickets, 
         minimum_threshold_tickets, status, start_date, end_date,
-        artwork_id, cash_prize_percentage, tickets_sold, total_revenue, created_at
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 0, 0, NOW())
+        artwork_id, cash_prize_percentage
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING id, title, status`,
       [
         title, description, ticket_price, maxTicketsNum,
         thresholdTicketsNum, status, start_date, end_date,
-        artwork_id || null, cash_prize_percentage || 30
+        artwork_id || null, cash_prize_percentage || 70
       ]
     );
 
