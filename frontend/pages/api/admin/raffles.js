@@ -46,7 +46,6 @@ async function handleCreateRaffle(req, res) {
     description,
     ticket_price,
     max_tickets,
-    minimum_threshold_tickets,
     status,
     start_date,
     end_date,
@@ -58,7 +57,6 @@ async function handleCreateRaffle(req, res) {
     title,
     ticket_price,
     max_tickets,
-    minimum_threshold_tickets,
     status
   });
 
@@ -66,17 +64,6 @@ async function handleCreateRaffle(req, res) {
   if (!title || !ticket_price || !max_tickets || !start_date || !end_date) {
     console.warn('Missing required fields');
     return res.status(400).json({ error: 'Missing required fields' });
-  }
-
-  // Validate threshold vs max tickets
-  const maxTicketsNum = parseInt(max_tickets);
-  const thresholdTicketsNum = parseInt(minimum_threshold_tickets) || 0;
-  
-  if (thresholdTicketsNum > maxTicketsNum) {
-    return res.status(400).json({ 
-      error: 'Minimum threshold tickets cannot exceed max tickets',
-      details: `Threshold (${thresholdTicketsNum}) must be <= Max Tickets (${maxTicketsNum})`
-    });
   }
 
   // Validate dates
@@ -92,8 +79,7 @@ async function handleCreateRaffle(req, res) {
     console.log('Inserting into database with values:', {
       title,
       ticket_price,
-      max_tickets: maxTicketsNum,
-      minimum_threshold_tickets: thresholdTicketsNum,
+      max_tickets,
       status,
       start_date,
       end_date,
@@ -104,13 +90,13 @@ async function handleCreateRaffle(req, res) {
     const result = await pool.query(
       `INSERT INTO raffles (
         title, description, ticket_price, max_tickets, 
-        minimum_threshold_tickets, status, start_date, end_date,
+        status, start_date, end_date,
         artwork_id, cash_prize_percentage
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING id, title, status`,
       [
-        title, description, ticket_price, maxTicketsNum,
-        thresholdTicketsNum, status, start_date, end_date,
+        title, description, ticket_price, parseInt(max_tickets),
+        status, start_date, end_date,
         artwork_id || null, cash_prize_percentage || 70
       ]
     );

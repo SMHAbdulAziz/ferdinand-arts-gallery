@@ -26,7 +26,6 @@ const AdminRafflesPage: React.FC = () => {
     description: '',
     ticket_price: 25,
     max_tickets: 100,
-    minimum_threshold_tickets: 50,
     status: 'scheduled',
     start_date: '',
     end_date: '',
@@ -165,7 +164,7 @@ const AdminRafflesPage: React.FC = () => {
       description: '',
       ticket_price: 25,
       max_tickets: 100,
-      minimum_threshold_tickets: 50,
+
       status: 'scheduled',
       start_date: '',
       end_date: '',
@@ -290,21 +289,6 @@ const AdminRafflesPage: React.FC = () => {
                       type="number"
                       name="max_tickets"
                       value={formData.max_tickets}
-                      onChange={handleInputChange}
-                      min="1"
-                      required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Minimum Threshold Tickets
-                    </label>
-                    <input
-                      type="number"
-                      name="minimum_threshold_tickets"
-                      value={formData.minimum_threshold_tickets}
                       onChange={handleInputChange}
                       min="1"
                       required
