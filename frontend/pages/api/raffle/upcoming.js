@@ -31,6 +31,7 @@ export default async function handler(req, res) {
         a.images,
         a.medium,
         a.dimensions,
+        a.creation_date as painting_year,
         ar.name as artist_name
       FROM raffles r
       LEFT JOIN artworks a ON r.artwork_id = a.id

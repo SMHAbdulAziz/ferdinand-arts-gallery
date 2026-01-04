@@ -31,7 +31,11 @@ const AdminRafflesPage: React.FC = () => {
     start_date: '',
     end_date: '',
     artwork_id: '',
-    cash_prize_percentage: 30
+    cash_prize_percentage: 30,
+    medium: '',
+    dimensions: '',
+    painting_year: new Date().getFullYear().toString(),
+    estimated_value: 0
   });
 
   // Check if user is admin
@@ -170,10 +174,35 @@ const AdminRafflesPage: React.FC = () => {
       start_date: '',
       end_date: '',
       artwork_id: '',
-      cash_prize_percentage: 30
+      cash_prize_percentage: 30,
+      medium: '',
+      dimensions: '',
+      painting_year: new Date().getFullYear().toString(),
+      estimated_value: 0
     });
     setEditingId(null);
     setShowNewForm(false);
+  };
+
+  const handleEditClick = (raffle: any) => {
+    setFormData({
+      title: raffle.title || '',
+      description: raffle.description || '',
+      ticket_price: raffle.ticket_price || 25,
+      max_tickets: raffle.max_tickets || 100,
+      minimum_threshold_tickets: raffle.minimum_threshold_tickets || 50,
+      status: raffle.status || 'scheduled',
+      start_date: raffle.start_date || '',
+      end_date: raffle.end_date || '',
+      artwork_id: raffle.artwork_id || '',
+      cash_prize_percentage: raffle.cash_prize_percentage || 30,
+      medium: raffle.medium || '',
+      dimensions: raffle.dimensions || '',
+      painting_year: raffle.painting_year || new Date().getFullYear().toString(),
+      estimated_value: raffle.estimated_value || 0
+    });
+    setEditingId(raffle.id);
+    setShowNewForm(true);
   };
 
   const formatDate = (dateString: string) => {
@@ -369,6 +398,61 @@ const AdminRafflesPage: React.FC = () => {
                       placeholder="Link to artwork"
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Medium
+                    </label>
+                    <input
+                      type="text"
+                      name="medium"
+                      value={formData.medium}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., Acrylic on Canvas"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Dimensions
+                    </label>
+                    <input
+                      type="text"
+                      name="dimensions"
+                      value={formData.dimensions}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      placeholder="e.g., 100cm × 100cm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Painting Year
+                    </label>
+                    <input
+                      type="number"
+                      name="painting_year"
+                      value={formData.painting_year}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Estimated Value ($)
+                    </label>
+                    <input
+                      type="number"
+                      name="estimated_value"
+                      value={formData.estimated_value}
+                      onChange={handleInputChange}
+                      min="0"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -458,10 +542,7 @@ const AdminRafflesPage: React.FC = () => {
                             </button>
                           )}
                           <button
-                            onClick={() => {
-                              setEditingId(raffle.id);
-                              setShowNewForm(true);
-                            }}
+                            onClick={() => handleEditClick(raffle)}
                             className="text-blue-600 hover:text-blue-800 font-semibold"
                           >
                             Edit

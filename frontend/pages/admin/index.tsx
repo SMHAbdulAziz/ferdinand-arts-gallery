@@ -54,6 +54,18 @@ const AdminLayout: React.FC<{ children: React.ReactNode; title: string }> = ({ c
 const AdminDashboard: React.FC = () => {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const [stats, setStats] = useState({
+    totalRaffles: 0,
+    activeRaffles: 0,
+    totalTicketsSold: 0,
+    totalRevenue: 0,
+    ferdinandFund: 0,
+    ferdinandFundTarget: 269000
+  });
+  const [recentTickets, setRecentTickets] = useState<any[]>([]);
+  const [fundGoalEdit, setFundGoalEdit] = useState('269000');
+  const [showGoalEditor, setShowGoalEditor] = useState(false);
+  const [loadingDashboard, setLoadingDashboard] = useState(true);
 
   // Redirect to login if not authenticated or not admin
   useEffect(() => {
@@ -61,6 +73,65 @@ const AdminDashboard: React.FC = () => {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  // Fetch dashboard data
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      fetchDashboardData();
+    }
+  }, [user]);
+
+  const fetchDashboardData = async () => {
+    try {
+      const response = await fetch('/api/admin/dashboard');
+      const data = await response.json();
+      
+      if (data.success) {
+        setStats(data.stats);
+        setRecentTickets(data.recentTickets);
+        setFundGoalEdit(data.stats.ferdinandFundTarget.toString());
+      }
+    } catch (error) {
+      console.error('Failed to fetch dashboard data:', error);
+    } finally {
+      setLoadingDashboard(false);
+    }
+  };
+
+  const handleSaveFundGoal = async () => {
+    const newGoal = parseFloat(fundGoalEdit);
+    if (isNaN(newGoal) || newGoal <= 0) {
+      alert('Please enter a valid amount');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/admin/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key: 'fund_goals',
+          value: {
+            ferdinand_fund_target: newGoal
+          },
+          description: "Ferdinand's education fund goals"
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        // Update local stats
+        setStats(prev => ({ ...prev, ferdinandFundTarget: newGoal }));
+        setShowGoalEditor(false);
+        alert('Fund goal updated successfully');
+      }
+    } catch (error) {
+      console.error('Failed to save fund goal:', error);
+      alert('Failed to save fund goal');
+    }
+  };
+
+  const fundProgress = (stats.ferdinandFund / stats.ferdinandFundTarget) * 100;
 
   // Show loading state
   if (loading) {
@@ -78,25 +149,15 @@ const AdminDashboard: React.FC = () => {
     return null;
   }
 
-  // Mock data - would come from API
-  const stats = {
-    totalRaffles: 1,
-    activeRaffles: 1,
-    totalTicketsSold: 23,
-    totalRevenue: 1150,
-    ferdinandFund: 12500,
-    ferdinandFundTarget: 269000
-  };
-
-  const recentTickets = [
-    { id: 1, email: 'john@example.com', raffle: 'Playful Giraffe', tickets: 2, amount: 100, date: '2025-09-20' },
-    { id: 2, email: 'sarah@example.com', raffle: 'Playful Giraffe', tickets: 1, amount: 50, date: '2025-09-19' },
-    { id: 3, email: 'mike@example.com', raffle: 'Playful Giraffe', tickets: 3, amount: 150, date: '2025-09-18' },
-  ];
-
-  const fundProgress = (stats.ferdinandFund / stats.ferdinandFundTarget) * 100;
-
-  return (
+  if (loadingDashboard) {
+    return (
+      <AdminLayout title="Dashboard">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      </AdminLayout>
+    );
+  }
     <AdminLayout title="Dashboard">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -183,7 +244,36 @@ const AdminDashboard: React.FC = () => {
 
       {/* Ferdinand's Fund Progress */}
       <div className="bg-white shadow rounded-lg p-6 mb-8">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Ferdinand's Education Fund Progress</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-gray-900">Ferdinand's Education Fund Progress</h3>
+          <button
+            onClick={() => setShowGoalEditor(!showGoalEditor)}
+            className="text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            {showGoalEditor ? 'Cancel' : 'Edit Goal'}
+          </button>
+        </div>
+        
+        {showGoalEditor && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex gap-2">
+              <input
+                type="number"
+                value={fundGoalEdit}
+                onChange={(e) => setFundGoalEdit(e.target.value)}
+                placeholder="Enter goal amount"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={handleSaveFundGoal}
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        )}
+        
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Progress toward ${stats.ferdinandFundTarget.toLocaleString()} goal</span>

@@ -22,7 +22,7 @@ async function handleGetRaffles(req, res) {
   try {
     console.log('Fetching raffles...');
     const result = await pool.query(
-      'SELECT id, title, status, tickets_sold, max_tickets, start_date, end_date FROM raffles ORDER BY created_at DESC'
+      'SELECT id, title, description, status, tickets_sold, max_tickets, start_date, end_date, ticket_price, minimum_threshold_tickets, artwork_id, cash_prize_percentage, medium, dimensions, painting_year, estimated_value FROM raffles ORDER BY created_at DESC'
     );
 
     console.log(`Found ${result.rows.length} raffles`);
@@ -51,7 +51,11 @@ async function handleCreateRaffle(req, res) {
     start_date,
     end_date,
     artwork_id,
-    cash_prize_percentage
+    cash_prize_percentage,
+    medium,
+    dimensions,
+    painting_year,
+    estimated_value
   } = req.body;
 
   console.log('Creating raffle with data:', {
@@ -98,20 +102,25 @@ async function handleCreateRaffle(req, res) {
       start_date,
       end_date,
       artwork_id: artwork_id || null,
-      cash_prize_percentage: cash_prize_percentage || 70
+      cash_prize_percentage: cash_prize_percentage || 70,
+      medium,
+      dimensions,
+      painting_year,
+      estimated_value
     });
 
     const result = await pool.query(
       `INSERT INTO raffles (
         title, description, ticket_price, max_tickets, 
         minimum_threshold_tickets, status, start_date, end_date,
-        artwork_id, cash_prize_percentage
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        artwork_id, cash_prize_percentage, medium, dimensions, painting_year, estimated_value
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
       RETURNING id, title, status`,
       [
         title, description, ticket_price, maxTicketsNum,
         thresholdTicketsNum, status, start_date, end_date,
-        artwork_id || null, cash_prize_percentage || 70
+        artwork_id || null, cash_prize_percentage || 70,
+        medium || null, dimensions || null, painting_year || null, estimated_value || null
       ]
     );
 
