@@ -92,12 +92,24 @@ const AdminRafflesPage: React.FC = () => {
         ? `/api/admin/raffles/${editingId}`
         : '/api/admin/raffles';
 
+      // Remove painting_year and estimated_value from submission (they come from artwork)
+      const dataToSubmit = {
+        ...formData,
+        painting_year: undefined,
+        estimated_value: undefined
+      };
+      
+      // Clean up undefined values
+      Object.keys(dataToSubmit).forEach(key => 
+        dataToSubmit[key as keyof typeof dataToSubmit] === undefined && delete dataToSubmit[key as keyof typeof dataToSubmit]
+      );
+
       const response = await fetch(url, {
         method,
         headers: { 
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(dataToSubmit)
       });
 
       const data = await response.json();

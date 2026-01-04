@@ -62,7 +62,7 @@ const RafflesPage: React.FC = () => {
           medium: raffle.medium,
           dimensions: raffle.dimensions,
           estimated_value: raffle.estimated_value,
-          year: new Date(raffle.start_date).getFullYear().toString()
+          year: raffle.painting_year ? new Date(raffle.painting_year).getFullYear().toString() : new Date(raffle.start_date).getFullYear().toString()
         }]);
       }
     } catch (error) {
@@ -162,19 +162,19 @@ const RafflesPage: React.FC = () => {
                   <div className="grid grid-cols-2 gap-6">
                     <div>
                       <h4 className="font-semibold text-primary-900 mb-2">Medium</h4>
-                      <p className="text-primary-600">{raffle.medium}</p>
+                      <p className="text-primary-600">{raffle.medium || 'N/A'}</p>
                     </div>
                     <div>
                       <h4 className="font-semibold text-primary-900 mb-2">Dimensions</h4>
-                      <p className="text-primary-600">{raffle.dimensions}</p>
+                      <p className="text-primary-600">{raffle.dimensions || 'N/A'}</p>
                     </div>
                     <div>
                       <h4 className="font-semibold text-primary-900 mb-2">Year</h4>
-                      <p className="text-primary-600">{raffle.year}</p>
+                      <p className="text-primary-600">{raffle.year || 'N/A'}</p>
                     </div>
                     <div>
                       <h4 className="font-semibold text-primary-900 mb-2">Estimated Value</h4>
-                      <p className="text-primary-600 font-bold">${raffle.estimated_value}</p>
+                      <p className="text-primary-600 font-bold">${raffle.estimated_value || 'N/A'}</p>
                     </div>
                   </div>
                   

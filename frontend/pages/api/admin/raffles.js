@@ -22,7 +22,26 @@ async function handleGetRaffles(req, res) {
   try {
     console.log('Fetching raffles...');
     const result = await pool.query(
-      'SELECT id, title, description, status, tickets_sold, max_tickets, start_date, end_date, ticket_price, minimum_threshold_tickets, artwork_id, cash_prize_percentage, medium, dimensions, painting_year, estimated_value FROM raffles ORDER BY created_at DESC'
+      `SELECT 
+        r.id, 
+        r.title, 
+        r.description, 
+        r.status, 
+        r.tickets_sold, 
+        r.max_tickets, 
+        r.start_date, 
+        r.end_date, 
+        r.ticket_price, 
+        r.minimum_threshold_tickets, 
+        r.artwork_id, 
+        r.cash_prize_percentage, 
+        r.medium, 
+        r.dimensions,
+        a.estimated_value,
+        a.creation_date as painting_year
+      FROM raffles r
+      LEFT JOIN artworks a ON r.artwork_id = a.id
+      ORDER BY r.created_at DESC`
     );
 
     console.log(`Found ${result.rows.length} raffles`);
@@ -53,9 +72,7 @@ async function handleCreateRaffle(req, res) {
     artwork_id,
     cash_prize_percentage,
     medium,
-    dimensions,
-    painting_year,
-    estimated_value
+    dimensions
   } = req.body;
 
   console.log('Creating raffle with data:', {
@@ -104,23 +121,21 @@ async function handleCreateRaffle(req, res) {
       artwork_id: artwork_id || null,
       cash_prize_percentage: cash_prize_percentage || 70,
       medium,
-      dimensions,
-      painting_year,
-      estimated_value
+      dimensions
     });
 
     const result = await pool.query(
       `INSERT INTO raffles (
         title, description, ticket_price, max_tickets, 
         minimum_threshold_tickets, status, start_date, end_date,
-        artwork_id, cash_prize_percentage, medium, dimensions, painting_year, estimated_value
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        artwork_id, cash_prize_percentage, medium, dimensions
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING id, title, status`,
       [
         title, description, ticket_price, maxTicketsNum,
         thresholdTicketsNum, status, start_date, end_date,
         artwork_id || null, cash_prize_percentage || 70,
-        medium || null, dimensions || null, painting_year || null, estimated_value || null
+        medium || null, dimensions || null
       ]
     );
 

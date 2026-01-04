@@ -39,9 +39,7 @@ async function handleUpdateRaffle(req, res, raffleId) {
     artwork_id,
     cash_prize_percentage,
     medium,
-    dimensions,
-    painting_year,
-    estimated_value
+    dimensions
   } = req.body;
 
   // Validate required fields
@@ -87,16 +85,14 @@ async function handleUpdateRaffle(req, res, raffleId) {
         cash_prize_percentage = $10,
         medium = $11,
         dimensions = $12,
-        painting_year = $13,
-        estimated_value = $14,
         updated_at = NOW()
-      WHERE id = $15
+      WHERE id = $13
       RETURNING id, title, status`,
       [
         title, description, ticket_price, maxTicketsNum,
         thresholdTicketsNum, status, start_date, end_date,
         artwork_id || null, cash_prize_percentage || 70,
-        medium || null, dimensions || null, painting_year || null, estimated_value || null,
+        medium || null, dimensions || null,
         raffleId
       ]
     );
