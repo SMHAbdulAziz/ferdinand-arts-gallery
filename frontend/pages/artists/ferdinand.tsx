@@ -26,7 +26,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
       {
         id: 'playful-giraffe',
         title: 'Playful Giraffe',
-        image: '/images/playful-giraffe.jpg',
+        image: '/images/gallery/Playful-Giraffe-1.jpg',
         year: '2024',
         medium: 'Acrylic on Canvas',
         dimensions: '36 x 36 inches',
@@ -36,7 +36,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
       {
         id: 'multi-colored-lion',
         title: 'Multi-Colored Lion Street Art',
-        image: '/images/multi-colored-lion-street-art-neon-vibrance.jpg',
+        image: '/images/gallery/Majestic-Lion-1.jpg',
         year: '2024',
         medium: 'Acrylic on Canvas',
         dimensions: 'TBD',
@@ -46,7 +46,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
       {
         id: 'elephant-landscape',
         title: 'Elephant in Golden Landscape',
-        image: '/images/elephant-wading-golden-serene-landscape.jpg',
+        image: '/images/gallery/Elephant-In-The-Water-1.jpg',
         year: '2024',
         medium: 'Acrylic on Canvas',
         dimensions: 'TBD',
