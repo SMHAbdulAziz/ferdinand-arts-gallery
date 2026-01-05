@@ -41,21 +41,12 @@ const RafflesPage: React.FC = () => {
     fetchUpcomingRaffles();
   }, []);
 
-  // Initialize PayPal button after DOM is loaded
+  // Initialize PayPal hosted button when component mounts
   useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).paypal) {
-      const script = document.createElement('script');
-      script.innerHTML = `
-        document.addEventListener("DOMContentLoaded", (event) => {
-          if (window.paypal) {
-            paypal.HostedButtons({
-              hostedButtonId: "VGBSVXSENDZXJ"
-            })
-            .render("#paypal-container-VGBSVXSENDZXJ")
-          }
-        })
-      `;
-      document.body.appendChild(script);
+    if ((window as any).paypal) {
+      (window as any).paypal.HostedButtons({
+        hostedButtonId: "VGBSVXSENDZXJ"
+      }).render("#paypal-container-VGBSVXSENDZXJ");
     }
   }, []);
 
@@ -157,11 +148,11 @@ const RafflesPage: React.FC = () => {
               <p className="text-primary-600">Loading active raffles...</p>
             </div>
           ) : activeRaffles.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
               {activeRaffles.map((raffle) => (
-                <div key={raffle.id} className="space-y-8">
+                <div key={raffle.id} className="space-y-6">
                   {/* Artwork Image */}
-                  <div className="relative w-full aspect-square bg-primary-100 rounded-lg overflow-hidden shadow-xl">
+                  <div className="relative w-full aspect-square bg-primary-100 rounded-lg overflow-hidden shadow-lg">
                     {raffle.images?.[0] ? (
                       <Image
                         src={raffle.images[0]}
@@ -176,110 +167,47 @@ const RafflesPage: React.FC = () => {
                       </div>
                     )}
                   </div>
+                </div>
+              ))}
+              
+              {/* PayPal Checkout Section */}
+              {activeRaffles.map((raffle) => (
+                <div key={`${raffle.id}-checkout`} className="space-y-4">
+                  <div className="bg-gray-50 p-6 rounded-lg">
+                    {/* Artwork Title and Price */}
+                    <h3 className="font-serif text-2xl text-primary-900 mb-2">
+                      "{raffle.artwork_title}"
+                    </h3>
+                    <p className="text-primary-600 mb-6">by {raffle.artist_name}</p>
 
-                  {/* PayPal Button Section */}
-                  <div className="bg-white border-2 border-primary-200 rounded-lg p-8 shadow-lg">
-                    <div className="mb-6">
-                      <h3 className="font-serif text-2xl text-primary-900 mb-2">
-                        {raffle.artwork_title}
-                      </h3>
-                      <p className="text-primary-600 mb-4">by {raffle.artist_name}</p>
-                      
-                      <div className="flex justify-between items-center py-4 border-y border-primary-200">
-                        <div>
-                          <p className="text-sm text-primary-600">Ticket Price</p>
-                          <p className="text-3xl font-bold text-primary-900">${raffle.ticket_price}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm text-primary-600">Tickets Remaining</p>
-                          <p className="text-2xl font-bold text-accent-600">
-                            {raffle.max_tickets - raffle.tickets_sold} / {raffle.max_tickets}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-4">
-                        <p className="text-sm text-primary-600 mb-1">Raffle Ends</p>
-                        <p className="text-lg font-semibold text-primary-900">
-                          {new Date(raffle.end_date).toLocaleDateString('en-US', { 
-                            month: 'long', 
-                            day: 'numeric', 
-                            year: 'numeric' 
-                          })}
-                        </p>
+                    {/* Price Display */}
+                    <div className="flex justify-between items-center mb-6 pb-6 border-b border-gray-300">
+                      <div>
+                        <p className="text-sm text-primary-600">Ticket Price</p>
+                        <p className="text-4xl font-bold text-primary-900">${raffle.ticket_price.toFixed(2)} USD</p>
                       </div>
                     </div>
 
-                    {/* PayPal Button Container */}
-                    <div className="mb-4">
-                      <div id="paypal-container-VGBSVXSENDZXJ"></div>
+                    {/* Raffle Details */}
+                    <div className="space-y-3 mb-6 text-sm text-primary-700">
+                      <div className="flex justify-between">
+                        <span>Tickets Remaining:</span>
+                        <span className="font-semibold text-accent-600">{raffle.max_tickets - raffle.tickets_sold} / {raffle.max_tickets}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Raffle Ends:</span>
+                        <span className="font-semibold">{new Date(raffle.end_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+                      </div>
                     </div>
-
-                    <p className="text-xs text-primary-500 text-center">
-                      Secure payment powered by PayPal. Each purchase enters you into the raffle.
-                    </p>
                   </div>
+
+                  {/* PayPal Button Container */}
+                  <div id="paypal-container-VGBSVXSENDZXJ" className="mt-6"></div>
                 </div>
               ))}
               
               {/* Artwork Details */}
               {activeRaffles.map((raffle) => (
-                <div key={`${raffle.id}-details`} className="space-y-6">
-                  <div>
-                    <h3 className="font-serif text-2xl text-primary-900 mb-4">
-                      About "{raffle.artwork_title}"
-                    </h3>
-                    <p className="text-primary-700 leading-relaxed mb-6">
-                      {raffle.description}
-                    </p>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-semibold text-primary-900 mb-2">Medium</h4>
-                      <p className="text-primary-600">{raffle.medium || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-primary-900 mb-2">Dimensions</h4>
-                      <p className="text-primary-600">{raffle.dimensions || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-primary-900 mb-2">Year</h4>
-                      <p className="text-primary-600">{raffle.year || 'N/A'}</p>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-primary-900 mb-2">Estimated Value</h4>
-                      <p className="text-primary-600 font-bold">${raffle.estimated_value || 'N/A'}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-accent-50 p-6 border border-accent-200 rounded-lg">
-                    <h4 className="font-semibold text-accent-900 mb-3 flex items-center">
-                      <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                      </svg>
-                      Impact of Your Purchase
-                    </h4>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span>Supports Ferdinand's aviation education</span>
-                        <span className="font-semibold text-accent-700">10% to FQMH</span>
-                      </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-accent-200">
-                        <span className="text-xs text-accent-700">Every ticket helps fund his dreams</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="text-center">
-                    <Link 
-                      href={`/artists/ferdinand`}
-                      className="btn-secondary"
-                    >
-                      Learn More About Ferdinand
-                    </Link>
-                  </div>
-                </div>
               ))}
             </div>
           ) : (
@@ -297,6 +225,79 @@ const RafflesPage: React.FC = () => {
               )}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Artwork Details Section */}
+      <section className="py-16 bg-primary-50">
+        <div className="container-custom section-padding">
+          <div className="max-w-4xl mx-auto">
+            {activeRaffles.length > 0 && (
+              <>
+                <h2 className="font-serif text-display-sm text-primary-900 text-center mb-12">
+                  About the Artwork
+                </h2>
+                {activeRaffles.map((raffle) => (
+                  <div key={`${raffle.id}-details`} className="space-y-6">
+                    <div>
+                      <h3 className="font-serif text-2xl text-primary-900 mb-4">
+                        "{raffle.artwork_title}"
+                      </h3>
+                      <p className="text-primary-700 leading-relaxed mb-6">
+                        {raffle.description}
+                      </p>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                      <div>
+                        <h4 className="font-semibold text-primary-900 mb-2">Medium</h4>
+                        <p className="text-primary-600">{raffle.medium || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-primary-900 mb-2">Dimensions</h4>
+                        <p className="text-primary-600">{raffle.dimensions || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-primary-900 mb-2">Year</h4>
+                        <p className="text-primary-600">{raffle.year || 'N/A'}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-primary-900 mb-2">Estimated Value</h4>
+                        <p className="text-primary-600 font-bold">${raffle.estimated_value || 'N/A'}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-accent-50 p-6 border border-accent-200 rounded-lg">
+                      <h4 className="font-semibold text-accent-900 mb-3 flex items-center">
+                        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                        </svg>
+                        Impact of Your Purchase
+                      </h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span>Supports Ferdinand's aviation education</span>
+                          <span className="font-semibold text-accent-700">10% to FQMH</span>
+                        </div>
+                        <div className="flex justify-between items-center pt-2 border-t border-accent-200">
+                          <span className="text-xs text-accent-700">Every ticket helps fund his dreams</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="text-center">
+                      <Link 
+                        href={`/artists/ferdinand`}
+                        className="btn-secondary"
+                      >
+                        Learn More About Ferdinand
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </div>
         </div>
       </section>
 
