@@ -41,15 +41,6 @@ const RafflesPage: React.FC = () => {
     fetchUpcomingRaffles();
   }, []);
 
-  // Initialize PayPal hosted button when component mounts
-  useEffect(() => {
-    if ((window as any).paypal) {
-      (window as any).paypal.HostedButtons({
-        hostedButtonId: "VGBSVXSENDZXJ"
-      }).render("#paypal-container-VGBSVXSENDZXJ");
-    }
-  }, []);
-
   const fetchActiveRaffles = async () => {
     try {
       const response = await fetch('/api/raffle/status');
