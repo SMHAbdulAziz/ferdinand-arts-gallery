@@ -71,7 +71,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
             alt="Ferdinand in his studio"
             fill
             className="object-cover object-center opacity-40"
-            style={{ objectPosition: 'center -25px' }}
+            style={{ objectPosition: 'center -10px' }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary-900/85 to-primary-900/50" />
         </div>
@@ -102,7 +102,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
             <div className="relative flex justify-center">
               <div className="w-72 h-72 relative overflow-hidden rounded-full ring-4 ring-white shadow-xl">
                 <Image
-                  src="/images/artists/Ferdinand-Ssekyanja.jpg"
+                  src="/images/artists/Ferdinand-Ssekyanja-1.jpg"
                   alt={artist.name}
                   fill
                   className="object-cover"
