@@ -68,7 +68,7 @@ const RafflesPage: React.FC = () => {
             </div>
 
             {/* PayPal Button */}
-            <div className="mb-6">
+            <div className="mb-6 flex justify-center">
               <div>
                 <style>{`.pp-VGBSVXSENDZXJ{text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#FFD140;color:#000000;font-family:"Helvetica Neue",Arial,sans-serif;font-size:1rem;line-height:1.25rem;cursor:pointer;}`}</style>
                 <form action="https://www.paypal.com/ncp/payment/VGBSVXSENDZXJ" method="post" target="_blank" style={{display:'inline-grid', justifyItems:'center', alignContent:'start', gap:'0.5rem'}}>
