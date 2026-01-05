@@ -296,6 +296,14 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
                 >
                   WhatsApp: {artist.contact.whatsapp}
                 </a>
+                <a 
+                  href="https://www.instagram.com/ferdinand.theartist/"
+                  className="text-accent-400 hover:text-accent-300 font-medium"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Instagram: @ferdinand.theartist
+                </a>
               </div>
             </div>
           </div>
