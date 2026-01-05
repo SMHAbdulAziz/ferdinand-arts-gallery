@@ -48,19 +48,9 @@ const RaffleThankYouPage: React.FC = () => {
               </h2>
 
               <div className="space-y-4">
-                <div className="flex justify-between items-start pb-4 border-b border-accent-200">
-                  <div>
-                    <p className="text-sm text-primary-600 mb-1">Your Entry is Confirmed</p>
-                    <p className="text-lg font-semibold text-primary-900">
-                      1 Raffle Ticket Purchased
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-primary-600 mb-1">Amount Paid</p>
-                    <p className="text-lg font-bold text-accent-600">
-                      $25.00
-                    </p>
-                  </div>
+                <div className="pb-4 border-b border-accent-200">
+                  <p className="text-sm text-primary-600 mb-1">Your Entry is Confirmed</p>
+                  <p className="text-lg font-semibold text-primary-900">Raffle Ticket Entered</p>
                 </div>
 
                 {transactionId && (
@@ -152,19 +142,9 @@ const RaffleThankYouPage: React.FC = () => {
               <h3 className="font-serif text-xl text-primary-900 mb-4">
                 Your Impact
               </h3>
-              <p className="text-primary-700 mb-4">
+              <p className="text-primary-700">
                 Every ticket purchase directly supports Ferdinand's aviation education dreams. A portion of your purchase helps fund his pathway to becoming a pilot.
               </p>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-primary-600 mb-1">Total Raised</p>
-                  <p className="text-2xl font-bold text-primary-900">$2,500+</p>
-                </div>
-                <div>
-                  <p className="text-sm text-primary-600 mb-1">Supporting</p>
-                  <p className="text-2xl font-bold text-accent-600">Education Goals</p>
-                </div>
-              </div>
             </div>
 
             {/* Call to Action */}

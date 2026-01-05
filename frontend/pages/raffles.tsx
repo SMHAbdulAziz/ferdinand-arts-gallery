@@ -46,13 +46,9 @@ const RafflesPage: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-8 mb-8">
               <div>
                 <p className="text-sm text-primary-600 mb-2">Ticket Price</p>
-                <p className="text-4xl font-bold text-primary-900 mb-6">$25.00</p>
+                <p className="text-4xl font-bold text-primary-900 mb-6">$10.00</p>
                 
                 <div className="space-y-3 text-sm text-primary-700">
-                  <div className="flex justify-between">
-                    <span>Tickets Remaining:</span>
-                    <span className="font-semibold text-accent-600">9,000 / 10,000</span>
-                  </div>
                   <div className="flex justify-between">
                     <span>Raffle Ends:</span>
                     <span className="font-semibold">January 16, 2026</span>
@@ -120,7 +116,7 @@ const RafflesPage: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-primary-900 mb-2">Estimated Value</h4>
-                  <p className="text-primary-600 font-bold">$250</p>
+                  <p className="text-primary-600 font-bold">$25,00,000</p>
                 </div>
               </div>
               
