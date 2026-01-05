@@ -8,10 +8,10 @@ const FerdinandProfile: React.FC = () => {
   const artist = {
     name: 'Ferdinand Ssekyanja',
     location: 'Entebbe, Uganda',
-    birthYear: '1998',
+    birthYear: 'July 16, 2007',
     education_goal: 'Pilot Training & Aviation Engineering in the USA',
-    education_fund_target: 269000,
-    education_fund_raised: 12500,
+    education_fund_target: 250000,
+    education_fund_raised: 0,
     bio: `A talented young painter from Entebbe, Uganda, Ferdinand creates vibrant acrylic paintings that capture the essence of African wildlife with bold strokes and expressive color palettes. His artistic journey began in childhood, drawing inspiration from the rich biodiversity surrounding Lake Victoria and the diverse wildlife of Uganda.
 
 Ferdinand's unique style combines traditional African artistic elements with contemporary techniques, creating artwork that brings joy and tells stories of his homeland. Each piece reflects his deep connection to nature and his dream of bridging cultures through art.
@@ -19,39 +19,39 @@ Ferdinand's unique style combines traditional African artistic elements with con
 Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a pilot and aviation engineer. He sees aviation as another form of art - the art of flight - and hopes to one day soar through the skies while continuing to create artwork that celebrates African culture and wildlife.`,
     quote: "Every stroke tells a story of dreams and determination. Through art, I share the beauty of Uganda while working toward my goal of touching the sky.",
     contact: {
-      email: 'ferdinandarts@gmail.com',
+      email: 'ferdinandtomous@gmail.com',
       whatsapp: '+256-787697305'
     },
     artworks: [
       {
         id: 'playful-giraffe',
         title: 'Playful Giraffe',
-        image: '/images/artworks/playful-giraffe.jpg',
+        image: '/images/playful-giraffe.jpg',
         year: '2024',
         medium: 'Acrylic on Canvas',
-        dimensions: '100cm × 100cm',
+        dimensions: '36 x 36 inches',
         status: 'Active Raffle',
         description: 'A vibrant piece capturing the playful spirit of the giraffe with bold strokes and warm colors.'
       },
       {
-        id: 'majestic-lion',
-        title: 'Majestic Lion',
-        image: '/images/artworks/coming-soon.jpg',
+        id: 'multi-colored-lion',
+        title: 'Multi-Colored Lion Street Art',
+        image: '/images/multi-colored-lion-street-art-neon-vibrance.jpg',
         year: '2024',
         medium: 'Acrylic on Canvas',
-        dimensions: '100cm × 100cm',
+        dimensions: 'TBD',
         status: 'Coming Soon',
-        description: 'Next piece in the African wildlife series showcasing the power and grace of the king of beasts.'
+        description: 'A vibrant street art inspired piece showcasing the lion in neon colors with dynamic energy.'
       },
       {
-        id: 'wise-elephant',
-        title: 'Wise Elephant',
-        image: '/images/artworks/coming-soon.jpg',
+        id: 'elephant-landscape',
+        title: 'Elephant in Golden Landscape',
+        image: '/images/elephant-wading-golden-serene-landscape.jpg',
         year: '2024',
         medium: 'Acrylic on Canvas',
-        dimensions: '100cm × 100cm',
+        dimensions: 'TBD',
         status: 'Coming Soon',
-        description: 'A tribute to the wisdom and gentle nature of African elephants.'
+        description: 'A serene landscape capturing an elephant wading through golden waters in a tranquil setting.'
       }
     ]
   };
@@ -67,12 +67,12 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
       <section className="relative py-24 bg-primary-900 text-white overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/images/ferdinand-studio-wide.jpg"
+            src="/images/artists/ferdinand-studio.jpg"
             alt="Ferdinand in his studio"
             fill
-            className="object-cover opacity-20"
+            className="object-cover opacity-40"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-900/90 to-primary-900/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-900/85 to-primary-900/50" />
         </div>
         
         <div className="relative z-10 container-custom section-padding">
@@ -92,16 +92,16 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
                 <Link href="/raffles" className="btn-accent">
                   Support Ferdinand's Journey
                 </Link>
-                <Link href="#artworks" className="btn-secondary text-white border-white hover:bg-white hover:text-primary-900">
+                <Link href="#artworks" className="btn-secondary bg-accent-500 hover:bg-accent-600 text-white border-accent-500 hover:border-accent-600">
                   View Artwork Collection
                 </Link>
               </div>
             </div>
             
-            <div className="relative">
-              <div className="aspect-[3/4] relative overflow-hidden artwork-shadow">
+            <div className="relative flex justify-center">
+              <div className="w-48 h-48 relative overflow-hidden rounded-full ring-4 ring-white shadow-xl">
                 <Image
-                  src="/images/ferdinand-profile.jpg"
+                  src="/images/artists/Ferdinand-Ssekyanja.png"
                   alt={artist.name}
                   fill
                   className="object-cover"
@@ -270,7 +270,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
                   Stay updated on Ferdinand's progress toward his aviation goals 
                   and new artwork releases.
                 </p>
-                <Link href="/newsletter" className="btn-secondary w-full text-center text-white border-white hover:bg-white hover:text-primary-900">
+                <Link href="/newsletter" className="btn-secondary w-full text-center bg-accent-500 hover:bg-accent-600 text-white border-accent-500 hover:border-accent-600">
                   Join Newsletter
                 </Link>
               </div>
