@@ -6,7 +6,7 @@ export function middleware(request) {
   // Set CSP headers for hCaptcha and PayPal
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://newassets.hcaptcha.com https://*.hcaptcha.com https://www.paypal.com blob:; style-src 'self' 'unsafe-inline' https://newassets.hcaptcha.com https://*.hcaptcha.com; frame-src 'self' https://newassets.hcaptcha.com https://*.hcaptcha.com https://www.paypal.com https://*.paypal.com; connect-src 'self' https://newassets.hcaptcha.com https://*.hcaptcha.com https://api.stripe.com https://www.paypal.com https://*.paypal.com; img-src 'self' data: https:; font-src 'self' data: https:;"
+    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://newassets.hcaptcha.com https://*.hcaptcha.com https://www.paypal.com blob:; style-src 'self' 'unsafe-inline' https://newassets.hcaptcha.com https://*.hcaptcha.com; frame-src 'self' https://newassets.hcaptcha.com https://*.hcaptcha.com https://www.paypal.com https://*.paypal.com https://www.youtube.com https://youtu.be; connect-src 'self' https://newassets.hcaptcha.com https://*.hcaptcha.com https://api.stripe.com https://www.paypal.com https://*.paypal.com; img-src 'self' data: https:; font-src 'self' data: https:;"
   )
 
   return response
