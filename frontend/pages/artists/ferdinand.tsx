@@ -72,7 +72,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
             alt="Ferdinand in his studio"
             fill
             className="object-cover object-center opacity-40"
-            style={{ objectPosition: 'center -10px' }}
+            style={{ objectPosition: 'center -900px' }}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-primary-900/85 to-primary-900/50" />
         </div>
