@@ -167,7 +167,7 @@ const RaffleThankYouPage: React.FC = () => {
                   <strong>What's my ticket number?</strong> Your ticket number has been sent to your email address along with your receipt.
                 </p>
                 <p>
-                  <strong>Can I buy more tickets?</strong> Yes! You can purchase as many tickets as you'd like. Each ticket gives you an independent chance to win.
+                  <strong>Can I buy more tickets?</strong> Yes! You can purchase as many tickets as you'd like. Please understand this caveat though: Each individual/person is allowed a maximum of 25 entries in the raffle regardless of how many tickets they purchase. This means that if you purchase more than 25 tickets, you will only receive a maximum of 25 entries and all funds received by the vendor for tickets purchased in excess thereof shall be considered/accepted as a donation to the THE FUND Gallery in support of the Artist, Ferdinand Ssekyanja, its mission and FQMH.
                 </p>
                 <p>
                   <strong>How will I know if I won?</strong> We'll contact you by email with the winner announcement. Winners will be selected randomly and transparently.
