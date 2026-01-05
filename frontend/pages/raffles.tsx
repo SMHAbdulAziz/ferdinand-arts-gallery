@@ -184,7 +184,7 @@ const RafflesPage: React.FC = () => {
                     <div className="flex justify-between items-center mb-6 pb-6 border-b border-gray-300">
                       <div>
                         <p className="text-sm text-primary-600">Ticket Price</p>
-                        <p className="text-4xl font-bold text-primary-900">${raffle.ticket_price.toFixed(2)} USD</p>
+                        <p className="text-4xl font-bold text-primary-900">${typeof raffle.ticket_price === 'number' ? raffle.ticket_price.toFixed(2) : parseFloat(raffle.ticket_price as any).toFixed(2)} USD</p>
                       </div>
                     </div>
 
