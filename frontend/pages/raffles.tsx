@@ -84,8 +84,8 @@ const RafflesPage: React.FC = () => {
             </div>
 
             {/* PayPal Button */}
-            <div className="mb-6 w-full">
-              <div id="paypal-container-VGBSVXSENDZXJ" className="flex justify-center"></div>
+            <div className="mb-6">
+              <div id="paypal-container-VGBSVXSENDZXJ"></div>
             </div>
 
             <p className="text-xs text-primary-500 text-center">
