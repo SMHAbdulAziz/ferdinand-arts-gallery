@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Head from 'next/head';
 import Layout from '../components/layout/Layout';
-import RaffleTicketPurchase from '../components/raffle/RaffleTicketPurchase';
 
 interface Raffle {
   id: string;
@@ -39,6 +39,24 @@ const RafflesPage: React.FC = () => {
   useEffect(() => {
     fetchActiveRaffles();
     fetchUpcomingRaffles();
+  }, []);
+
+  // Initialize PayPal button after DOM is loaded
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).paypal) {
+      const script = document.createElement('script');
+      script.innerHTML = `
+        document.addEventListener("DOMContentLoaded", (event) => {
+          if (window.paypal) {
+            paypal.HostedButtons({
+              hostedButtonId: "VGBSVXSENDZXJ"
+            })
+            .render("#paypal-container-VGBSVXSENDZXJ")
+          }
+        })
+      `;
+      document.body.appendChild(script);
+    }
   }, []);
 
   const fetchActiveRaffles = async () => {
@@ -99,10 +117,18 @@ const RafflesPage: React.FC = () => {
     return date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   };
   return (
-    <Layout
-      title="Art Raffles - THE FUND Gallery"
-      description="Support Ferdinand's education by purchasing raffle tickets for authentic African artwork. Win beautiful art while funding dreams."
-    >
+    <>
+      <Head>
+        <script
+          src="https://www.paypal.com/sdk/js?client-id=BAAzB5PP9aIWWYD4zV82tAePpTTo4UV5KNJ_BbAY0cnKjN0N75nWHN5PZnSCsWpF80HoAxIA-HDljYfX08&components=hosted-buttons&enable-funding=venmo&currency=USD"
+          crossOrigin="anonymous"
+          async
+        />
+      </Head>
+      <Layout
+        title="Art Raffles - THE FUND Gallery"
+        description="Support Ferdinand's education by purchasing raffle tickets for authentic African artwork. Win beautiful art while funding dreams."
+      >
       {/* Hero Section */}
       <section className="py-16 bg-primary-900 text-white">
         <div className="container-custom section-padding">
@@ -134,16 +160,65 @@ const RafflesPage: React.FC = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
               {activeRaffles.map((raffle) => (
                 <div key={raffle.id} className="space-y-8">
-                  {/* Raffle Purchase Component */}
-                  <RaffleTicketPurchase
-                    raffleId={raffle.id}
-                    artworkTitle={raffle.artwork_title}
-                    artworkImage={raffle.images?.[0] || '/images/artworks/coming-soon.jpg'}
-                    ticketPrice={raffle.ticket_price}
-                    maxTickets={raffle.max_tickets}
-                    ticketsSold={raffle.tickets_sold}
-                    endDate={new Date(raffle.end_date)}
-                  />
+                  {/* Artwork Image */}
+                  <div className="relative w-full aspect-square bg-primary-100 rounded-lg overflow-hidden shadow-xl">
+                    {raffle.images?.[0] ? (
+                      <Image
+                        src={raffle.images[0]}
+                        alt={raffle.artwork_title}
+                        fill
+                        className="object-cover"
+                        priority
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-primary-400 font-medium">Image Coming Soon</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* PayPal Button Section */}
+                  <div className="bg-white border-2 border-primary-200 rounded-lg p-8 shadow-lg">
+                    <div className="mb-6">
+                      <h3 className="font-serif text-2xl text-primary-900 mb-2">
+                        {raffle.artwork_title}
+                      </h3>
+                      <p className="text-primary-600 mb-4">by {raffle.artist_name}</p>
+                      
+                      <div className="flex justify-between items-center py-4 border-y border-primary-200">
+                        <div>
+                          <p className="text-sm text-primary-600">Ticket Price</p>
+                          <p className="text-3xl font-bold text-primary-900">${raffle.ticket_price}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-primary-600">Tickets Remaining</p>
+                          <p className="text-2xl font-bold text-accent-600">
+                            {raffle.max_tickets - raffle.tickets_sold} / {raffle.max_tickets}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-4">
+                        <p className="text-sm text-primary-600 mb-1">Raffle Ends</p>
+                        <p className="text-lg font-semibold text-primary-900">
+                          {new Date(raffle.end_date).toLocaleDateString('en-US', { 
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                          })}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* PayPal Button Container */}
+                    <div className="mb-4">
+                      <div id="paypal-container-VGBSVXSENDZXJ"></div>
+                    </div>
+
+                    <p className="text-xs text-primary-500 text-center">
+                      Secure payment powered by PayPal. Each purchase enters you into the raffle.
+                    </p>
+                  </div>
                 </div>
               ))}
               
@@ -396,6 +471,7 @@ const RafflesPage: React.FC = () => {
         </div>
       </section>
     </Layout>
+    </>
   );
 };
 
