@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Layout from '../../components/layout/Layout';
+import VideoModal from '../../components/modals/VideoModal';
 
 const FerdinandProfile: React.FC = () => {
   // Mock data - would come from API
@@ -77,6 +78,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
         </div>
         
         <div className="relative z-10 container-custom section-padding">
+          <VideoModal autoOpen={true} />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <div>

@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Layout from '../components/layout/Layout';
+import VideoModal from '../components/modals/VideoModal';
 
 const RafflesPage: React.FC = () => {
   return (
@@ -9,6 +10,7 @@ const RafflesPage: React.FC = () => {
         title="Art Raffles - THE FUND Gallery"
         description="Support Ferdinand's education by purchasing raffle tickets for authentic African artwork. Win beautiful art while funding dreams."
       >
+      <VideoModal autoOpen={true} />
       {/* Hero Section */}
       <section className="py-16 bg-primary-900 text-white">
         <div className="container-custom section-padding">
