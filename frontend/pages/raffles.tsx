@@ -205,10 +205,6 @@ const RafflesPage: React.FC = () => {
                   <div id="paypal-container-VGBSVXSENDZXJ" className="mt-6"></div>
                 </div>
               ))}
-              
-              {/* Artwork Details */}
-              {activeRaffles.map((raffle) => (
-              ))}
             </div>
           ) : (
             <div className="text-center py-12">
