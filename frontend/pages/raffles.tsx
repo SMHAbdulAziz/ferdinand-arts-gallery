@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 import Layout from '../components/layout/Layout';
 
 const RafflesPage: React.FC = () => {
+  useEffect(() => {
+    // Initialize PayPal button when component mounts
+    if (typeof window !== 'undefined' && (window as any).paypal) {
+      (window as any).paypal.HostedButtons({
+        hostedButtonId: "VGBSVXSENDZXJ",
+      }).render("#paypal-container-VGBSVXSENDZXJ");
+    }
+  }, []);
+
   return (
     <>
       <Head>
@@ -60,23 +70,22 @@ const RafflesPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* YouTube Video */}
-              <div className="bg-primary-100 rounded-lg overflow-hidden h-auto">
-                <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                  <iframe
-                    className="absolute top-0 left-0 w-full h-full"
-                    src="https://www.youtube.com/embed/uAczP-U7_PI?autoplay=1&loop=1&playlist=uAczP-U7_PI&controls=1"
-                    title="Playful Giraffe Artwork"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                </div>
+              {/* Image Placeholder */}
+              <div className="bg-primary-100 rounded-lg overflow-hidden h-64 flex items-center justify-center">
+                <Image
+                  src="/images/Playful-Giraffe-In-Museum.png"
+                  alt="Playful Giraffe - Original Artwork"
+                  width={400}
+                  height={400}
+                  className="object-cover w-full h-full"
+                  priority
+                />
               </div>
             </div>
 
             {/* PayPal Button */}
-            <div className="mb-6">
-              <div id="paypal-container-VGBSVXSENDZXJ"></div>
+            <div className="mb-6 w-full">
+              <div id="paypal-container-VGBSVXSENDZXJ" className="flex justify-center"></div>
             </div>
 
             <p className="text-xs text-primary-500 text-center">
