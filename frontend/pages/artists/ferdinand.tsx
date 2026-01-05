@@ -260,7 +260,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
                   Purchase raffle tickets to win authentic artwork while directly 
                   supporting Ferdinand's educational journey.
                 </p>
-                <Link href="/raffles" className="btn-accent w-full text-center">
+                <Link href="/raffles" className="btn-accent w-full text-center bg-accent-500 hover:bg-accent-600 text-white border-accent-500 hover:border-accent-600">
                   View Active Raffles
                 </Link>
               </div>
