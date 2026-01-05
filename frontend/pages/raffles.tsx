@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import Image from 'next/image';
+import Script from 'next/script';
 import Layout from '../components/layout/Layout';
 
 const RafflesPage: React.FC = () => {
@@ -21,6 +21,15 @@ const RafflesPage: React.FC = () => {
           src="https://www.paypal.com/sdk/js?client-id=BAAzB5PP9aIWWYD4zV82tAePpTTo4UV5KNJ_BbAY0cnKjN0N75nWHN5PZnSCsWpF80HoAxIA-HDljYfX08&components=hosted-buttons&enable-funding=venmo&currency=USD">
         </script>
       </Head>
+      <Script 
+        src="//www.instagram.com/embed.js" 
+        strategy="lazyOnload"
+        onLoad={() => {
+          if ((window as any).instgrm) {
+            (window as any).instgrm.Embed.process();
+          }
+        }}
+      />
       <Layout
         title="Art Raffles - THE FUND Gallery"
         description="Support Ferdinand's education by purchasing raffle tickets for authentic African artwork. Win beautiful art while funding dreams."
@@ -70,16 +79,30 @@ const RafflesPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Image Placeholder */}
-              <div className="bg-primary-100 rounded-lg overflow-hidden h-64 flex items-center justify-center">
-                <Image
-                  src="/images/Playful-Giraffe-In-Museum.png"
-                  alt="Playful Giraffe - Original Artwork"
-                  width={400}
-                  height={400}
-                  className="object-cover w-full h-full"
-                  priority
-                />
+              {/* Instagram Reel Video */}
+              <div className="bg-primary-100 rounded-lg overflow-hidden h-auto flex items-center justify-center">
+                <blockquote 
+                  className="instagram-media" 
+                  data-instgrm-permalink="https://www.instagram.com/ferdinand.theartist/reel/DTHHoF5j3g2/?utm_source=ig_embed&amp;utm_campaign=loading" 
+                  data-instgrm-version="14"
+                  style={{
+                    background: '#FFF',
+                    border: '0',
+                    borderRadius: '3px',
+                    boxShadow: '0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)',
+                    margin: '1px',
+                    maxWidth: '540px',
+                    minWidth: '326px',
+                    padding: '0',
+                    width: 'calc(100% - 2px)'
+                  }}
+                >
+                  <div style={{ padding: '16px' }}>
+                    <a href="https://www.instagram.com/ferdinand.theartist/reel/DTHHoF5j3g2/?utm_source=ig_embed&amp;utm_campaign=loading" style={{ background: '#FFFFFF', lineHeight: '0', padding: '0', textAlign: 'center', textDecoration: 'none', width: '100%' }} target="_blank" rel="noopener noreferrer">
+                      <span style={{ display: 'none' }}>View this post on Instagram</span>
+                    </a>
+                  </div>
+                </blockquote>
               </div>
             </div>
 
@@ -116,11 +139,11 @@ const RafflesPage: React.FC = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
                   <h4 className="font-semibold text-primary-900 mb-2">Medium</h4>
-                  <p className="text-primary-600">Oil on Canvas</p>
+                  <p className="text-primary-600">Acrylic on Canvas</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-primary-900 mb-2">Dimensions</h4>
-                  <p className="text-primary-600">36 x 48 inches</p>
+                  <p className="text-primary-600">36 x 36 inches</p>
                 </div>
                 <div>
                   <h4 className="font-semibold text-primary-900 mb-2">Year</h4>
