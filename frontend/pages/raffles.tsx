@@ -1,26 +1,42 @@
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import Head from 'next/head';
+import Script from 'next/script';
 import Image from 'next/image';
 import Layout from '../components/layout/Layout';
 
 const RafflesPage: React.FC = () => {
   useEffect(() => {
-    // Initialize PayPal button when component mounts
-    if (typeof window !== 'undefined' && (window as any).paypal) {
-      (window as any).paypal.HostedButtons({
-        hostedButtonId: "VGBSVXSENDZXJ",
-      }).render("#paypal-container-VGBSVXSENDZXJ");
-    }
+    // Initialize PayPal button when component mounts and SDK is ready
+    const initPayPal = () => {
+      if (typeof window !== 'undefined' && (window as any).paypal?.HostedButtons) {
+        (window as any).paypal.HostedButtons({
+          hostedButtonId: "VGBSVXSENDZXJ",
+        }).render("#paypal-container-VGBSVXSENDZXJ");
+      }
+    };
+
+    // Try immediately
+    initPayPal();
+
+    // Also try after a short delay in case PayPal is still loading
+    const timer = setTimeout(initPayPal, 500);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <>
-      <Head>
-        <script 
-          src="https://www.paypal.com/sdk/js?client-id=BAAzB5PP9aIWWYD4zV82tAePpTTo4UV5KNJ_BbAY0cnKjN0N75nWHN5PZnSCsWpF80HoAxIA-HDljYfX08&components=hosted-buttons&enable-funding=venmo&currency=USD">
-        </script>
-      </Head>
+      <Script 
+        src="https://www.paypal.com/sdk/js?client-id=BAAzB5PP9aIWWYD4zV82tAePpTTo4UV5KNJ_BbAY0cnKjN0N75nWHN5PZnSCsWpF80HoAxIA-HDljYfX08&components=hosted-buttons&enable-funding=venmo&currency=USD"
+        strategy="afterInteractive"
+        onLoad={() => {
+          // Trigger PayPal initialization after script loads
+          if (typeof window !== 'undefined' && (window as any).paypal?.HostedButtons) {
+            (window as any).paypal.HostedButtons({
+              hostedButtonId: "VGBSVXSENDZXJ",
+            }).render("#paypal-container-VGBSVXSENDZXJ");
+          }
+        }}
+      />
       <Layout
         title="Art Raffles - THE FUND Gallery"
         description="Support Ferdinand's education by purchasing raffle tickets for authentic African artwork. Win beautiful art while funding dreams."
