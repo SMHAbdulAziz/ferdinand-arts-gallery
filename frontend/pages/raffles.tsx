@@ -1,42 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import Script from 'next/script';
 import Image from 'next/image';
 import Layout from '../components/layout/Layout';
 
 const RafflesPage: React.FC = () => {
-  useEffect(() => {
-    // Initialize PayPal button when component mounts and SDK is ready
-    const initPayPal = () => {
-      if (typeof window !== 'undefined' && (window as any).paypal?.HostedButtons) {
-        (window as any).paypal.HostedButtons({
-          hostedButtonId: "VGBSVXSENDZXJ",
-        }).render("#paypal-container-VGBSVXSENDZXJ");
-      }
-    };
-
-    // Try immediately
-    initPayPal();
-
-    // Also try after a short delay in case PayPal is still loading
-    const timer = setTimeout(initPayPal, 500);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <>
-      <Script 
-        src="https://www.paypal.com/sdk/js?client-id=BAAzB5PP9aIWWYD4zV82tAePpTTo4UV5KNJ_BbAY0cnKjN0N75nWHN5PZnSCsWpF80HoAxIA-HDljYfX08&components=hosted-buttons&enable-funding=venmo&currency=USD"
-        strategy="afterInteractive"
-        onLoad={() => {
-          // Trigger PayPal initialization after script loads
-          if (typeof window !== 'undefined' && (window as any).paypal?.HostedButtons) {
-            (window as any).paypal.HostedButtons({
-              hostedButtonId: "VGBSVXSENDZXJ",
-            }).render("#paypal-container-VGBSVXSENDZXJ");
-          }
-        }}
-      />
       <Layout
         title="Art Raffles - THE FUND Gallery"
         description="Support Ferdinand's education by purchasing raffle tickets for authentic African artwork. Win beautiful art while funding dreams."
@@ -101,7 +69,14 @@ const RafflesPage: React.FC = () => {
 
             {/* PayPal Button */}
             <div className="mb-6">
-              <div id="paypal-container-VGBSVXSENDZXJ"></div>
+              <div>
+                <style>{`.pp-VGBSVXSENDZXJ{text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#FFD140;color:#000000;font-family:"Helvetica Neue",Arial,sans-serif;font-size:1rem;line-height:1.25rem;cursor:pointer;}`}</style>
+                <form action="https://www.paypal.com/ncp/payment/VGBSVXSENDZXJ" method="post" target="_blank" style={{display:'inline-grid', justifyItems:'center', alignContent:'start', gap:'0.5rem'}}>
+                  <input className="pp-VGBSVXSENDZXJ" type="submit" value="Buy Now" />
+                  <img src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg" alt="cards" />
+                  <section style={{fontSize: '0.75rem'}}> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style={{height:'0.875rem', verticalAlign:'middle'}}/></section>
+                </form>
+              </div>
             </div>
 
             <p className="text-xs text-primary-500 text-center">
@@ -234,7 +209,6 @@ const RafflesPage: React.FC = () => {
         </div>
       </section>
     </Layout>
-    </>
   );
 };
 
