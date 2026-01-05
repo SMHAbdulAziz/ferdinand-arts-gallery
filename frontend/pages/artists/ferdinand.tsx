@@ -102,7 +102,7 @@ Beyond his artistic pursuits, Ferdinand harbors a passionate dream of becoming a
             <div className="relative flex justify-center">
               <div className="w-72 h-72 relative overflow-hidden rounded-full ring-4 ring-white shadow-xl">
                 <Image
-                  src="/images/artists/Ferdinand-Ssekyanja.png"
+                  src="/images/artists/Ferdinand-Ssekyanja.jpg"
                   alt={artist.name}
                   fill
                   className="object-cover"
