@@ -14,6 +14,13 @@ const RafflesPage: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    // Process Instagram embeds when they're added to DOM
+    if (typeof window !== 'undefined' && (window as any).instgrm) {
+      (window as any).instgrm.Embed.process();
+    }
+  }, []);
+
   return (
     <>
       <Head>
@@ -22,13 +29,9 @@ const RafflesPage: React.FC = () => {
         </script>
       </Head>
       <Script 
-        src="//www.instagram.com/embed.js" 
-        strategy="lazyOnload"
-        onLoad={() => {
-          if ((window as any).instgrm) {
-            (window as any).instgrm.Embed.process();
-          }
-        }}
+        src="https://www.instagram.com/embed.js" 
+        strategy="beforeInteractive"
+        async
       />
       <Layout
         title="Art Raffles - THE FUND Gallery"

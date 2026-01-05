@@ -22,7 +22,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="relative z-40 bg-white border-b border-primary-200">
+    <header className="sticky top-0 z-50 bg-white border-b border-primary-200">
       <div className="container-custom section-padding">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
