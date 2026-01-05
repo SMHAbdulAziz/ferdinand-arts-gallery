@@ -1,9 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
+import Image from 'next/image';
 import Layout from '../components/layout/Layout';
 
 const RafflesPage: React.FC = () => {
+  useEffect(() => {
+    // Initialize PayPal button when component mounts
+    if (typeof window !== 'undefined' && (window as any).paypal) {
+      (window as any).paypal.HostedButtons({
+        hostedButtonId: "VGBSVXSENDZXJ",
+      }).render("#paypal-container-VGBSVXSENDZXJ");
+    }
+  }, []);
+
   return (
     <>
       <Head>
@@ -55,25 +65,27 @@ const RafflesPage: React.FC = () => {
                   </div>
                   <div className="flex justify-between">
                     <span>Estimated Value:</span>
-                    <span className="font-semibold">$250</span>
+                    <span className="font-semibold">$25,000</span>
                   </div>
                 </div>
               </div>
 
               {/* Image Placeholder */}
-              <div className="bg-primary-100 rounded-lg flex items-center justify-center h-64">
-                <span className="text-primary-400 font-medium">Artwork Image</span>
+              <div className="bg-primary-100 rounded-lg overflow-hidden h-64 flex items-center justify-center">
+                <Image
+                  src="/images/Playful-Giraffe-In-Museum.png"
+                  alt="Playful Giraffe - Original Artwork"
+                  width={400}
+                  height={400}
+                  className="object-cover w-full h-full"
+                  priority
+                />
               </div>
             </div>
 
             {/* PayPal Button */}
             <div className="mb-6">
               <div id="paypal-container-VGBSVXSENDZXJ"></div>
-              <script>
-                {`paypal.HostedButtons({
-                  hostedButtonId: "VGBSVXSENDZXJ",
-                }).render("#paypal-container-VGBSVXSENDZXJ")`}
-              </script>
             </div>
 
             <p className="text-xs text-primary-500 text-center">
@@ -116,7 +128,7 @@ const RafflesPage: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-primary-900 mb-2">Estimated Value</h4>
-                  <p className="text-primary-600 font-bold">$25,00,000</p>
+                  <p className="text-primary-600 font-bold">$25,000</p>
                 </div>
               </div>
               

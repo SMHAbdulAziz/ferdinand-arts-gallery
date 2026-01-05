@@ -22,7 +22,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="relative bg-white border-b border-primary-200">
+    <header className="relative z-40 bg-white border-b border-primary-200">
       <div className="container-custom section-padding">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
@@ -61,7 +61,7 @@ const Header: React.FC = () => {
 
           {/* CTA Button & Auth */}
           <div className="hidden lg:flex lg:items-center lg:space-x-4">
-            {!loading && (
+            {!loading ? (
               <>
                 {isAuthenticated ? (
                   <div className="relative">
@@ -108,7 +108,7 @@ const Header: React.FC = () => {
                   </>
                 )}
               </>
-            )}
+            ) : null}
             {isAuthenticated && (
               <Link href="/raffle" className="btn-primary">
                 Support Artists
