@@ -127,7 +127,7 @@ const CurrentExhibitions: React.FC<{ images: ArtworkImage[] }> = ({ images }) =>
               </p>
               <div className="mt-4 flex items-center justify-between">
                 <span className="text-accent-600 font-semibold">Active Raffle</span>
-                <Link href="/raffle" className="text-primary-900 hover:text-accent-600 font-medium">
+                <Link href="/raffles" className="text-primary-900 hover:text-accent-600 font-medium">
                   View Details →
                 </Link>
               </div>
