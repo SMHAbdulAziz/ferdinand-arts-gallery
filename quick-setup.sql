@@ -138,17 +138,18 @@ ON CONFLICT DO NOTHING;
 
 -- Insert active raffle
 INSERT INTO raffles (
-    artwork_id, title, description, ticket_price, max_tickets, 
+    artwork_id, title, description, ticket_price, max_tickets, minimum_threshold_tickets,
     start_date, end_date, status, tickets_sold, total_revenue
 )
 SELECT 
     aw.id,
     'Playful Giraffe Raffle',
     'Win Ferdinand''s beautiful "Playful Giraffe" artwork while supporting his aviation education dreams.',
-    25.00,
-    100,
+    10.00,
+    1000,
+    500,
     NOW(),
-    NOW() + INTERVAL '15 days',
+    NOW() + INTERVAL '30 days',
     'active',
     0,
     0.00

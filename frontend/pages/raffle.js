@@ -10,9 +10,6 @@ export default function RafflePage() {
   const [raffleData, setRaffleData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [freeEntryEmail, setFreeEntryEmail] = useState('');
-  const [freeEntryLoading, setFreeEntryLoading] = useState(false);
-  const [freeEntrySuccess, setFreeEntrySuccess] = useState(false);
   const [countdown, setCountdown] = useState({});
 
   // Fetch current raffle status
@@ -71,37 +68,6 @@ export default function RafflePage() {
     setTimeout(() => {
       router.push('/success?payment=paypal&order=' + order.id);
     }, 2000);
-  };
-
-  const handleFreeEntry = async (e) => {
-    e.preventDefault();
-    setFreeEntryLoading(true);
-
-    try {
-      const response = await fetch('/api/raffle/free-entry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          raffleId: raffleData.id,
-          email: freeEntryEmail
-        })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setFreeEntrySuccess(true);
-        setFreeEntryEmail('');
-        setTimeout(() => setFreeEntrySuccess(false), 5000);
-      } else {
-        alert(data.error || 'Failed to process free entry');
-      }
-    } catch (err) {
-      alert('Error processing free entry');
-      console.error(err);
-    } finally {
-      setFreeEntryLoading(false);
-    }
   };
 
   if (loading) {
@@ -315,10 +281,26 @@ export default function RafflePage() {
             <div className="grid md:grid-cols-2 gap-8 items-start mb-12">
               {/* Artwork Details */}
               <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="aspect-w-1 aspect-h-1 bg-gray-200">
-                  <div className="flex items-center justify-center text-gray-400 h-64">
-                    <span className="text-sm">{raffle?.artwork_title} Image</span>
-                  </div>
+                <div className="aspect-w-1 aspect-h-1 bg-gray-200 relative">
+                  {raffle?.images && raffle.images.length > 0 ? (
+                    <img 
+                      src={raffle.images[0]} 
+                      alt={raffle?.artwork_title || 'Artwork'} 
+                      className="w-full h-64 object-cover"
+                      onError={(e) => {
+                        e.currentTarget.src = '/images/artworks/playful-giraffe.jpg';
+                      }}
+                    />
+                  ) : (
+                    <img 
+                      src="/images/artworks/playful-giraffe.jpg" 
+                      alt={raffle?.artwork_title || 'Artwork'} 
+                      className="w-full h-64 object-cover"
+                      onError={(e) => {
+                        e.currentTarget.innerHTML = '<span className="text-gray-400">Image not available</span>';
+                      }}
+                    />
+                  )}
                 </div>
                 <div className="p-6">
                   <h2 className="text-2xl font-bold text-gray-900 mb-4">About This Artwork</h2>
@@ -369,37 +351,12 @@ export default function RafflePage() {
                   </div>
                 </div>
 
-                {/* Free Entry */}
-                <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-6">
-                  <h3 className="text-xl font-bold text-blue-900 mb-2">Free Entry Option</h3>
-                  <p className="text-sm text-blue-800 mb-4">
-                    No purchase necessary! One free entry per person with identical odds of winning.
+                {/* Future Raffle Bonus Info */}
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-6 mt-6">
+                  <h3 className="text-lg font-bold text-purple-900 mb-2">🎁 Bonus for Next Raffle</h3>
+                  <p className="text-sm text-purple-800">
+                    The first 25 people who purchase a ticket in the <strong>current raffle</strong> will automatically receive a <strong>FREE entry</strong> in our <strong>next raffle</strong>!
                   </p>
-                  
-                  {freeEntrySuccess && (
-                    <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
-                      ✓ Free entry confirmed! Check your email for details.
-                    </div>
-                  )}
-                  
-                  <form onSubmit={handleFreeEntry}>
-                    <input
-                      type="email"
-                      placeholder="Enter your email"
-                      value={freeEntryEmail}
-                      onChange={(e) => setFreeEntryEmail(e.target.value)}
-                      required
-                      className="w-full px-4 py-2 border border-blue-300 rounded-lg mb-3 text-sm"
-                      disabled={freeEntryLoading}
-                    />
-                    <button
-                      type="submit"
-                      disabled={freeEntryLoading || !freeEntryEmail}
-                      className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 text-sm font-semibold"
-                    >
-                      {freeEntryLoading ? 'Processing...' : 'Enter Free Raffle'}
-                    </button>
-                  </form>
                 </div>
               </div>
             </div>
@@ -412,8 +369,8 @@ export default function RafflePage() {
                   <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span className="text-indigo-600 font-bold">1</span>
                   </div>
-                  <h3 className="font-semibold mb-2">Purchase or Enter Free</h3>
-                  <p className="text-sm text-gray-600">Buy ticket or enter with email</p>
+                  <h3 className="font-semibold mb-2">Purchase Ticket</h3>
+                  <p className="text-sm text-gray-600">Buy ticket or enter email for bonus</p>
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
