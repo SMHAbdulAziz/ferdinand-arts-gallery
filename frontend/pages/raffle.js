@@ -289,7 +289,7 @@ export default function RafflePage() {
                   </div>
                   <div className="flex justify-between border-t pt-2">
                     <span>Total Pool:</span>
-                    <span className="font-bold text-green-600">${raffle?.total_revenue?.toFixed(2) || '0.00'}</span>
+                    <span className="font-bold text-green-600">${(parseFloat(raffle?.total_revenue) || 0).toFixed(2)}</span>
                   </div>
                 </div>
               </div>

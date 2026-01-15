@@ -49,6 +49,9 @@ export default async function handler(req, res) {
 
     const raffle = raffleQuery.rows[0];
     
+    // Ensure numeric values (PostgreSQL DECIMAL returns strings in JSON)
+    const totalRevenue = parseFloat(raffle.total_revenue) || 0;
+    
     // Calculate remaining tickets
     const ticketsRemaining = raffle.max_tickets ? raffle.max_tickets - raffle.tickets_sold : null;
     
@@ -65,6 +68,7 @@ export default async function handler(req, res) {
       success: true,
       raffle: {
         ...raffle,
+        total_revenue: totalRevenue,
         tickets_remaining: ticketsRemaining,
         days_remaining: daysRemaining,
         images: raffle.images || [],
@@ -79,7 +83,7 @@ export default async function handler(req, res) {
         // PROTOCOL: Outcome scenarios for transparency
         outcome_scenarios: {
           if_threshold_met: 'One winner will receive the original artwork and Certificate of Authenticity',
-          if_threshold_not_met: `One winner will receive a cash prize of approximately $${(raffle.total_revenue * raffle.cash_prize_percentage / 100).toFixed(2)}`
+          if_threshold_not_met: `One winner will receive a cash prize of approximately $${(totalRevenue * raffle.cash_prize_percentage / 100).toFixed(2)}`
         }
       }
     });
