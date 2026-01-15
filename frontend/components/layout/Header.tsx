@@ -7,6 +7,7 @@ const Header: React.FC = () => {
   const router = useRouter();
   const { isAuthenticated, user, logout, loading } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -120,6 +121,7 @@ const Header: React.FC = () => {
           <div className="lg:hidden">
             <button
               type="button"
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
               className="text-primary-600 hover:text-primary-900 focus:outline-none focus:text-primary-900 transition-colors duration-200"
               aria-label="Open menu"
             >
@@ -131,29 +133,32 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu (Hidden by default - would need state management for toggle) */}
-      <div className="lg:hidden hidden">
-        <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-primary-200">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
-                isActive(item.href)
-                  ? 'text-primary-900 bg-primary-50'
-                  : 'text-primary-600 hover:text-primary-900 hover:bg-primary-50'
-              }`}
-            >
-              {item.name}
-            </Link>
-          ))}
-          <div className="px-3 py-2">
-            <Link href="/raffle" className="btn-primary w-full text-center">
-              Support Artists
-            </Link>
+      {/* Mobile Navigation Menu */}
+      {showMobileMenu && (
+        <div className="lg:hidden">
+          <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-primary-200">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setShowMobileMenu(false)}
+                className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
+                  isActive(item.href)
+                    ? 'text-primary-900 bg-primary-50'
+                    : 'text-primary-600 hover:text-primary-900 hover:bg-primary-50'
+                }`}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <div className="px-3 py-2">
+              <Link href="/raffle" className="btn-primary w-full text-center" onClick={() => setShowMobileMenu(false)}>
+                Support Artists
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </header>
   );
 };
