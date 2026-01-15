@@ -29,7 +29,7 @@ const artists: Artist[] = [
   {
     id: 'ferdinand-ssekyanja',
     name: 'Ferdinand Ssekyanja',
-    location: 'Kampala, Uganda',
+    location: 'Entebbe, Uganda',
     bio: `Ferdinand Ssekyanja is a talented young artist from Uganda whose vibrant contemporary works 
     draw inspiration from African wildlife, culture, and his personal journey toward achieving his 
     aviation dreams. His art serves as both creative expression and a means to fund his education 
@@ -65,7 +65,7 @@ const artists: Artist[] = [
     while working toward a future where I can view the world from the sky as a commercial pilot. 
     Every painting sold brings me one step closer to the cockpit, making each piece a literal 
     investment in dreams taking flight.`,
-    profileImage: '/images/artists/ferdinand-portrait.jpg',
+    profileImage: '/images/artists/Ferdinand-Ssekyanja-1.jpg',
     featuredWorks: [
       {
         title: 'Playful Giraffe',
@@ -164,7 +164,7 @@ export default function Artists() {
                     </div>
 
                     {/* Support Education Button */}
-                    <Link href="/raffle" className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105">
+                    <Link href="/raffles" className="inline-block bg-gradient-to-r from-purple-600 to-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:from-purple-700 hover:to-blue-700 transition-all transform hover:scale-105">
                       Support Ferdinand's Aviation Dreams
                     </Link>
                   </div>
@@ -283,7 +283,7 @@ export default function Artists() {
               
               <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-purple-600 mb-2">$10,000</div>
+                  <div className="text-3xl font-bold text-purple-600 mb-2">$250,000</div>
                   <div className="text-gray-600">Education Goal</div>
                 </div>
                 <div className="text-center">
